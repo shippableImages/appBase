@@ -7,11 +7,9 @@ RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe restricted multiverse" > /etc/apt/sources.list
 
-RUN apt-get update
-RUN apt-get install -y software-properties-common
-RUN add-apt-repository ppa:chris-lea/node.js
-RUN apt-get update
+# force all apt-get commands with a yes
+ADD 90forceyes /etc/apt/apt.conf.d/
 
-RUN apt-get install -y nodejs sudo
-RUN apt-get install -y openssh-client
-RUN npm install -g forever grunt grunt-cli
+RUN mkdir -p /root/setup
+ADD containerSetup.sh /root/setup/
+RUN /bin/bash /root/setup/containerSetup.sh
