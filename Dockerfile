@@ -23,10 +23,10 @@ RUN apt-get install wget \
                     git-core \
                     software-properties-common;
 
-RUN apt-get install python-dev;
-
 RUN apt-get install python-pip \
                     python-software-properties;
+
+RUN apt-get install python-dev;
 
 RUN echo "================= Installing Node ==================="
 RUN add-apt-repository ppa:chris-lea/node.js
