@@ -46,6 +46,6 @@ RUN mkdir -p /root/.ssh
 RUN touch /root/.ssh/known_hosts
 
 RUN echo "================== Disabling scrict host checking for ssh ====="
-RUN echo -e "Host * \n\t StrictHostKeyChecking no" > /root/.ssh/config
+ADD config /root/.ssh/config
 
 RUN echo 'ALL ALL=(ALL) NOPASSWD:ALL' | tee -a /etc/sudoers
