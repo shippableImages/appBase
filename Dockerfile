@@ -12,11 +12,10 @@ ADD 90forceyes /etc/apt/apt.conf.d/
 
 RUN echo "================= Installing core binaries ==================="
 RUN apt-get update
-RUN apt-get install -y python-dev \
-                    python-pip \
-                    python-software-properties \
+RUN apt-get install software-properties-common \
                     python-dev \
-                    python-pip;
+                    python-pip \
+                    python-software-properties;
 
 RUN apt-get install wget \
                     curl \
@@ -26,7 +25,7 @@ RUN apt-get install wget \
                     openssh-client \
                     gdb \
                     sudo \
-                    software-properties-common \
+
                     git-core;
 
 RUN echo "================= Installing Node ==================="
