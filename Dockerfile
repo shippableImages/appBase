@@ -1,4 +1,4 @@
-FROM ubuntu:14.04:latest
+FROM ubuntu:14.04
 MAINTAINER Avi "avi@shippable.com"
 
 ENV DEBIAN_FRONTEND noninteractive
