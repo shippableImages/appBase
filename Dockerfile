@@ -5,7 +5,6 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
-RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe restricted multiverse" > /etc/apt/sources.list
 
 # force all apt-get commands with a yes
 ADD 90forceyes /etc/apt/apt.conf.d/
@@ -13,7 +12,9 @@ ADD 90forceyes /etc/apt/apt.conf.d/
 RUN echo "================= Installing core binaries ==================="
 RUN apt-get update
 RUN apt-get install python-dev;
+RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe restricted multiverse" > /etc/apt/sources.list
 
+RUN apt-get update
 RUN apt-get install wget \
                     curl \
                     texinfo \
