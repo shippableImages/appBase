@@ -12,6 +12,8 @@ ADD 90forceyes /etc/apt/apt.conf.d/
 
 RUN echo "================= Installing core binaries ==================="
 RUN apt-get update
+RUN apt-get install python-dev;
+
 RUN apt-get install wget \
                     curl \
                     texinfo \
@@ -26,7 +28,6 @@ RUN apt-get install wget \
 RUN apt-get install python-pip \
                     python-software-properties;
 
-RUN apt-get install python-dev;
 
 RUN echo "================= Installing Node ==================="
 RUN add-apt-repository ppa:chris-lea/node.js
