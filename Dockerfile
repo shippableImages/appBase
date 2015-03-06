@@ -29,6 +29,10 @@ RUN apt-get install wget \
 RUN apt-get install python-pip \
                     python-software-properties;
 
+RUN echo "================== Installing python requirements ====="
+RUN mkdir -p /home/shippable/
+ADD . /home/shippable/appBase
+RUN pip install -r /home/shippable/appBase/requirements.txt
 
 RUN echo "================= Installing Node ==================="
 RUN add-apt-repository ppa:chris-lea/node.js
@@ -45,4 +49,3 @@ RUN echo "================== Disabling scrict host checking for ssh ====="
 RUN echo -e "Host * \n\t StrictHostKeyChecking no" > /root/.ssh/config
 
 RUN echo 'ALL ALL=(ALL) NOPASSWD:ALL' | tee -a /etc/sudoers
-RUN mkdir -p /home/shippable/
