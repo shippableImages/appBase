@@ -24,10 +24,14 @@ RUN apt-get install wget \
                     gdb \
                     sudo \
                     git-core \
+                    g++ \
+                    vim \
+                    htop \
                     software-properties-common;
 
 RUN apt-get install python-pip \
-                    python-software-properties;
+                    python-software-properties \
+                    supervisor ;
 
 RUN echo "================== Installing python requirements ====="
 RUN mkdir -p /home/shippable/
