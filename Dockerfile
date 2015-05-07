@@ -52,4 +52,11 @@ RUN touch /root/.ssh/known_hosts
 RUN echo "================== Disabling scrict host checking for ssh ====="
 ADD config /root/.ssh/config
 
+RUN echo "================= Adding gclould binaries ============"
+RUN mkdir -p /opt/gcloud
+ADD google-cloud-sdk /opt/gcloud/google-cloud-sdk
+RUN cd /opt/gcloud/google-cloud-sdk && ./install.sh --usage-reporting=false --bash-completion=true --path-update=true
+ENV PATH $PATH:/opt/gcloud/google-cloud-sdk/bin
+RUN gcloud components update preview
+
 RUN echo 'ALL ALL=(ALL) NOPASSWD:ALL' | tee -a /etc/sudoers
