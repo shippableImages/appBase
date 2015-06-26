@@ -79,7 +79,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.addresses.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/addresses',
               request_field='',
               request_type_name=u'ComputeAddressesAggregatedListRequest',
@@ -127,7 +127,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.addresses.list',
               ordered_params=[u'project', u'region'],
               path_params=[u'project', u'region'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/regions/{region}/addresses',
               request_field='',
               request_type_name=u'ComputeAddressesListRequest',
@@ -265,7 +265,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.backendServices.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/backendServices',
               request_field='',
               request_type_name=u'ComputeBackendServicesListRequest',
@@ -405,7 +405,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.diskTypes.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/diskTypes',
               request_field='',
               request_type_name=u'ComputeDiskTypesAggregatedListRequest',
@@ -429,7 +429,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.diskTypes.list',
               ordered_params=[u'project', u'zone'],
               path_params=[u'project', u'zone'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/zones/{zone}/diskTypes',
               request_field='',
               request_type_name=u'ComputeDiskTypesListRequest',
@@ -493,7 +493,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.disks.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/disks',
               request_field='',
               request_type_name=u'ComputeDisksAggregatedListRequest',
@@ -553,7 +553,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.disks.list',
               ordered_params=[u'project', u'zone'],
               path_params=[u'project', u'zone'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/zones/{zone}/disks',
               request_field='',
               request_type_name=u'ComputeDisksListRequest',
@@ -579,7 +579,7 @@ class ComputeAlpha(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def CreateSnapshot(self, request, global_params=None):
-      """CreateSnapshot method for the disks service.
+      """Creates a snapshot of this disk.
 
       Args:
         request: (ComputeDisksCreateSnapshotRequest) input message
@@ -692,7 +692,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.firewalls.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/firewalls',
               request_field='',
               request_type_name=u'ComputeFirewallsListRequest',
@@ -819,7 +819,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.forwardingRules.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/forwardingRules',
               request_field='',
               request_type_name=u'ComputeForwardingRulesAggregatedListRequest',
@@ -867,7 +867,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.forwardingRules.list',
               ordered_params=[u'project', u'region'],
               path_params=[u'project', u'region'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/regions/{region}/forwardingRules',
               request_field='',
               request_type_name=u'ComputeForwardingRulesListRequest',
@@ -1018,7 +1018,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.globalAddresses.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/addresses',
               request_field='',
               request_type_name=u'ComputeGlobalAddressesListRequest',
@@ -1131,7 +1131,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.globalForwardingRules.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/forwardingRules',
               request_field='',
               request_type_name=u'ComputeGlobalForwardingRulesListRequest',
@@ -1233,7 +1233,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.globalOperations.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/operations',
               request_field='',
               request_type_name=u'ComputeGlobalOperationsAggregatedListRequest',
@@ -1269,7 +1269,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.globalOperations.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/operations',
               request_field='',
               request_type_name=u'ComputeGlobalOperationsListRequest',
@@ -1382,7 +1382,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.httpHealthChecks.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/httpHealthChecks',
               request_field='',
               request_type_name=u'ComputeHttpHealthChecksListRequest',
@@ -1545,7 +1545,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.httpsHealthChecks.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/httpsHealthChecks',
               request_field='',
               request_type_name=u'ComputeHttpsHealthChecksListRequest',
@@ -1720,7 +1720,7 @@ class ComputeAlpha(base_api.BaseApiClient):
               method_id=u'compute.images.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/images',
               request_field='',
               request_type_name=u'ComputeImagesListRequest',
@@ -1848,7 +1848,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.instanceTemplates.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/instanceTemplates',
               request_field='',
               request_type_name=u'ComputeInstanceTemplatesListRequest',
@@ -1861,7 +1861,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified instance template resource.
+      """Deletes the specified instance template.
 
       Args:
         request: (ComputeInstanceTemplatesDeleteRequest) input message
@@ -1887,7 +1887,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Insert(self, request, global_params=None):
-      """Creates an instance template resource in the specified project using the data included in the request.
+      """Creates an instance template in the specified project using the data that is included in the request.
 
       Args:
         request: (ComputeInstanceTemplatesInsertRequest) input message
@@ -1900,7 +1900,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of instance template resources contained within the specified project.
+      """Retrieves a list of instance templates that are contained within the specified project and zone.
 
       Args:
         request: (ComputeInstanceTemplatesListRequest) input message
@@ -1937,7 +1937,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.instances.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/instances',
               request_field='',
               request_type_name=u'ComputeInstancesAggregatedListRequest',
@@ -2033,7 +2033,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.instances.list',
               ordered_params=[u'project', u'zone'],
               path_params=[u'project', u'zone'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/zones/{zone}/instances',
               request_field='',
               request_type_name=u'ComputeInstancesListRequest',
@@ -2061,6 +2061,30 @@ If an empty request body is given, clears the deprecation status instead.
               relative_path=u'projects/{project}/zones/{zone}/instances/{instance}/setDiskAutoDelete',
               request_field='',
               request_type_name=u'ComputeInstancesSetDiskAutoDeleteRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'SetLabels': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instances.setLabels',
+              ordered_params=[u'project', u'zone', u'instance'],
+              path_params=[u'instance', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instances/{instance}/setLabels',
+              request_field=u'instancesSetLabelsRequest',
+              request_type_name=u'ComputeInstancesSetLabelsRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'SetMachineType': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instances.setMachineType',
+              ordered_params=[u'project', u'zone', u'instance'],
+              path_params=[u'instance', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instances/{instance}/setMachineType',
+              request_field=u'instancesSetMachineTypeRequest',
+              request_type_name=u'ComputeInstancesSetMachineTypeRequest',
               response_type_name=u'Operation',
               supports_download=False,
           ),
@@ -2285,6 +2309,32 @@ If an empty request body is given, clears the deprecation status instead.
       return self._RunMethod(
           config, request, global_params=global_params)
 
+    def SetLabels(self, request, global_params=None):
+      """Sets labels for the specified instance to the data included in the request.
+
+      Args:
+        request: (ComputeInstancesSetLabelsRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetLabels')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def SetMachineType(self, request, global_params=None):
+      """Sets machine type for the specified instances to the data included in the request.
+
+      Args:
+        request: (ComputeInstancesSetMachineTypeRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetMachineType')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
     def SetMetadata(self, request, global_params=None):
       """Sets metadata for the specified instance to the data included in the request.
 
@@ -2401,7 +2451,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.machineTypes.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/machineTypes',
               request_field='',
               request_type_name=u'ComputeMachineTypesAggregatedListRequest',
@@ -2425,7 +2475,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.machineTypes.list',
               ordered_params=[u'project', u'zone'],
               path_params=[u'project', u'zone'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/zones/{zone}/machineTypes',
               request_field='',
               request_type_name=u'ComputeMachineTypesListRequest',
@@ -2525,7 +2575,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.networks.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/networks',
               request_field='',
               request_type_name=u'ComputeNetworksListRequest',
@@ -2739,7 +2789,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.regionOperations.list',
               ordered_params=[u'project', u'region'],
               path_params=[u'project', u'region'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/regions/{region}/operations',
               request_field='',
               request_type_name=u'ComputeRegionOperationsListRequest',
@@ -2815,7 +2865,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.regions.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/regions',
               request_field='',
               request_type_name=u'ComputeRegionsListRequest',
@@ -2902,7 +2952,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.routes.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/routes',
               request_field='',
               request_type_name=u'ComputeRoutesListRequest',
@@ -3003,7 +3053,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.snapshots.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/snapshots',
               request_field='',
               request_type_name=u'ComputeSnapshotsListRequest',
@@ -3103,7 +3153,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.sslCertificates.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/sslCertificates',
               request_field='',
               request_type_name=u'ComputeSslCertificatesListRequest',
@@ -3216,7 +3266,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.targetHttpProxies.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/targetHttpProxies',
               request_field='',
               request_type_name=u'ComputeTargetHttpProxiesListRequest',
@@ -3354,11 +3404,35 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.targetHttpsProxies.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/targetHttpsProxies',
               request_field='',
               request_type_name=u'ComputeTargetHttpsProxiesListRequest',
               response_type_name=u'TargetHttpsProxyList',
+              supports_download=False,
+          ),
+          'SetSslCertificates': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.targetHttpsProxies.setSslCertificates',
+              ordered_params=[u'project', u'targetHttpsProxy'],
+              path_params=[u'project', u'targetHttpsProxy'],
+              query_params=[],
+              relative_path=u'projects/{project}/targetHttpsProxies/{targetHttpsProxy}/setSslCertificates',
+              request_field=u'targetHttpsProxiesSetSslCertificatesRequest',
+              request_type_name=u'ComputeTargetHttpsProxiesSetSslCertificatesRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'SetUrlMap': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.targetHttpsProxies.setUrlMap',
+              ordered_params=[u'project', u'targetHttpsProxy'],
+              path_params=[u'project', u'targetHttpsProxy'],
+              query_params=[],
+              relative_path=u'projects/{project}/targetHttpsProxies/{targetHttpsProxy}/setUrlMap',
+              request_field=u'urlMapReference',
+              request_type_name=u'ComputeTargetHttpsProxiesSetUrlMapRequest',
+              response_type_name=u'Operation',
               supports_download=False,
           ),
           }
@@ -3418,6 +3492,32 @@ If an empty request body is given, clears the deprecation status instead.
       return self._RunMethod(
           config, request, global_params=global_params)
 
+    def SetSslCertificates(self, request, global_params=None):
+      """Replaces SslCertificates for TargetHttpsProxy.
+
+      Args:
+        request: (ComputeTargetHttpsProxiesSetSslCertificatesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetSslCertificates')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def SetUrlMap(self, request, global_params=None):
+      """Changes the URL map for TargetHttpsProxy.
+
+      Args:
+        request: (ComputeTargetHttpsProxiesSetUrlMapRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetUrlMap')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
   class TargetInstancesService(base_api.BaseApiService):
     """Service class for the targetInstances resource."""
 
@@ -3431,7 +3531,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.targetInstances.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/targetInstances',
               request_field='',
               request_type_name=u'ComputeTargetInstancesAggregatedListRequest',
@@ -3479,7 +3579,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.targetInstances.list',
               ordered_params=[u'project', u'zone'],
               path_params=[u'project', u'zone'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/zones/{zone}/targetInstances',
               request_field='',
               request_type_name=u'ComputeTargetInstancesListRequest',
@@ -3593,7 +3693,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.targetPools.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/targetPools',
               request_field='',
               request_type_name=u'ComputeTargetPoolsAggregatedListRequest',
@@ -3653,7 +3753,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.targetPools.list',
               ordered_params=[u'project', u'region'],
               path_params=[u'project', u'region'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/regions/{region}/targetPools',
               request_field='',
               request_type_name=u'ComputeTargetPoolsListRequest',
@@ -3857,7 +3957,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.targetVpnGateways.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/targetVpnGateways',
               request_field='',
               request_type_name=u'ComputeTargetVpnGatewaysAggregatedListRequest',
@@ -3905,7 +4005,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.targetVpnGateways.list',
               ordered_params=[u'project', u'region'],
               path_params=[u'project', u'region'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/regions/{region}/targetVpnGateways',
               request_field='',
               request_type_name=u'ComputeTargetVpnGatewaysListRequest',
@@ -4031,7 +4131,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.urlMaps.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/global/urlMaps',
               request_field='',
               request_type_name=u'ComputeUrlMapsListRequest',
@@ -4183,7 +4283,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.vpnTunnels.aggregatedList',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/aggregated/vpnTunnels',
               request_field='',
               request_type_name=u'ComputeVpnTunnelsAggregatedListRequest',
@@ -4231,7 +4331,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.vpnTunnels.list',
               ordered_params=[u'project', u'region'],
               path_params=[u'project', u'region'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/regions/{region}/vpnTunnels',
               request_field='',
               request_type_name=u'ComputeVpnTunnelsListRequest',
@@ -4345,7 +4445,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.zoneOperations.list',
               ordered_params=[u'project', u'zone'],
               path_params=[u'project', u'zone'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/zones/{zone}/operations',
               request_field='',
               request_type_name=u'ComputeZoneOperationsListRequest',
@@ -4421,7 +4521,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.zones.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'filter', u'maxResults', u'pageToken'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
               relative_path=u'projects/{project}/zones',
               request_field='',
               request_type_name=u'ComputeZonesListRequest',

@@ -9,6 +9,7 @@ import string
 import tempfile
 
 from googlecloudsdk.core import config
+from googlecloudsdk.core import exceptions
 from googlecloudsdk.core import log
 from googlecloudsdk.core.util import constants
 from googlecloudsdk.core.util import docker
@@ -102,7 +103,7 @@ class FakeMetadata(object):
 
     # We refresh credentials in case a pull is needed.
     docker.UpdateDockerCredentials(constants.DEFAULT_REGISTRY)
-    docker.Execute([
+    result = docker.Execute([
         'run', '-d',
         '--name', self.name,
         '-v', self.manifest_file + ':' + self.manifest_file,
@@ -111,12 +112,16 @@ class FakeMetadata(object):
         # which is the entrypoint:
         '-manifest_file='+self.manifest_file,
         '-refresh_token='+self._options.credential.refresh_token])
+    if result != 0:
+      raise exceptions.Error('Unable to launch fake-metadata.')
     return self
 
   # pylint: disable=redefined-builtin
   def __exit__(self, type, value, traceback):
     """Cleans up a fake metadata environment."""
     log.Print('Shutting down metadata credentials')
-    docker.Execute(['rm', '-f', self.name])
+    result = docker.Execute(['rm', '-f', self.name])
+    if result != 0:
+      raise exceptions.Error('Unable to tear down fake-metadata.')
     # Clean up the temporary file.
     os.remove(self.manifest_file)

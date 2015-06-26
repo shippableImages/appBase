@@ -12,9 +12,9 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-from .version import version
+from .version import version, version_info
 
 __version__ = version
 __title__ = 'docker-py'
 
-from .client import Client # flake8: noqa
+from .client import Client, AutoVersionClient # flake8: noqa

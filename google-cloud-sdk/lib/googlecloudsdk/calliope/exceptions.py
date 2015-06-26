@@ -108,7 +108,7 @@ class InvalidArgumentException(ToolException):
 
 
 class InvalidStringException(ToolException):
-  """InvalidArgumentException is for non-ASCII CLI arguments."""
+  """InvalidStringException is for non-ASCII CLI arguments."""
 
   def __init__(self, invalid_arg):
     self.invalid_arg = invalid_arg

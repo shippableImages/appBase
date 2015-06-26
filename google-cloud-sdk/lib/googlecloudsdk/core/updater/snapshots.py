@@ -90,6 +90,24 @@ class ComponentSnapshot(object):
   ABSOLUTE_RE = re.compile(r'^\w+://')
 
   @staticmethod
+  def _GetAbsoluteURL(url, value):
+    """Convert the potentially relative value into an absolute URL.
+
+    Args:
+      url: str, The URL of the component snapshot this value was found in.
+      value: str, The value of the field to make absolute.  If it is already an
+        absolute URL, it is returned as-is.  If it is relative, it's path
+        is assumed to be relative to the component snapshot URL.
+
+    Returns:
+      str, The absolute URL.
+    """
+    if ComponentSnapshot.ABSOLUTE_RE.search(value):
+      return value
+    # This is a relative path, look relative to the snapshot file.
+    return os.path.dirname(url) + '/' + value
+
+  @staticmethod
   def FromFile(snapshot_file):
     """Loads a snapshot from a local file.
 
@@ -181,6 +199,7 @@ class ComponentSnapshot(object):
     components = [manifest.ComponentDefinition()
                   for manifest in installed.values()]
     sdk_definition = schemas.SDKDefinition(revision=-1, schema_version=None,
+                                           release_notes_url=None,
                                            components=components)
     return ComponentSnapshot(sdk_definition)
 
@@ -210,12 +229,13 @@ class ComponentSnapshot(object):
 
       # Convert relative data sources into absolute URLs if a URL is given.
       if url:
+        if sdk_def.release_notes_url:
+          sdk_def.release_notes_url = ComponentSnapshot._GetAbsoluteURL(
+              url, sdk_def.release_notes_url)
         for c in sdk_def.components:
           if not c.data or not c.data.source:
             continue
-          if not ComponentSnapshot.ABSOLUTE_RE.search(c.data.source):
-            # This is a relative path, look relative to the snapshot file.
-            c.data.source = os.path.dirname(url) + '/' + c.data.source
+          c.data.source = ComponentSnapshot._GetAbsoluteURL(url, c.data.source)
 
       if not merged:
         merged = sdk_def

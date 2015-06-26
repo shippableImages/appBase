@@ -8,6 +8,7 @@ import os
 
 from googlecloudsdk.core import exceptions
 from googlecloudsdk.core.util import files as file_utils
+from googlecloudsdk.core.util import pkg_resources
 from googlecloudsdk.core.util import platforms
 
 
@@ -172,22 +173,23 @@ IF "%CLOUDSDK_PYTHON%"=="" (
 )
 
 IF "%CLOUDSDK_PYTHON_SITEPACKAGES%" == "" (
-  IF "%VIRTUAL_ENV%" == "" (
+  IF "!VIRTUAL_ENV!" == "" (
     SET CLOUDSDK_PYTHON_SITEPACKAGES=
   ) ELSE (
     SET CLOUDSDK_PYTHON_SITEPACKAGES=1
   )
 )
+SET CLOUDSDK_PYTHON_ARGS_NO_S=%CLOUDSDK_PYTHON_ARGS:-S=%
 IF "%CLOUDSDK_PYTHON_SITEPACKAGES%" == "" (
-  IF "%CLOUDSDK_PYTHON_ARGS%" == "" (
+  IF "!CLOUDSDK_PYTHON_ARGS!" == "" (
     SET CLOUDSDK_PYTHON_ARGS=-S
   ) ELSE (
-    SET CLOUDSDK_PYTHON_ARGS=%CLOUDSDK_PYTHON_ARGS:-S=% -S
+    SET CLOUDSDK_PYTHON_ARGS=!CLOUDSDK_PYTHON_ARGS_NO_S! -S
   )
 ) ELSE IF "%CLOUDSDK_PYTHON_ARGS%" == "" (
   SET CLOUDSDK_PYTHON_ARGS=
 ) ELSE (
-  SET CLOUDSDK_PYTHON_ARGS=%CLOUDSDK_PYTHON_ARGS:-S=%
+  SET CLOUDSDK_PYTHON_ARGS=!CLOUDSDK_PYTHON_ARGS_NO_S!
 )
 
 rem </cloud-sdk-cmd-preamble>
@@ -226,10 +228,8 @@ class InstallationConfig(object):
     Returns:
       InstallationSpecificData: The loaded data.
     """
-    config_file = os.path.join(GoogleCloudSDKPackageRoot(),
-                               'core', 'config.json')
-    with open(config_file) as f:
-      data = json.load(f)
+    data = json.loads(pkg_resources.GetResource(__name__, 'config.json'))
+
     # Python versions prior to 2.6.5 do not allow the keys in a kwargs dict to
     # be unicode strings.  The json module parses files as unicode.  We are not
     # using any unicode in the keys for our config properties so a simple
@@ -273,32 +273,13 @@ CLOUDSDK_CLIENT_NOTSOSECRET = 'ZmssLNjJy2998hD4CTg2ejr2'
 
 CLOUDSDK_USER_AGENT = INSTALLATION_CONFIG.user_agent
 
-# TODO(user): Consider a way to allow users to choose a smaller scope set,
-# knowing that things might fail if they try to use a tool with scopes that have
-# not been granted.
-CLOUDSDK_SCOPES = [
-    'https://www.googleapis.com/auth/appengine.admin',
-    'https://www.googleapis.com/auth/bigquery',
-    'https://www.googleapis.com/auth/compute',
-    'https://www.googleapis.com/auth/devstorage.full_control',
+CLOUDSDK_SCOPES = (
     'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/ndev.cloudman',
     'https://www.googleapis.com/auth/cloud-platform',
-    'https://www.googleapis.com/auth/sqlservice.admin',
-    'https://www.googleapis.com/auth/prediction',
-    'https://www.googleapis.com/auth/projecthosting',
-]
-
-
-
-
-def _CheckForExtraScopes():
-  extra_scopes = os.environ.get('CLOUDSDK_EXTRA_SCOPES')
-  if not extra_scopes:
-    return
-  CLOUDSDK_SCOPES.extend(extra_scopes.split())
-
-_CheckForExtraScopes()
+    # TODO(user): remove the following once 'cloud-platform' is sufficient.
+    'https://www.googleapis.com/auth/appengine.admin',
+    'https://www.googleapis.com/auth/compute',  # needed by autoscaler
+)
 
 
 def EnsureSDKWriteAccess(sdk_root_override=None):
@@ -408,15 +389,6 @@ class Paths(object):
       str, The path to the credential file.
     """
     return os.path.join(self.global_config_dir, 'credentials')
-
-  @property
-  def config_json_path(self):
-    """Gets the path to the file to use for persistent json storage in calliope.
-
-    Returns:
-      str, The path to the file to use for storage.
-    """
-    return os.path.join(self.global_config_dir, 'config.json')
 
   @property
   def logs_dir(self):
@@ -542,6 +514,17 @@ class Paths(object):
       str, The path to the key file.
     """
     return os.path.join(self.LegacyCredentialsDir(account), 'private_key.p12')
+
+  def LegacyCredentialsJSONKeyPath(self, account):
+    """Gets the path to store legacy JSON key file in.
+
+    Args:
+      account: str, Email account tied to the authorizing credentials.
+
+    Returns:
+      str, The path to the key file.
+    """
+    return os.path.join(self.LegacyCredentialsDir(account), 'private_key.json')
 
   def GCECachePath(self):
     """Get the path to cache whether or not we're on a GCE machine.

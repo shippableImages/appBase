@@ -115,7 +115,7 @@ class CommandChoiceSuggester(object):
       if len(first) - len(second) > self.MAX_DISTANCE:
         # Don't bother if they're too different.
         continue
-      d = self.GetDistance(first, second)
+      d = self.GetDistance(first.lower(), second.lower())
       if d < min_distance:
         min_distance = d
         bestchoice = choice
@@ -190,27 +190,26 @@ def FlagDisplayString(arg, brief=False, markdown=False):
     return '{flag} {metavar}'.format(
         flag=long_string,
         metavar=GetFlagMetavar(metavar, arg))
-  else:
-    if arg.nargs == 0:
-      if markdown:
-        return ', '.join([MARKDOWN_BOLD + x + MARKDOWN_BOLD
-                          for x in arg.option_strings])
-      else:
-        return ', '.join(arg.option_strings)
+  if arg.nargs == 0:
+    if markdown:
+      display_string = ', '.join([MARKDOWN_BOLD + x + MARKDOWN_BOLD
+                                  for x in arg.option_strings])
     else:
-      if markdown:
-        metavar = re.sub('(\\b[a-zA-Z][-a-zA-Z_0-9]*)',
-                         MARKDOWN_ITALIC + '\\1' + MARKDOWN_ITALIC, metavar)
-      display_string = ', '.join(
-          ['{bb}{flag}{be} {metavar}'.format(
-              bb=MARKDOWN_BOLD if markdown else '',
-              flag=option_string,
-              be=MARKDOWN_BOLD if markdown else '',
-              metavar=GetFlagMetavar(metavar, arg))
-           for option_string in arg.option_strings])
-      if not arg.required and arg.default:
-        display_string += '; default="{val}"'.format(val=arg.default)
-      return display_string
+      display_string = ', '.join(arg.option_strings)
+  else:
+    if markdown:
+      metavar = re.sub('(\\b[a-zA-Z][-a-zA-Z_0-9]*)',
+                       MARKDOWN_ITALIC + '\\1' + MARKDOWN_ITALIC, metavar)
+    display_string = ', '.join(
+        ['{bb}{flag}{be} {metavar}'.format(
+            bb=MARKDOWN_BOLD if markdown else '',
+            flag=option_string,
+            be=MARKDOWN_BOLD if markdown else '',
+            metavar=GetFlagMetavar(metavar, arg))
+         for option_string in arg.option_strings])
+    if not arg.required and arg.default:
+      display_string += '; default="{val}"'.format(val=arg.default)
+  return display_string
 
 
 def WrapWithPrefix(prefix, message, indent, length, spacing,
@@ -254,31 +253,15 @@ def WrapWithPrefix(prefix, message, indent, length, spacing,
         % (' ', message))
 
 
-# TODO(user): Remove this and all references.  See b/18933702.
-def ShouldPrintAncestorFlag(arg):
-  """Determine if an ancestor flag should be printed in a subcommand.
-
-  This is a temporary hack to prevent these flags from showing up in
-  sub-command helps.  Proper support for marking flags as global and
-  rationalizing where they will be printed will be in an upcoming CL.
+def GenerateUsage(command, argument_interceptor, topic=False):
+  """Generate a usage string for a calliope command, group or help topic.
 
   Args:
-    arg: The argparse argument that is to be printed.
-
-  Returns:
-    True if is should be printed, False otherwise.
-  """
-  return arg.option_strings[0] not in ['--user-output-enabled', '--verbosity']
-
-
-def GenerateUsage(command, argument_interceptor):
-  """Generate a usage string for a calliope command or group.
-
-  Args:
-    command: calliope._CommandCommon, The command or group object that we're
-        generating usage for.
+    command: calliope._CommandCommon, The command, group or help topic object
+      that we're generating usage for.
     argument_interceptor: calliope._ArgumentInterceptor, the object that tracks
         all of the flags for this command or group.
+    topic: True if this is a supplementary help topic command.
 
   Returns:
     str, The usage string.
@@ -288,43 +271,45 @@ def GenerateUsage(command, argument_interceptor):
   buf = StringIO.StringIO()
 
   command_path = ' '.join(command.GetPath())
+  command_id = 'topic' if topic else 'command'
   usage_parts = []
 
   optional_messages = False
 
   flag_messages = []
 
-  # Do positional args first, since flag args taking lists can mess them
-  # up otherwise.
-  # Explicitly not sorting here - order matters.
-  # Make a copy, and we'll pop items off. Once we get to a REMAINDER, that goes
-  # after the flags so we'll stop and finish later.
-  positional_args = argument_interceptor.positional_args[:]
-  while positional_args:
-    arg = positional_args[0]
-    if arg.nargs == argparse.REMAINDER:
-      break
-    positional_args.pop(0)
-    usage_parts.append(PositionalDisplayString(arg))
+  if not topic:
+    # Do positional args first, since flag args taking lists can mess them
+    # up otherwise.
+    # Explicitly not sorting here - order matters.
+    # Make a copy, and we'll pop items off. Once we get to a REMAINDER, that
+    # goes after the flags so we'll stop and finish later.
+    positional_args = argument_interceptor.positional_args[:]
+    while positional_args:
+      arg = positional_args[0]
+      if arg.nargs == argparse.REMAINDER:
+        break
+      positional_args.pop(0)
+      usage_parts.append(PositionalDisplayString(arg))
 
-  for arg in argument_interceptor.flag_args:
-    if arg.help == argparse.SUPPRESS:
-      continue
-    if not arg.required:
-      optional_messages = True
-      continue
-    # and add it to the usage
-    msg = FlagDisplayString(arg, True)
-    flag_messages.append(msg)
-  usage_parts.extend(sorted(flag_messages))
+    for arg in argument_interceptor.flag_args:
+      if arg.help == argparse.SUPPRESS:
+        continue
+      if not arg.required:
+        optional_messages = True
+        continue
+      # and add it to the usage
+      msg = FlagDisplayString(arg, brief=True)
+      flag_messages.append(msg)
+    usage_parts.extend(sorted(flag_messages))
 
-  if optional_messages:
-    # If there are any optional flags, add a simple message to the usage.
-    usage_parts.append('[optional flags]')
+    if optional_messages:
+      # If there are any optional flags, add a simple message to the usage.
+      usage_parts.append('[optional flags]')
 
-  # positional_args will only be non-empty if we had some REMAINDER left.
-  for arg in positional_args:
-    usage_parts.append(PositionalDisplayString(arg))
+    # positional_args will only be non-empty if we had some REMAINDER left.
+    for arg in positional_args:
+      usage_parts.append(PositionalDisplayString(arg))
 
   group_helps = command.GetSubGroupHelps()
   command_helps = command.GetSubCommandHelps()
@@ -338,7 +323,7 @@ def GenerateUsage(command, argument_interceptor):
   if groups:
     all_subtypes.append('group')
   if commands:
-    all_subtypes.append('command')
+    all_subtypes.append(command_id)
   if groups or commands:
     usage_parts.append('<%s>' % ' | '.join(all_subtypes))
 
@@ -352,7 +337,7 @@ def GenerateUsage(command, argument_interceptor):
     WrapWithPrefix('group may be', ' | '.join(
         groups), HELP_INDENT, LINE_WIDTH, spacing='  ', writer=buf)
   if commands:
-    WrapWithPrefix('command may be', ' | '.join(
+    WrapWithPrefix('%s may be' % command_id, ' | '.join(
         commands), HELP_INDENT, LINE_WIDTH, spacing='  ', writer=buf)
   return buf.getvalue()
 
@@ -395,6 +380,8 @@ def ShortHelpText(command, argument_interceptor):
   """
   command.LoadAllSubElements()
 
+  topic = len(command.GetPath()) >= 2 and command.GetPath()[1] == 'topic'
+
   buf = StringIO.StringIO()
 
   required_messages = []
@@ -402,17 +389,14 @@ def ShortHelpText(command, argument_interceptor):
 
   # Sorting for consistency and readability.
   for arg in (argument_interceptor.flag_args +
-              [arg for arg in argument_interceptor.ancestor_flag_args
-               if ShouldPrintAncestorFlag(arg)]):
+              argument_interceptor.ancestor_flag_args):
     if arg.help == argparse.SUPPRESS:
       continue
-    message = (FlagDisplayString(arg, False), arg.help or '')
-    if not arg.required:
+    message = (FlagDisplayString(arg), arg.help or '')
+    if arg.required:
+      required_messages.append(message)
+    else:
       optional_messages.append(message)
-      continue
-    required_messages.append(message)
-    # and add it to the usage
-    msg = FlagDisplayString(arg, True)
 
   positional_messages = []
 
@@ -431,7 +415,8 @@ def ShortHelpText(command, argument_interceptor):
                       in command_helps.iteritems()
                       if command.IsHidden() or not help_info.is_hidden]
 
-  buf.write('Usage: ' + GenerateUsage(command, argument_interceptor) + '\n')
+  buf.write('Usage: ' + GenerateUsage(command, argument_interceptor, topic) +
+            '\n')
 
   # Second, print out the long help.
 
@@ -447,18 +432,6 @@ def ShortHelpText(command, argument_interceptor):
   # a string, that means print it without decoration. If the row is a tuple,
   # use WrapWithPrefix to print that tuple in aligned columns.
 
-  required_flag_msgs = []
-  unrequired_flag_msgs = []
-  for arg in argument_interceptor.flag_args:
-    if arg.help == argparse.SUPPRESS:
-      continue
-    usage = FlagDisplayString(arg, False)
-    msg = (usage, arg.help or '')
-    if not arg.required:
-      unrequired_flag_msgs.append(msg)
-    else:
-      required_flag_msgs.append(msg)
-
   def TextIfExists(title, messages):
     if not messages:
       return None
@@ -469,13 +442,17 @@ def ShortHelpText(command, argument_interceptor):
                      spacing='  ', writer=textbuf)
     return textbuf.getvalue()
 
-  all_messages = [
-      TextIfExists('required flags:', sorted(required_messages)),
-      TextIfExists('optional flags:', sorted(optional_messages)),
-      TextIfExists('positional arguments:', positional_messages),
-      TextIfExists('command groups:', sorted(group_messages)),
-      TextIfExists('commands:', sorted(command_messages)),
-  ]
+  if topic:
+    all_messages = [
+        TextIfExists('topics:', sorted(command_messages)),
+    ]
+  else:
+    all_messages = [
+        TextIfExists('required flags:', sorted(required_messages)),
+        TextIfExists('optional flags:', sorted(optional_messages)),
+        TextIfExists('positional arguments:', positional_messages),
+        TextIfExists('command groups:', sorted(group_messages)),
+    ]
   buf.write('\n'.join([msg for msg in all_messages if msg]))
 
   return buf.getvalue()
@@ -518,10 +495,10 @@ def ExtractHelpStrings(docstring):
       long_help = textwrap.dedent(raw_long_help).strip()
     except ValueError:  # no empty line in stripped_doc_lines
       short_help = ' '.join(stripped_doc_lines).strip()
-      long_help = None
+      long_help = ''
     if not short_help:  # docstring started with a blank line
       short_help = ' '.join(stripped_doc_lines[empty_line_index + 1:]).strip()
       # words of long help as flowing text
-    return (short_help or None, long_help or short_help or None)
+    return (short_help, long_help or short_help)
   else:
-    return (None, None)
+    return ('', '')

@@ -7,6 +7,7 @@ A detailed description of auth.
 
 import datetime
 import os
+import textwrap
 
 import httplib2
 from oauth2client import client
@@ -32,40 +33,40 @@ class Error(exceptions.Error):
   """Exceptions for the credentials module."""
 
 
-class NoCredentialsForAccountException(Error):
+class AuthenticationException(Error):
+  """Exceptions that tell the users to run auth login."""
+
+  def __init__(self, message):
+    super(AuthenticationException, self).__init__(textwrap.dedent("""\
+        {message}
+        Please run:
+
+          $ gcloud auth login
+
+        to obtain new credentials, or if you have already logged in with a
+        different account:
+
+          $ gcloud config set account ACCOUNT
+
+        to select an already authenticated account to use.""".format(
+            message=message)))
+
+
+class NoCredentialsForAccountException(AuthenticationException):
   """Exception for when no credentials are found for an account."""
 
   def __init__(self, account):
-    super(NoCredentialsForAccountException, self).__init__("""\
-Your current active account [{account}] does not have any valid credentials.
-Please run:
-
-  $ gcloud auth login
-
-to obtain new credentials, or if you have already logged in with a
-different account:
-
-  $ gcloud config set account ACCOUNT
-
-to select an already authenticated account to use.""".format(account=account))
+    super(NoCredentialsForAccountException, self).__init__(
+        'Your current active account [{account}] does not have any'
+        ' valid credentials'.format(account=account))
 
 
-class NoActiveAccountException(Error):
+class NoActiveAccountException(AuthenticationException):
   """Exception for when there are no valid active credentials."""
 
   def __init__(self):
-    super(NoActiveAccountException, self).__init__("""\
-You do not currently have an active account selected.
-Please run:
-
-  $ gcloud auth login
-
-to obtain new credentials, or if you have already logged in with a
-different account:
-
-  $ gcloud config set account ACCOUNT
-
-to select an already authenticated account to use.""")
+    super(NoActiveAccountException, self).__init__(
+        'You do not currently have an active account selected.')
 
 
 class FlowError(Error):
@@ -86,6 +87,61 @@ def _Http(*args, **kwargs):
   return httplib2.Http(*args, **kwargs)
 
 
+def _GetStorageKeyForAccount(account):
+  return {
+      'type': 'google-cloud-sdk',
+      'account': account,
+  }
+
+
+# TODO(user): use _GetStorageKeyForAccount instead, but in meantime since the
+# key format has changed this will not invalidate existing auth credentials and
+# will move over existing credentials under new key format.
+def _FindStorageKeyForAccount(account):
+  """Scans credential file for keys matching given account.
+
+  If such key(s) is found it checks that current set of scopes is a subset of
+  scopes associated with the key.
+
+  Args:
+    account: str, The account tied to the storage key being fetched.
+
+  Returns:
+    dict, key to be used in the credentials store.
+  """
+  storage_path = config.Paths().credentials_path
+  current_scopes = set(config.CLOUDSDK_SCOPES)
+  equivalent_keys = [key for key in
+                     multistore_file.get_all_credential_keys(
+                         filename=storage_path)
+                     if (key.get('type') == 'google-cloud-sdk' and
+                         key.get('account') == account and (
+                             'scope' not in key or
+                             set(key.get('scope').split()) >= current_scopes))]
+
+  preferred_key = _GetStorageKeyForAccount(account)
+  if preferred_key in equivalent_keys:
+    equivalent_keys.remove(preferred_key)
+  elif equivalent_keys:  # Migrate credentials over to new key format.
+    storage = multistore_file.get_credential_storage_custom_key(
+        filename=storage_path,
+        key_dict=equivalent_keys[0])
+    creds = storage.get()
+    storage = multistore_file.get_credential_storage_custom_key(
+        filename=storage_path,
+        key_dict=preferred_key)
+    storage.put(creds)
+
+  # Remove all other entries.
+  for key in equivalent_keys:
+    storage = multistore_file.get_credential_storage_custom_key(
+        filename=storage_path,
+        key_dict=key)
+    storage.delete()
+
+  return preferred_key
+
+
 def _StorageForAccount(account):
   """Get the oauth2client.multistore_file storage.
 
@@ -99,16 +155,9 @@ def _StorageForAccount(account):
   parent_dir, unused_name = os.path.split(storage_path)
   files.MakeDir(parent_dir)
 
-  storage_key = {
-      'type': 'google-cloud-sdk',
-      'account': account,
-      'clientId': properties.VALUES.auth.client_id.Get(required=True),
-      'scope': ' '.join(config.CLOUDSDK_SCOPES),
-  }
-
   storage = multistore_file.get_credential_storage_custom_key(
       filename=storage_path,
-      key_dict=storage_key)
+      key_dict=_FindStorageKeyForAccount(account))
   return storage
 
 
@@ -125,17 +174,8 @@ def AvailableAccounts():
   all_keys = multistore_file.get_all_credential_keys(
       filename=config.Paths().credentials_path)
 
-  accounts = []
-
-  for key in all_keys:
-    if key.get('type') != 'google-cloud-sdk':
-      continue
-    if key.get('clientId') != properties.VALUES.auth.client_id.Get(
-        required=True):
-      continue
-    if key.get('scope') != ' '.join(config.CLOUDSDK_SCOPES):
-      continue
-    accounts.append(key['account'])
+  accounts = [key['account'] for key in all_keys
+              if key.get('type') == 'google-cloud-sdk']
 
   accounts.extend(c_gce.Metadata().Accounts())
 
@@ -146,17 +186,6 @@ def AvailableAccounts():
   accounts.sort()
 
   return accounts
-
-
-def ActiveAccount():
-  """Get the currently active CloudSDK account.
-
-  Returns:
-    str, The account name.
-  """
-  account = properties.VALUES.core.account.Get()
-
-  return account
 
 
 def LoadIfValid(account=None):
@@ -216,7 +245,8 @@ def Load(account=None):
   if not cred:
     raise NoCredentialsForAccountException(account)
 
-  if not cred.token_expiry or cred.token_expiry < cred.token_expiry.now():
+  # cred.token_expiry is in UTC time.
+  if not cred.token_expiry or cred.token_expiry < cred.token_expiry.utcnow():
     Refresh(cred)
 
   return cred
@@ -234,14 +264,10 @@ def Refresh(creds, http=None):
   Raises:
     RefreshError: If the credentials fail to refresh.
   """
-  # TODO(user): Remove this function when oauth2client does not hang while
-  # refreshing SignedJwtAssertionCredentials.
-  if creds and (not client.HAS_CRYPTO or
-                type(creds) != client.SignedJwtAssertionCredentials):
-    try:
-      creds.refresh(http or _Http())
-    except (client.AccessTokenRefreshError, httplib2.ServerNotFoundError) as e:
-      raise RefreshError(e)
+  try:
+    creds.refresh(http or _Http())
+  except (client.AccessTokenRefreshError, httplib2.ServerNotFoundError) as e:
+    raise RefreshError(e)
 
 
 def Store(creds, account=None):
@@ -279,6 +305,7 @@ def _GetLegacyGen(account, creds):
       gae_java_path=config.Paths().LegacyCredentialsGAEJavaPath(account),
       gsutil_path=config.Paths().LegacyCredentialsGSUtilPath(account),
       key_path=config.Paths().LegacyCredentialsKeyPath(account),
+      json_key_path=config.Paths().LegacyCredentialsJSONKeyPath(account),
       credentials=creds, scopes=config.CLOUDSDK_SCOPES)
 
 
@@ -295,7 +322,7 @@ def Revoke(account=None):
     RevokeError: If there was a more general problem revoking the account.
   """
   if not account:
-    account = ActiveAccount()
+    account = properties.VALUES.core.account.Get()
 
   if account in c_gce.Metadata().Accounts():
     raise RevokeError('Cannot revoke GCE-provided credentials.')

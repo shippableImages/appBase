@@ -1,0 +1,97 @@
+<html devsite="">
+<head>
+<title>gcloud docker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="project_path" value="/sdk/_project.yaml">
+<meta name="book_path" value="/sdk/_book.yaml">
+<!--
+        THIS DOC IS GENERATED.  DO NOT EDIT.
+        -->
+<style>
+  dd { margin-bottom: 1ex; }
+  .hangingindent { padding-left: 1.5em; text-indent: -1.5em; }
+</style>
+</head>
+<body><dl>
+<section>
+<dt>NAME</dt>
+<dd>gcloud docker - provides the docker CLI access to the Google Container Registry</dd>
+</section><section>
+<dt>SYNOPSIS</dt>
+<dd><pre>gcloud docker [EXTRA_ARGS …] [--authorize-only, -a] [--docker-host DOCKER_HOST] [--server SERVER,[SERVER,…], -s SERVER,[SERVER,…]; default="[gcr.io, us.gcr.io, eu.gcr.io, asia.gcr.io, b.gcr.io, bucket.gcr.io, appengine.gcr.io]"] [GLOBAL-FLAG …]</pre></dd>
+</section><section>
+<dt>DESCRIPTION</dt>
+<dd>The docker sub-command of gcloud wraps docker commands, so that
+gcloud can inject the appropriate fresh authentication token into
+requests that interact with the docker registry.  As commands are
+simply passed through to docker, see this for a full reference of
+command-line options that can be supplied after the —    <a href="http://docs.docker.com/reference/commandline/cli/">http://docs.docker.com/reference/commandline/cli/</a>
+</dd>
+<dd>For more information please visit <a href="https://gcr.io">https://gcr.io</a>
+</dd>
+</section><section>
+<dt>POSITIONAL ARGUMENTS</dt>
+<dd><dl>
+<dt class="hangingindent">
+<nobr>[<code><var>EXTRA_ARGS</var></code>&nbsp;&nbsp;&#32;…]</nobr>
+</dt>
+
+<dd>
+Arguments to pass to docker
+</dd>
+
+</dl></dd>
+</section><section>
+<dt>FLAGS</dt>
+<dd><dl>
+<dt>
+<code>--authorize-only</code>, <code>-a</code>
+</dt>
+
+<dd>
+Configure docker authorization only, do not launch the docker command-line
+</dd>
+
+
+<dt>
+<code>--docker-host</code> <code><var>DOCKER_HOST</var></code>
+</dt>
+
+<dd>
+The URL to connect to Docker Daemon. Format: tcp://host:port or unix:///path/to/socket.
+</dd>
+
+
+<dt>
+<code>--server</code> <code><var>SERVER</var></code>,[<code><var>SERVER</var></code>,…], <code>-s</code> <code><var>SERVER</var></code>,[<code><var>SERVER</var></code>,…]; default="[<code><var>gcr.io</var></code>, <code><var>us.gcr.io</var></code>, <code><var>eu.gcr.io</var></code>, <code><var>asia.gcr.io</var></code>, <code><var>b.gcr.io</var></code>, <code><var>bucket.gcr.io</var></code>, <code><var>appengine.gcr.io</var></code>]"
+</dt>
+
+<dd>
+The address of the Google Cloud Registry
+</dd>
+
+</dl></dd>
+</section><section>
+<dt>GLOBAL FLAGS</dt>
+<dd>Run <code>$ <a href="">gcloud</a> help</code> for a description of flags available to
+all commands.</dd>
+</section><section>
+<dt>EXAMPLES</dt>
+<dd>Pull the image <code>gcr.io/google-containers/pause:1.0</code> from the
+docker registry:</dd>
+<dd><pre>$ <A href="docker">gcloud docker</A> -- pull gcr.io/google-containers/pause:1.0</pre></dd>
+<dd>Push the image <code>gcr.io/example-org/example-image:latest</code> to our
+private docker registry.</dd>
+<dd><pre>$ <A href="docker">gcloud docker</A> -- push gcr.io/example-org/example-image:latest</pre></dd>
+<dd>Configure authentication, then simply use docker:</dd>
+<dd><pre>$ <A href="docker">gcloud docker</A> --authorize-only</pre></dd>
+<dd><pre>$ docker push gcr.io/example-org/example-image:latest</pre></dd>
+</section><section>
+<dt>NOTES</dt>
+<dd>This command is in the Google Cloud SDK <code>core</code> component. See
+<a href="/sdk/gcloud/#gcloud.components">installing components</a>
+if it is not installed.</dd>
+</section>
+</dl></body>
+</html>
+

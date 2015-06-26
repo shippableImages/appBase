@@ -4,6 +4,95 @@ All rights reserved.
 
 Google Cloud SDK - Release Notes
 
+0.9.66 (2015/06/24)
+==================
+
+  - New commands
+    - `gcloud alpha compute instances set-machine-type` for managing types
+    - `gcloud topic` for supplementary help topics.
+  - `gcloud deployment-manager deployments delete` prompt defaults to false.
+
+0.9.65 (2015/06/17)
+==================
+- Fixes `reset-windows-password` on Windows if `openssl` is present on the path.
+- `gcloud compute reset-windows-password` is now available as a GA command.
+- Prevent creation of a user that matches the machine name on Windows.
+- gsutil now runs properly from not-default drive letters on Windows.
+- kubectl updated to 0.18.1.
+- `gcloud preview docker` moved to `gcloud docker`.
+
+0.9.64 (2015/06/10)
+==================
+  - New commands
+    - `gcloud beta compute scp` for secure copy.
+    - `gcloud alpha genomics` commands (on datasets).
+    - `gcloud alpha source list` to lists project repositories.
+  - kubectl will no longer be installed by default.
+  - Bug fixes for https load balancing.
+  - The help pager is $PAGER or less(1) if available, otherwise a builtin pager.
+  - Update of gsutil component to version 4.13.
+
+0.9.63 (2015/06/03)
+==================
+  - 2x faster command load times.
+  - Fix to allow `preview app` to use oauth service accounts
+    https://code.google.com/p/google-cloud-sdk/issues/detail?id=133
+
+0.9.62 (2015/05/27)
+==================
+  - Not released.
+
+0.9.61 (2015/05/20)
+==================
+  - New kubectl component (installed by default)
+  - Internal improvements to gcloud preview app deploy; includes changes to
+    command output.
+  - `gcloud preview projects` moved to `gcloud alpha projects`
+  - Tab completion for `gcloud compute ssh`
+
+0.9.60 (2015/05/13)
+===================
+  - VPN moved to GA.
+  - Preemptible VM support.
+  - Bug fixes.
+
+0.9.59 (2015/05/06)
+===================
+  - Bug fixes.
+
+0.9.58 (2015/04/29)
+===================
+  - gcloud alpha bigquery launch.
+  - Better error reporting in Customer Supplied Encryption Key files.
+  - Bug fixes.
+
+0.9.57 (2015/04/22)
+===================
+  - gcloud beta deployment-manager launch.
+  - gcloud app new deployment behavior.
+    - deploy and run commands no longer take directories, only take a list of
+      explicit yaml files.
+  - gcloud beta compute reset-windows-password, support for new authentication
+    scheme on Windows guest agent versions 3.0.0.0 and later.
+  - Bug fixes.
+
+0.9.56 (2015/04/15)
+===================
+  - Bug fixes.
+
+0.9.55 (2015/04/8)
+===================
+ - New and improved gcloud dns surface including:
+   - Transactions for scriptable editing of record-sets.
+   - Importing record-sets from zone files and yaml files.
+   - Exporting record-sets to zone files and yaml files.
+ - VPN commands surfaced under gcloud compute.
+ - Dataflow CLI commands launched under gcloud alpha!
+
+0.9.52 (2015/03/18)
+===================
+  - Bug Fixes.
+
 0.9.51 (2015/03/11)
 ===================
   - Bug Fixes.

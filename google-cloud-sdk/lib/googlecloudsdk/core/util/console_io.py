@@ -3,7 +3,9 @@
 """General console printing utilities used by the Cloud SDK."""
 
 import logging
+import os
 import string
+import subprocess
 import sys
 import textwrap
 import threading
@@ -12,6 +14,8 @@ import time
 from googlecloudsdk.core import exceptions
 from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
+from googlecloudsdk.core.util import console_pager
+from googlecloudsdk.core.util import files
 
 
 class Error(exceptions.Error):
@@ -27,6 +31,13 @@ class UnattendedPromptError(Error):
         'This prompt could not be answered because you are not in an '
         'interactive session.  You can re-run the command with the --quiet '
         'flag to accept default answers for all prompts.')
+
+
+class OperationCancelledError(Error):
+  """An exception for when a prompt cannot be answered."""
+
+  def __init__(self):
+    super(OperationCancelledError, self).__init__('Operation cancelled.')
 
 
 class TablePrinter(object):
@@ -74,7 +85,7 @@ class TablePrinter(object):
       self.__column_padding = tuple([0] * self.__num_columns)
     if (not isinstance(self.__column_padding, (tuple)) or
         len(self.__column_padding) != self.__num_columns):
-      raise ValueError('Column padding tuple does not have {} columns'
+      raise ValueError('Column padding tuple does not have {0} columns'
                        .format(self.__num_columns))
 
     self.__justification = justification
@@ -83,7 +94,7 @@ class TablePrinter(object):
                                    self.__num_columns)
     if (not isinstance(self.__justification, tuple) or
         len(self.__justification) != self.__num_columns):
-      raise ValueError('Justification tuple does not have {} columns'
+      raise ValueError('Justification tuple does not have {0} columns'
                        .format(self.__num_columns))
     for value in self.__justification:
       if not (value is TablePrinter.JUSTIFY_LEFT or
@@ -270,13 +281,46 @@ def _RawInput(prompt=None):
     return None
 
 
-def IsInteractive():
-  """Determines if the current terminal session is interactive."""
-  return sys.stdin.isatty()
+def IsInteractive(output=False, error=False, heuristic=False):
+  """Determines if the current terminal session is interactive.
+
+  sys.stdin must be a terminal input stream.
+
+  Args:
+    output: If True then sys.stdout must also be a terminal output stream.
+    error: If True then sys.stderr must also be a terminal output stream.
+    heuristic: If True then we also do some additional heuristics to check if
+               we are in an interactive context. Checking home path for example.
+
+  Returns:
+    True if the current terminal session is interactive.
+  """
+  if not sys.stdin.isatty():
+    return False
+  if output and not sys.stdout.isatty():
+    return False
+  if error and not sys.stderr.isatty():
+    return False
+  if heuristic:
+    # Check the home path. Most startup scripts for example are executed by
+    # users that don't have a home path set. Home is OS dependent though, so
+    # check everything.
+    # *NIX OS usually sets the HOME env variable. It is usually '/home/user',
+    # but can also be '/root'. If it's just '/' we are most likely in an init
+    # script.
+    # Windows usually sets HOMEDRIVE and HOMEPATH. If they don't exist we are
+    # probably being run from a task scheduler context. HOMEPATH can be '\'
+    # when a user has a network mapped home directory.
+    # Cygwin has it all! Both Windows and Linux. Checking both is perfect.
+    home = os.getenv('HOME')
+    homepath = os.getenv('HOMEPATH')
+    if not homepath and (not home or home == '/'):
+      return False
+  return True
 
 
 def PromptContinue(message=None, prompt_string=None, default=True,
-                   throw_if_unattended=False):
+                   throw_if_unattended=False, cancel_on_no=False):
   """Prompts the user a yes or no question and asks if they want to continue.
 
   Args:
@@ -287,10 +331,15 @@ def PromptContinue(message=None, prompt_string=None, default=True,
       no.
     throw_if_unattended: bool, If True, this will throw if there was nothing
       to consume on stdin and stdin is not a tty.
+    cancel_on_no: bool, If True and the user answers no, throw an exception to
+      cancel the entire operation.  Useful if you know you don't want to
+      continue doing anything and don't want to have to raise your own
+      exception.
 
   Raises:
     UnattendedPromptError: If there is no input to consume and this is not
       running in an interactive terminal.
+    OperationCancelledError: If the user answers no and cancel_on_no is True.
 
   Returns:
     bool, False if the user said no, True if the user said anything else or if
@@ -309,30 +358,36 @@ def PromptContinue(message=None, prompt_string=None, default=True,
     prompt_string += ' (y/N)?  '
   sys.stderr.write(_DoWrap(prompt_string))
 
-  while True:
-    answer = _RawInput()
-    # pylint:disable=g-explicit-bool-comparison, We explicitly want to
-    # distinguish between empty string and None.
-    if answer == '':
-      # User just hit enter, return default.
-      sys.stderr.write('\n')
-      return default
-    elif answer is None:
-      # This means we hit EOF, no input or user closed the stream.
-      if throw_if_unattended and not IsInteractive():
-        sys.stderr.write('\n')
-        raise UnattendedPromptError()
-      else:
+  def GetAnswer():
+    while True:
+      answer = _RawInput()
+      # pylint:disable=g-explicit-bool-comparison, We explicitly want to
+      # distinguish between empty string and None.
+      if answer == '':
+        # User just hit enter, return default.
         sys.stderr.write('\n')
         return default
-    elif answer.lower() in ['y', 'yes']:
-      sys.stderr.write('\n')
-      return True
-    elif answer.lower() in ['n', 'no']:
-      sys.stderr.write('\n')
-      return False
-    else:
-      sys.stderr.write("Please enter 'y' or 'n':  ")
+      elif answer is None:
+        # This means we hit EOF, no input or user closed the stream.
+        if throw_if_unattended and not IsInteractive():
+          sys.stderr.write('\n')
+          raise UnattendedPromptError()
+        else:
+          sys.stderr.write('\n')
+          return default
+      elif answer.lower() in ['y', 'yes']:
+        sys.stderr.write('\n')
+        return True
+      elif answer.lower() in ['n', 'no']:
+        sys.stderr.write('\n')
+        return False
+      else:
+        sys.stderr.write("Please enter 'y' or 'n':  ")
+
+  answer = GetAnswer()
+  if not answer and cancel_on_no:
+    raise OperationCancelledError()
+  return answer
 
 
 def PromptResponse(message):
@@ -645,3 +700,47 @@ class ProgressBar(object):
 
   def __exit__(self, *args):
     self.Finish()
+
+
+def More(contents, out=None, prompt=None, check_pager=True):
+  """Run a user specified pager or fall back to the internal pager.
+
+  Args:
+    contents: The entire contents of the text lines to page.
+    out: The output stream, log.out (effectively) if None.
+    prompt: The page break prompt.
+    check_pager: Checks the PAGER env var and uses it if True.
+  """
+  if not IsInteractive(output=True):
+    if not out:
+      out = log.out
+    out.write(contents)
+    return
+  if not out:
+    # Rendered help to the log file.
+    log.file_only_logger.info(contents)
+    # Paging shenanigans to stdout.
+    out = sys.stdout
+  if check_pager:
+    pager = os.environ.get('PAGER', None)
+    if pager == '-':
+      # Use the fallback Pager.
+      pager = None
+    elif not pager:
+      # Search for a pager that handles ANSI escapes.
+      for command in ('less', 'pager'):
+        if files.FindExecutableOnPath(command):
+          pager = command
+          break
+    if pager:
+      less = os.environ.get('LESS', None)
+      if less is None:
+        os.environ['LESS'] = '-R'
+      p = subprocess.Popen(pager, stdin=subprocess.PIPE, shell=True)
+      p.communicate(input=contents)
+      p.wait()
+      if less is None:
+        os.environ.pop('LESS')
+      return
+  # Fall back to the internal pager.
+  console_pager.Pager(contents, out, prompt).Run()

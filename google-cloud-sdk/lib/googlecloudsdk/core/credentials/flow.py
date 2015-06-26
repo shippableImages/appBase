@@ -4,13 +4,12 @@
 
 """
 
-import os
 
 from oauth2client import client
 from oauth2client import tools
 
-from googlecloudsdk.core import config
 from googlecloudsdk.core import log
+from googlecloudsdk.core.util import pkg_resources
 
 try:
   # pylint:disable=g-import-not-at-top
@@ -59,10 +58,7 @@ class ClientRedirectHandler(tools.ClientRedirectHandler):
     else:
       page = 'oauth2_landing_error.html'
 
-    html_path = os.path.join(
-        config.GoogleCloudSDKPackageRoot(), 'core', 'credentials', page)
-    with open(html_path) as html_file:
-      self.wfile.write(html_file.read())
+    self.wfile.write(pkg_resources.GetResource(__name__, page))
 
 
 def Run(flow, launch_browser=True, http=None,

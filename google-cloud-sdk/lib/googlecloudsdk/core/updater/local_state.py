@@ -164,7 +164,7 @@ class InstallationState(object):
       ValueError: If the given SDK root does not exist.
     """
     if not os.path.isdir(sdk_root):
-      raise ValueError('The given Cloud SDK root does not exist: [{}]'
+      raise ValueError('The given Cloud SDK root does not exist: [{0}]'
                        .format(sdk_root))
 
     self.__sdk_root = sdk_root

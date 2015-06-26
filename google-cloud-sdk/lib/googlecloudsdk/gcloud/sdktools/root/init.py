@@ -26,8 +26,8 @@ class Init(base.Command):
 
   detailed_help = {
       'DESCRIPTION': """\
-          This command is creates and initializes a local workspace for a
-          Google Cloud Platform project.
+          This command creates and initializes a local workspace for a Google
+          Cloud Platform project.
 
           The local workspace is indicated by the creation of a [{dotgcloud}]
           folder. In this folder is a file [properties] which allows you to
@@ -47,6 +47,9 @@ class Init(base.Command):
           indicated as _active_ by `gcloud auth list`. Pushing
           to the origin's _master_ branch will trigger an App Engine deployment
           using the contents of that branch.
+
+          **Note: this command will be changing soon. Consider using
+          `$ gcloud alpha source clone` to clone authenticated git repository.
       """.format(dotgcloud=config.Paths.CLOUDSDK_WORKSPACE_CONFIG_DIR_NAME),
       'EXAMPLES': textwrap.dedent("""\
           To perform a simple `"Hello, world!"` App Engine deployment with this
@@ -91,6 +94,9 @@ class Init(base.Command):
     Returns:
       The path to the new gcloud workspace.
     """
+    log.warn('`gcloud init` will be changing soon. '
+             'To clone git repo consider using `gcloud alpha source clone` '
+             'command.')
     # Ensure that we're logged in.
     c_store.Load()
 

@@ -25,7 +25,7 @@ class InvalidEnumValue(Error):
       options: list(str), The valid values for this enum.
     """
     super(InvalidEnumValue, self).__init__(
-        'Could not parse [{}] into a valid {}.  Valid values are [{}]'
+        'Could not parse [{0}] into a valid {1}.  Valid values are [{2}]'
         .format(given, enum_type, ', '.join(options)))
 
 

@@ -21,7 +21,7 @@ Given an object
 
 """
 
-from googlecloudsdk.calliope import tokenizer
+from googlecloudsdk.core.util import tokenizer
 
 
 class Error(Exception):

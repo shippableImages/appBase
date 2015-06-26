@@ -9,12 +9,14 @@ import time
 from googlecloudsdk.core import config
 from googlecloudsdk.core import properties
 from googlecloudsdk.core import resources
+from googlecloudsdk.core.util import files
 from googlecloudsdk.core.util import platforms
 
 _GETINSTANCEFUN = None
 
 _RESOURCE_FLAGS = {
     'compute.projects': ' --project ',
+    'compute.regions': ' --region ',
     'compute.zones': ' --zone ',
     'sql.projects': ' --project '
 }
@@ -150,6 +152,14 @@ class RemoteCompletion(object):
       'sql': lambda item: item.instance
   }
 
+  @staticmethod
+  def CacheHits():
+    return RemoteCompletion.CACHE_HITS
+
+  @staticmethod
+  def CacheTries():
+    return RemoteCompletion.CACHE_TRIES
+
   def __init__(self):
     """Set the cache directory."""
     try:
@@ -222,14 +232,20 @@ class RemoteCompletion(object):
     if len(lst) > 1:
       if not os.path.isdir(lst[0]):
         return None
-      indx = items.index('completion_cache')
-      flagname = _RESOURCE_FLAGS[items[indx+2] + '.' + items[-2]]
+      index = items.index('completion_cache')
+      flagname = _RESOURCE_FLAGS[items[index+2] + '.' + items[-2]]
       for name in listdir(lst[0]):
         self.flags = flagname + name
-        if os.path.isfile(lst[0]+name):
-          continue
         fpath = lst[0] + name + lst[1]
-        options = self.GetAllMatchesFromCache(prefix, fpath, options)
+        if os.path.isfile(fpath) and os.path.getmtime(fpath) > time.time():
+          options = self.GetAllMatchesFromCache(prefix, fpath, options)
+      # for regional resources also check for global resources
+      lst0 = lst[0]
+      if lst0.endswith('regions/'):
+        fpath = lst0[:-len('regions/')] + 'global' + lst[1]
+        if os.path.isfile(fpath) and os.path.getmtime(fpath) > time.time():
+          self.flags = ' --global'
+          options = self.GetAllMatchesFromCache(prefix, fpath, options)
       return options
     if not fpath:
       return None
@@ -262,8 +278,13 @@ class RemoteCompletion(object):
     collection = None
     for ref in self_links:
       if not collection:
-        instance_ref = resources.Parse(ref)
-        collection = instance_ref.Collection()
+        try:
+          instance_ref = resources.Parse(ref)
+          collection = instance_ref.Collection()
+        except resources.InvalidResourceException:
+          #  construct collection from self link
+          lst = ref.split('/')
+          collection = lst[3] + '.' + lst[-2]
       lst = RemoteCompletion.CachePath(ref)
       path = lst[0]
       name = lst[1]
@@ -276,13 +297,16 @@ class RemoteCompletion(object):
     for path in paths:
       abs_path = os.path.join(self.cache_dir, path)
       dirname = os.path.dirname(abs_path)
-      if not os.path.isdir(dirname):
-        os.makedirs(dirname)
-      with open(abs_path, 'w') as f:
-        f.write('\n'.join(paths[path]))
-      now = time.time()
-      timeout = RemoteCompletion._TIMEOUTS.get(collection, 300)
-      os.utime(abs_path, (now, now+timeout))
+      try:
+        if not os.path.isdir(dirname):
+          files.MakeDir(dirname)
+          with open(abs_path, 'w') as f:
+            f.write('\n'.join(paths[path]))
+        now = time.time()
+        timeout = RemoteCompletion._TIMEOUTS.get(collection, 300)
+        os.utime(abs_path, (now, now+timeout))
+      except Exception:  # pylint: disable=broad-except
+        return
 
   def AddToCache(self, self_link, delete=False):
     """Add the specified instance to the cache.
@@ -317,6 +341,9 @@ class RemoteCompletion(object):
       if delete:
         return
       self.StoreInCache([self_link])
+    except ValueError:
+      if delete:
+        return
 
   def DeleteFromCache(self, self_link):
     """Delete the specified instance from the cache.
@@ -334,18 +361,21 @@ class RemoteCompletion(object):
     return os.fdopen(9, 'w')
 
   @staticmethod
-  def GetCompleterForResource(resource, cli):
+  def GetCompleterForResource(resource, cli, command_line=None):
     """Returns a completer function for the give resource.
 
     Args:
       resource: The resource as subcommand.resource.
       cli: The calliope instance.
+      command_line: The gcloud list command to run.
 
     Returns:
       A completer function for the specified resource.
     """
     if platforms.OperatingSystem.Current() == platforms.OperatingSystem.WINDOWS:
       return None
+    if not command_line:
+      command_line = resource
 
     def RemoteCompleter(parsed_args, **unused_kwargs):
       """Run list command on  resource to generates completion options."""
@@ -359,7 +389,7 @@ class RemoteCompletion(object):
             if c == ' ' or c == '\t':
               break
             prefix = c + prefix
-        command = resource.split('.') + ['list']
+        command = command_line.split('.') + ['list']
         project = properties.VALUES.core.project.Get(required=True)
         parms = {}
         if command[0] in _OPTIONAL_PARMS:
@@ -373,12 +403,12 @@ class RemoteCompletion(object):
                   command.append('--' + attrib)
                   command.append(value)
         parms['project'] = project
-        resource_ref = resources.Parse('+', parms, resource, resolve=False)
-        resource_ref = resource_ref.WeakSelfLink()
-        lst = resource_ref.split('*')
+        resource_link = resources.Parse('+', parms, resource, resolve=False)
+        resource_link = resource_link.WeakSelfLink()
+        lst = resource_link.split('*')
         resource_missing = len(lst) > 1
         ccache = RemoteCompletion()
-        options = ccache.GetFromCache(resource_ref, prefix)
+        options = ccache.GetFromCache(resource_link, prefix)
         if options is None:
           properties.VALUES.core.user_output_enabled.Set(False)
           ofile = RemoteCompletion.GetTickerStream()
@@ -387,10 +417,15 @@ class RemoteCompletion(object):
           options = []
           self_links = []
           for item in items:
+            # Get a selflink for the item
             if command[0] == 'compute':
-              instance_ref = resources.Parse(item['selfLink'])
-              selflink = instance_ref.SelfLink()
+              if 'selfLink' in item:
+                instance_ref = resources.Parse(item['selfLink'])
+                selflink = instance_ref.SelfLink()
+              elif resource_link:
+                selflink = resource_link.rstrip('+') + item['name']
             elif _GETINSTANCEFUN:
+              # List command provides a function to get the selflink
               selflink = _GETINSTANCEFUN(item)
             else:
               instance_ref = resources.Create(resource, project=item.project,
@@ -404,7 +439,7 @@ class RemoteCompletion(object):
           if self_links:
             ccache.StoreInCache(self_links)
             if resource_missing:
-              options = ccache.GetFromCache(resource_ref, prefix)
+              options = ccache.GetFromCache(resource_link, prefix)
               if options:
                 RemoteCompletion.CACHE_HITS -= 1
               else:

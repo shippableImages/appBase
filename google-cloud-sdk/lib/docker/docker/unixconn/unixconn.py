@@ -12,18 +12,20 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 import six
+import requests.adapters
+import socket
 
 if six.PY3:
     import http.client as httplib
 else:
     import httplib
-import requests.adapters
-import socket
 
 try:
-    import requests.packages.urllib3.connectionpool as connectionpool
+    import requests.packages.urllib3 as urllib3
 except ImportError:
-    import urllib3.connectionpool as connectionpool
+    import urllib3
+
+RecentlyUsedContainer = urllib3._collections.RecentlyUsedContainer
 
 
 class UnixHTTPConnection(httplib.HTTPConnection, object):
@@ -36,22 +38,15 @@ class UnixHTTPConnection(httplib.HTTPConnection, object):
     def connect(self):
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.settimeout(self.timeout)
-        sock.connect(self.base_url.replace("http+unix:/", ""))
+        sock.connect(self.unix_socket)
         self.sock = sock
 
-    def _extract_path(self, url):
-        # remove the base_url entirely..
-        return url.replace(self.base_url, "")
 
-    def request(self, method, url, **kwargs):
-        url = self._extract_path(self.unix_socket)
-        super(UnixHTTPConnection, self).request(method, url, **kwargs)
-
-
-class UnixHTTPConnectionPool(connectionpool.HTTPConnectionPool):
+class UnixHTTPConnectionPool(urllib3.connectionpool.HTTPConnectionPool):
     def __init__(self, base_url, socket_path, timeout=60):
-        connectionpool.HTTPConnectionPool.__init__(self, 'localhost',
-                                                   timeout=timeout)
+        urllib3.connectionpool.HTTPConnectionPool.__init__(
+            self, 'localhost', timeout=timeout
+        )
         self.base_url = base_url
         self.socket_path = socket_path
         self.timeout = timeout
@@ -62,10 +57,28 @@ class UnixHTTPConnectionPool(connectionpool.HTTPConnectionPool):
 
 
 class UnixAdapter(requests.adapters.HTTPAdapter):
-    def __init__(self, base_url, timeout=60):
-        self.base_url = base_url
+    def __init__(self, socket_url, timeout=60):
+        socket_path = socket_url.replace('http+unix://', '')
+        if not socket_path.startswith('/'):
+            socket_path = '/' + socket_path
+        self.socket_path = socket_path
         self.timeout = timeout
+        self.pools = RecentlyUsedContainer(10,
+                                           dispose_func=lambda p: p.close())
         super(UnixAdapter, self).__init__()
 
-    def get_connection(self, socket_path, proxies=None):
-        return UnixHTTPConnectionPool(self.base_url, socket_path, self.timeout)
+    def get_connection(self, url, proxies=None):
+        with self.pools.lock:
+            pool = self.pools.get(url)
+            if pool:
+                return pool
+
+            pool = UnixHTTPConnectionPool(url,
+                                          self.socket_path,
+                                          self.timeout)
+            self.pools[url] = pool
+
+        return pool
+
+    def close(self):
+        self.pools.clear()

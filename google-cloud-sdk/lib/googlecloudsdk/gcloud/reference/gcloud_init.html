@@ -18,17 +18,11 @@
 <dd>gcloud init - create and initialize a gcloud workspace in the current directory</dd>
 </section><section>
 <dt>SYNOPSIS</dt>
-<dd><dl>
-<dt class="hangingindent">
-<code>gcloud init</code>&nbsp;&nbsp;&#32;<code><var>PROJECT</var></code>&nbsp;&nbsp;&#32;<nobr>[<code>--format</code>&nbsp;&nbsp;&#32;<code><var>FORMAT</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--help</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--http-timeout</code>&nbsp;&nbsp;&#32;<code><var>HTTP_TIMEOUT</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--log-http</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--project</code>&nbsp;&nbsp;&#32;<code><var>PROJECT_ID</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--quiet</code>,&nbsp;&nbsp;&#32;<code>-q</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--trace-token</code>&nbsp;&nbsp;&#32;<code><var>TRACE_TOKEN</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>-h</code>]</nobr>
-</dt>
-
-
-</dl></dd>
+<dd><pre>gcloud init PROJECT [GLOBAL-FLAG …]</pre></dd>
 </section><section>
 <dt>DESCRIPTION</dt>
-<dd>This command is creates and initializes a local workspace for a
-Google Cloud Platform project.</dd>
+<dd>This command creates and initializes a local workspace for a Google
+Cloud Platform project.</dd>
 <dd>The local workspace is indicated by the creation of a [.gcloud]
 folder. In this folder is a file [properties] which allows you to
 override any global properties you may have set via the
@@ -45,10 +39,12 @@ automatically be connected to Google, and it will use the credentials
 indicated as <code>active</code> by <code>gcloud auth list</code>. Pushing
 to the origin’s <code>master</code> branch will trigger an App Engine deployment
 using the contents of that branch.</dd>
+<dd>**Note: this command will be changing soon. Consider using
+<code>$ <A href="alpha/source/clone">gcloud alpha source clone</A></code> to clone authenticated git repository.</dd>
 </section><section>
 <dt>POSITIONAL ARGUMENTS</dt>
 <dd><dl>
-<dt>
+<dt class="hangingindent">
 <code><var>PROJECT</var></code>
 </dt>
 
@@ -61,86 +57,9 @@ cloned into the local workspace.
 
 </dl></dd>
 </section><section>
-<dt>FLAGS</dt>
-<dd><dl>
-<dt>
-<code>--format</code> <code><var>FORMAT</var></code>
-</dt>
-
-<dd>
-Specify a format for printed output. By default, a command-specific
-human-friendly output format is used. Setting this flag to one of
-the available options will serialize the result of the command in
-the chosen format and print it to stdout. Supported formats are:
-<code>json</code>, <code>text</code>, <code>yaml</code>.
-</dd>
-
-
-<dt>
-<code>--help</code>
-</dt>
-
-<dd>
-Display detailed help.
-</dd>
-
-
-<dt>
-<code>--http-timeout</code> <code><var>HTTP_TIMEOUT</var></code>
-</dt>
-
-<dd>
-Timeout in seconds for HTTP requests.
-</dd>
-
-
-<dt>
-<code>--log-http</code>
-</dt>
-
-<dd>
-Logs all HTTP server requests and responses to stderr.
-</dd>
-
-
-<dt>
-<code>--project</code> <code><var>PROJECT_ID</var></code>
-</dt>
-
-<dd>
-The Google Cloud Platform project name to use for this invocation. If
-omitted then the current project is assumed.
-</dd>
-
-
-<dt>
-<code>--quiet</code>, <code>-q</code>
-</dt>
-
-<dd>
-Disable all interactive prompts when running gcloud commands. If input
-is required, defaults will be used, or an error will be raised.
-</dd>
-
-
-<dt>
-<code>--trace-token</code> <code><var>TRACE_TOKEN</var></code>
-</dt>
-
-<dd>
-Token used to route traces of service requests for investigation of issues.
-</dd>
-
-
-<dt>
-<code>-h</code>
-</dt>
-
-<dd>
-Print a summary help and exit.
-</dd>
-
-</dl></dd>
+<dt>GLOBAL FLAGS</dt>
+<dd>Run <code>$ <a href="">gcloud</a> help</code> for a description of flags available to
+all commands.</dd>
 </section><section>
 <dt>EXAMPLES</dt>
 <dd>To perform a simple <code>"Hello, world!"</code> App Engine deployment with this

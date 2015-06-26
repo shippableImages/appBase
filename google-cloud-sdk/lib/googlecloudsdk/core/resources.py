@@ -31,8 +31,102 @@ _METHOD_ID_RE = re.compile(r'(?P<collection>{collection})\.get'.format(
     collection=_COLLECTION_SUB_RE))
 
 
+class ClientDef(object):
+
+  def __init__(self, classpath, urls_only=False):
+    self.classpath = classpath
+    self.urls_only = urls_only
+
+  def Import(self):
+    """Imports the client module and returns the client class.
+
+    Returns:
+      type: Class that can be used to contruct an instance of the client.
+    """
+    module, version, class_name = self.classpath.rsplit('.', 2)
+    module_obj = __import__(module, fromlist=[version])
+    version_obj = getattr(module_obj, version)
+    return getattr(version_obj, class_name)
+
+
+# Map of all known APIs and their clients.
+_API_CLIENT_MAP = {
+    'autoscaler': [
+        ClientDef('googlecloudapis.autoscaler.v1beta2.AutoscalerV1beta2')
+    ],
+    'bigquery': [
+        ClientDef('googlecloudapis.bigquery.v2.BigqueryV2')
+    ],
+    'cloudresourcemanager': [
+        ClientDef('googlecloudapis.cloudresourcemanager.'
+                  'v1beta1.CloudresourcemanagerV1beta1')
+    ],
+    'compute': [
+        ClientDef('googlecloudapis.compute.v1.ComputeV1'),
+        ClientDef('googlecloudapis.compute.alpha.ComputeAlpha', True),
+        ClientDef('googlecloudapis.compute.beta.ComputeBeta', True),
+    ],
+    'computeaccounts': [
+        ClientDef('googlecloudapis.computeaccounts.alpha.'
+                  'ComputeaccountsAlpha'),
+    ],
+    'container': [
+        ClientDef('googlecloudapis.container.v1beta1.ContainerV1beta1'),
+        ClientDef(
+            'googlecloudapis.container.v1beta2.ContainerV1beta2', True)
+    ],
+    'dataflow': [
+        ClientDef('googlecloudapis.dataflow.v1b3.DataflowV1b3')
+    ],
+    'datastore': [
+        ClientDef('googlecloudapis.datastore.v1beta3.DatastoreV1')
+    ],
+    'dns': [
+        ClientDef('googlecloudapis.dns.v1.DnsV1')
+    ],
+    'genomics': [
+        ClientDef('googlecloudapis.genomics.v1beta2.GenomicsV1beta2')
+    ],
+    'manager': [
+        ClientDef('googlecloudapis.manager.v1beta2.ManagerV1beta2')
+    ],
+    'replicapool': [
+        ClientDef('googlecloudapis.replicapool.v1beta2.'
+                  'ReplicapoolV1beta2')
+    ],
+    'replicapoolupdater': [
+        ClientDef('googlecloudapis.replicapoolupdater.v1beta1.'
+                  'ReplicapoolupdaterV1beta1')
+    ],
+    'resourceviews': [
+        ClientDef('googlecloudapis.resourceviews.v1beta1.'
+                  'ResourceviewsV1beta1')
+    ],
+    'sql': [
+        ClientDef('googlecloudapis.sqladmin.v1beta3.SqladminV1beta3')],
+    'storage': [
+        ClientDef('googlecloudapis.storage.v1.StorageV1')
+    ],
+    'testing': [
+        ClientDef('googlecloudapis.testing.v1.TestingV1')
+    ],
+    'toolresults': [
+        ClientDef('googlecloudapis.toolresults.v1beta3.'
+                  'ToolresultsV1beta3')
+    ],
+}
+
+
 class Error(Exception):
   """Exceptions for this module."""
+
+
+class UnknownAPIException(Error):
+  """Exception we are trying to register an unknown API."""
+
+  def __init__(self, api):
+    super(UnknownAPIException, self).__init__(
+        'trying to register unknown API [{0}]'.format(api))
 
 
 class _ResourceWithoutGetException(Error):
@@ -158,10 +252,10 @@ class _ResourceParser(object):
     Args:
       collection_path: str, The human-typed collection-path from the command
           line. Can be None to indicate all params should be taken from kwargs.
-      kwargs: {str:str}, The flags available from context that can help
-          parse this resource. If the fields in collection-path do not provide
-          all the necessary information, kwargs will be searched for what
-          remains.
+      kwargs: {str:(str or func()->str)}, flags (available from context) or
+          resolvers that can help parse this resource. If the fields in
+          collection-path do not provide all the necessary information,
+          kwargs will be searched for what remains.
       resolve: bool, If True, call the resource's .Resolve() method before
           returning, ensuring that all of the resource parameters are defined.
           If False, don't call them, under the assumption that it will be called
@@ -186,10 +280,8 @@ class _ResourceParser(object):
 
     # Build up the resource params from kwargs or the fields in the
     # collection-path.
-    params = {}
     request = self.request_type()
     for param, field in zip(self.method_config.ordered_params, fields):
-      params[param] = field
       setattr(request, param, field)
 
     resource = Resource(
@@ -389,9 +481,10 @@ class Resource(object):
         util.ExpandRelativePath(self.__parser.method_config, effective_params))
 
     if (self.Collection().startswith('compute.') or
+        self.Collection().startswith('computeaccounts.') or
         self.Collection().startswith('resourceviews.')):
-      # TODO(user): Unquote URLs for compute and resourceviews,
-      # pending b/15425944.
+      # TODO(user): Unquote URLs for compute, computeaccounts, and
+      # resourceviews pending b/15425944.
       self.__self_link = urllib.unquote(self.__self_link)
 
     if self.__ordered_params:
@@ -418,6 +511,54 @@ def _CopyNestedDictSpine(maybe_dictionary):
     return maybe_dictionary
 
 
+def _APINameFromURL(url):
+  """Get the API name from a resource url.
+
+  Supports four formats:
+  http(s)://www.googleapis.com/api/version/resource-path,
+  http(s)://www-googleapis-staging.sandbox.google.com/api/version/resource-path,
+  http(s)://api.googleapis.com/version/resource-path, and
+  http(s)://someotherdoman/api/version/resource-path.
+
+  If there is an api endpoint override defined that maches the url,
+  that api name will be returned.
+
+  Args:
+    url: str, The resource url.
+
+  Returns:
+    str: The API name.
+  """
+  endpoint_overrides = properties.VALUES.api_endpoint_overrides.AllValues()
+  for name, overriden_url in endpoint_overrides.iteritems():
+    if overriden_url == url:
+      return name
+
+  url = url.lstrip('https://')
+  url = url.lstrip('http://')
+  url = url.rstrip('/')
+  tokens = url.split('/')
+  domain = tokens[0]
+  if ('googleapis' not in domain
+      or domain.startswith('www.') or domain.startswith('www-')):
+    api_name = tokens[1]
+  else:
+    api_name = tokens[0].split('.')[0]
+  return api_name
+
+
+def _APINameFromCollection(collection):
+  """Get the API name from a collection name like 'api.parents.children'.
+
+  Args:
+    collection: str, The collection name.
+
+  Returns:
+    str: The API name.
+  """
+  return collection.split('.')[0]
+
+
 class Registry(object):
   """Keep a list of all the resource collections and their parsing functions.
 
@@ -433,21 +574,46 @@ class Registry(object):
         value is a function that can be called to find values for params that
         aren't specified already. If the collection key is None, it matches
         all collections.
+    registered_apis: {str}, All the apis that have been registered.
   """
 
-  def __init__(self, parsers_by_collection=None,
-               parsers_by_url=None, default_param_funcs=None):
+  def __init__(self, parsers_by_collection=None, parsers_by_url=None,
+               default_param_funcs=None, registered_apis=None):
     self.parsers_by_collection = parsers_by_collection or {}
     self.parsers_by_url = parsers_by_url or {}
     self.default_param_funcs = default_param_funcs or {}
+    self.registered_apis = registered_apis or set()
 
   def _Clone(self):
     return Registry(
         parsers_by_collection=_CopyNestedDictSpine(self.parsers_by_collection),
         parsers_by_url=_CopyNestedDictSpine(self.parsers_by_url),
-        default_param_funcs=_CopyNestedDictSpine(self.default_param_funcs))
+        default_param_funcs=_CopyNestedDictSpine(self.default_param_funcs),
+        registered_apis=set(self.registered_apis))
 
-  def RegisterAPI(self, api, urls_only=False):
+  def _RegisterAPIByName(self, api_name):
+    """Register the given API if it has not been registered already.
+
+    Args:
+      api_name: str, The API name.
+
+    Raises:
+      UnknownAPIException: If the API to register is not in _API_CLIENT_MAP.
+    """
+    if api_name in self.registered_apis:
+      return
+
+    api_clients = _API_CLIENT_MAP.get(api_name, None)
+
+    if not api_clients:
+      raise UnknownAPIException(api_name)
+
+    for api_client in api_clients:
+      api_client_class = api_client.Import()
+      self._RegisterAPI(api_client_class(get_credentials=False),
+                        urls_only=api_client.urls_only)
+
+  def _RegisterAPI(self, api, urls_only=False):
     """Register a generated API with this registry.
 
     Args:
@@ -455,7 +621,6 @@ class Registry(object):
       urls_only: bool, True if this API should only be used to interpret URLs,
           and not to interpret collection-paths.
     """
-
     for potential_service in api.__dict__.itervalues():
       if not isinstance(potential_service, apitools_base.BaseApiService):
         continue
@@ -463,6 +628,7 @@ class Registry(object):
         self._RegisterService(api, potential_service, urls_only)
       except _ResourceWithoutGetException:
         pass
+    self.registered_apis.add(_APINameFromURL(api.url))
 
   def _RegisterService(self, api, service, urls_only):
     """Register one service for an API with this registry.
@@ -523,10 +689,20 @@ class Registry(object):
         del self.parsers_by_collection[collection]
     # TODO(user): Maybe remove the url parsers as well?
 
-    self.RegisterAPI(api)
+    self._RegisterAPI(api)
 
   def CloneAndSwitchAPIs(self, *apis):
+    """Clone registry and replace any given apis."""
     reg = self._Clone()
+    for _, parser in reg.parsers_by_collection.iteritems():
+      parser.registry = reg
+    def _UpdateParser(dict_or_parser):
+      if type(dict_or_parser) is types.DictType:
+        for _, val in dict_or_parser.iteritems():
+          _UpdateParser(val)
+      else:
+        dict_or_parser.registry = reg
+    _UpdateParser(reg.parsers_by_url)
     for api in apis:
       reg._SwitchAPI(api)  # pylint:disable=protected-access
     return reg
@@ -594,6 +770,30 @@ class Registry(object):
 
   def ParseCollectionPath(self, collection, collection_path, kwargs,
                           resolve=True):
+    """Parse a collection path into a Resource.
+
+    Args:
+      collection: str, the name/id for the resource from commandline argument.
+      collection_path: str, The human-typed collection-path from the command
+          line. Can be None to indicate all params should be taken from kwargs.
+      kwargs: {str:(str or func()->str)}, flags (available from context) or
+          resolvers that can help parse this resource. If the fields in
+          collection-path do not provide all the necessary information,
+          kwargs will be searched for what remains.
+      resolve: bool, If True, call the resource's .Resolve() method before
+          returning, ensuring that all of the resource parameters are defined.
+          If False, don't call them, under the assumption that it will be called
+          later.
+    Returns:
+      protorpc.messages.Message, The object containing info about this resource.
+
+    Raises:
+      InvalidCollectionException: If the provided collection-path is malformed.
+
+    """
+    # Register relevant API if necessary and possible
+    self._RegisterAPIByName(_APINameFromCollection(collection))
+
     if collection not in self.parsers_by_collection:
       raise InvalidCollectionException(collection)
     return self.parsers_by_collection[collection].ParseCollectionPath(
@@ -643,6 +843,9 @@ class Registry(object):
     tokens = endpoint.split('/') + path.split('/')
     params = {}
 
+    # Register relevant API if necessary and possible
+    self._RegisterAPIByName(_APINameFromURL(url))
+
     cur_level = self.parsers_by_url
     for token in tokens:
       if token in cur_level:
@@ -683,7 +886,10 @@ class Registry(object):
 
     Args:
       line: str, The argument provided on the command line.
-      params: {str:str}, The keyword argument context.
+      params: {str:(str or func()->str)}, flags (available from context) or
+        resolvers that can help parse this resource. If the fields in
+        collection-path do not provide all the necessary information, params
+        will be searched for what remains.
       collection: str, The resource's collection, or None if it should be
         inferred from the line.
       resolve: bool, If True, call the resource's .Resolve() method before
@@ -727,17 +933,6 @@ class Registry(object):
 
 # TODO(user): Deglobalize this object, force gcloud to manage it on its own.
 REGISTRY = Registry()
-
-
-def RegisterAPI(api, urls_only=False):
-  """Register a generated API for parsing.
-
-  Args:
-    api: apitools_base.BaseApiClient, The client for a Google Cloud API.
-    urls_only: bool, True if this API should only be used to interpret URLs,
-        and not to interpret collection-paths.
-  """
-  REGISTRY.RegisterAPI(api, urls_only)
 
 
 def SetParamDefault(api, collection, param, resolver):

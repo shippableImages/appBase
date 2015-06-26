@@ -384,6 +384,63 @@ class ResourceDiff(object):
       out.write(line + '\n')
 
 
+def _ClassToDict(resource):
+  """Converts a resource class object to a dict.
+
+  Private and callable attributes are omitted in the dict.
+
+  Args:
+    resource: The class object to convert.
+
+  Returns:
+    The dict representing the class object.
+  """
+  r = {}
+  for attr in dir(resource):
+    if attr.startswith('_'):
+      # Omit private attributes.
+      continue
+    value = getattr(resource, attr)
+    if hasattr(value, '__call__'):
+      # Omit callable attributes.
+      continue
+    r[attr] = value
+  return r
+
+
+def _MakeSerializable(resource):
+  """Returns resource or a JSON-serializable copy of resource.
+
+  Args:
+    resource: The resource object.
+
+  Returns:
+    The original resource if it is a primitive type object, otherwise a
+    JSON-serializable copy of resource.
+  """
+  if resource is None:
+    return None
+  if isinstance(resource, (basestring, bool, int, long, float, complex)):
+    # primitive type object.
+    return resource
+  if isinstance(resource, bytearray):
+    # bytearray copied to disassociate from original resource.
+    return str(resource)
+  if isinstance(resource, messages.Message):
+    # protorpc message.
+    resource = encoding.MessageToDict(resource)
+  elif not hasattr(resource, '__iter__') or hasattr(resource, '_fields'):
+    # class object of collections.namedtuple() (via the _fields test).
+    resource = _ClassToDict(resource)
+  if hasattr(resource, 'iteritems'):
+    # dict-like object.
+    # Pyton 2.6 compatibility doesn't have dict comprehensions
+    #   return {k: _MakeSerializable(v) for k, v in resource.iteritems()}
+    return dict((k, _MakeSerializable(v)) for k, v in resource.iteritems())
+  # list-like object.
+  return [_MakeSerializable(v) for v in resource]
+
+
 def Print(resources, print_format, out=None):
   """Prints the given resources.
 
@@ -415,10 +472,10 @@ def Print(resources, print_format, out=None):
     # exception-handling code.
     try:
       for resource in resources:
-        formatter.AddRecord(resource)
+        formatter.AddRecord(_MakeSerializable(resource))
     finally:
       formatter.Finish()
   else:
     formatter = formatter_class(out=out)
     formatter.PrintHeader()
-    formatter.PrintSingleRecord(resources)
+    formatter.PrintSingleRecord(_MakeSerializable(resources))

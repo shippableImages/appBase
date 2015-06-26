@@ -1,0 +1,89 @@
+.TH "GCLOUD DOCKER" "1" "" "" ""
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.nh
+.ad l
+.SH "NAME"
+.HP
+gcloud_docker \- provides the docker CLI access to the Google Container Registry
+.SH "SYNOPSIS"
+.sp
+gcloud docker [\fIEXTRA_ARGS\fR \&...] [\fB\-\-authorize\-only\fR, \fB\-a\fR] [\fB\-\-docker\-host\fR \fIDOCKER_HOST\fR] [\fB\-\-server\fR \fISERVER\fR,[\fISERVER\fR,\&...], \fB\-s\fR \fISERVER\fR,[\fISERVER\fR,\&...]; default="[\fIgcr\&.io\fR, \fIus\&.gcr\&.io\fR, \fIeu\&.gcr\&.io\fR, \fIasia\&.gcr\&.io\fR, \fIb\&.gcr\&.io\fR, \fIbucket\&.gcr\&.io\fR, \fIappengine\&.gcr\&.io\fR]"] [\fIGLOBAL\-FLAG \&...\fR]
+.SH "DESCRIPTION"
+.sp
+The docker sub\-command of gcloud wraps docker commands, so that gcloud can inject the appropriate fresh authentication token into requests that interact with the docker registry\&. As commands are simply passed through to docker, see this for a full reference of command\-line options that can be supplied after the \(em  http://docs\&.docker\&.com/reference/commandline/cli/
+.sp
+For more information please visit https://gcr\&.io
+.SH "POSITIONAL ARGUMENTS"
+.HP
+[\fIEXTRA_ARGS\fR \&...]
+.RE
+.SH "FLAGS"
+.PP
+\fB\-\-authorize\-only\fR, \fB\-a\fR
+.RS 4
+Configure docker authorization only, do not launch the docker command\-line
+.RE
+.PP
+\fB\-\-docker\-host\fR \fIDOCKER_HOST\fR
+.RS 4
+The URL to connect to Docker Daemon\&. Format: tcp://host:port or unix:///path/to/socket\&.
+.RE
+.PP
+\fB\-\-server\fR \fISERVER\fR,[\fISERVER\fR,\&...], \fB\-s\fR \fISERVER\fR,[\fISERVER\fR,\&...]; default="[\fIgcr\&.io\fR, \fIus\&.gcr\&.io\fR, \fIeu\&.gcr\&.io\fR, \fIasia\&.gcr\&.io\fR, \fIb\&.gcr\&.io\fR, \fIbucket\&.gcr\&.io\fR, \fIappengine\&.gcr\&.io\fR]"
+.RS 4
+The address of the Google Cloud Registry
+.RE
+.SH "GLOBAL FLAGS"
+.sp
+Run \fB$ \fR\fBgcloud\fR\fB help\fR for a description of flags available to all commands\&.
+.SH "EXAMPLES"
+.sp
+Pull the image \fIgcr\&.io/google\-containers/pause:1\&.0\fR from the docker registry:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ gcloud docker \-\- pull gcr\&.io/google\-containers/pause:1\&.0
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Push the image \fIgcr\&.io/example\-org/example\-image:latest\fR to our private docker registry\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ gcloud docker \-\- push gcr\&.io/example\-org/example\-image:latest
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Configure authentication, then simply use docker:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ gcloud docker \-\-authorize\-only
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ docker push gcr\&.io/example\-org/example\-image:latest
+.fi
+.if n \{\
+.RE
+.\}
+.SH "NOTES"
+.sp
+This command is in the Google Cloud SDK \fBcore\fR component\&. See installing components if it is not installed\&.

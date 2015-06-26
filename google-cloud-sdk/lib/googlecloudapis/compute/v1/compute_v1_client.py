@@ -57,7 +57,9 @@ class ComputeV1(base_api.BaseApiClient):
     self.targetHttpProxies = self.TargetHttpProxiesService(self)
     self.targetInstances = self.TargetInstancesService(self)
     self.targetPools = self.TargetPoolsService(self)
+    self.targetVpnGateways = self.TargetVpnGatewaysService(self)
     self.urlMaps = self.UrlMapsService(self)
+    self.vpnTunnels = self.VpnTunnelsService(self)
     self.zoneOperations = self.ZoneOperationsService(self)
     self.zones = self.ZonesService(self)
 
@@ -574,7 +576,7 @@ class ComputeV1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def CreateSnapshot(self, request, global_params=None):
-      """CreateSnapshot method for the disks service.
+      """Creates a snapshot of this disk.
 
       Args:
         request: (ComputeDisksCreateSnapshotRequest) input message
@@ -1693,7 +1695,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified instance template resource.
+      """Deletes the specified instance template.
 
       Args:
         request: (ComputeInstanceTemplatesDeleteRequest) input message
@@ -1719,7 +1721,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Insert(self, request, global_params=None):
-      """Creates an instance template resource in the specified project using the data included in the request.
+      """Creates an instance template in the specified project using the data that is included in the request.
 
       Args:
         request: (ComputeInstanceTemplatesInsertRequest) input message
@@ -1732,7 +1734,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of instance template resources contained within the specified project.
+      """Retrieves a list of instance templates that are contained within the specified project and zone.
 
       Args:
         request: (ComputeInstanceTemplatesListRequest) input message
@@ -1841,7 +1843,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.instances.getSerialPortOutput',
               ordered_params=[u'project', u'zone', u'instance'],
               path_params=[u'instance', u'project', u'zone'],
-              query_params=[],
+              query_params=[u'port'],
               relative_path=u'projects/{project}/zones/{zone}/instances/{instance}/serialPort',
               request_field='',
               request_type_name=u'ComputeInstancesGetSerialPortOutputRequest',
@@ -3475,6 +3477,144 @@ If an empty request body is given, clears the deprecation status instead.
       return self._RunMethod(
           config, request, global_params=global_params)
 
+  class TargetVpnGatewaysService(base_api.BaseApiService):
+    """Service class for the targetVpnGateways resource."""
+
+    _NAME = u'targetVpnGateways'
+
+    def __init__(self, client):
+      super(ComputeV1.TargetVpnGatewaysService, self).__init__(client)
+      self._method_configs = {
+          'AggregatedList': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.targetVpnGateways.aggregatedList',
+              ordered_params=[u'project'],
+              path_params=[u'project'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/aggregated/targetVpnGateways',
+              request_field='',
+              request_type_name=u'ComputeTargetVpnGatewaysAggregatedListRequest',
+              response_type_name=u'TargetVpnGatewayAggregatedList',
+              supports_download=False,
+          ),
+          'Delete': base_api.ApiMethodInfo(
+              http_method=u'DELETE',
+              method_id=u'compute.targetVpnGateways.delete',
+              ordered_params=[u'project', u'region', u'targetVpnGateway'],
+              path_params=[u'project', u'region', u'targetVpnGateway'],
+              query_params=[],
+              relative_path=u'projects/{project}/regions/{region}/targetVpnGateways/{targetVpnGateway}',
+              request_field='',
+              request_type_name=u'ComputeTargetVpnGatewaysDeleteRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Get': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.targetVpnGateways.get',
+              ordered_params=[u'project', u'region', u'targetVpnGateway'],
+              path_params=[u'project', u'region', u'targetVpnGateway'],
+              query_params=[],
+              relative_path=u'projects/{project}/regions/{region}/targetVpnGateways/{targetVpnGateway}',
+              request_field='',
+              request_type_name=u'ComputeTargetVpnGatewaysGetRequest',
+              response_type_name=u'TargetVpnGateway',
+              supports_download=False,
+          ),
+          'Insert': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.targetVpnGateways.insert',
+              ordered_params=[u'project', u'region'],
+              path_params=[u'project', u'region'],
+              query_params=[],
+              relative_path=u'projects/{project}/regions/{region}/targetVpnGateways',
+              request_field=u'targetVpnGateway',
+              request_type_name=u'ComputeTargetVpnGatewaysInsertRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'List': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.targetVpnGateways.list',
+              ordered_params=[u'project', u'region'],
+              path_params=[u'project', u'region'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/regions/{region}/targetVpnGateways',
+              request_field='',
+              request_type_name=u'ComputeTargetVpnGatewaysListRequest',
+              response_type_name=u'TargetVpnGatewayList',
+              supports_download=False,
+          ),
+          }
+
+      self._upload_configs = {
+          }
+
+    def AggregatedList(self, request, global_params=None):
+      """Retrieves the list of target VPN gateways grouped by scope.
+
+      Args:
+        request: (ComputeTargetVpnGatewaysAggregatedListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (TargetVpnGatewayAggregatedList) The response message.
+      """
+      config = self.GetMethodConfig('AggregatedList')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Delete(self, request, global_params=None):
+      """Deletes the specified TargetVpnGateway resource.
+
+      Args:
+        request: (ComputeTargetVpnGatewaysDeleteRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Delete')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Get(self, request, global_params=None):
+      """Returns the specified TargetVpnGateway resource.
+
+      Args:
+        request: (ComputeTargetVpnGatewaysGetRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (TargetVpnGateway) The response message.
+      """
+      config = self.GetMethodConfig('Get')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Insert(self, request, global_params=None):
+      """Creates a TargetVpnGateway resource in the specified project and region using the data included in the request.
+
+      Args:
+        request: (ComputeTargetVpnGatewaysInsertRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Insert')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def List(self, request, global_params=None):
+      """Retrieves the list of TargetVpnGateway resources available to the specified project and region.
+
+      Args:
+        request: (ComputeTargetVpnGatewaysListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (TargetVpnGatewayList) The response message.
+      """
+      config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
   class UrlMapsService(base_api.BaseApiService):
     """Service class for the urlMaps resource."""
 
@@ -3660,6 +3800,144 @@ If an empty request body is given, clears the deprecation status instead.
         (UrlMapsValidateResponse) The response message.
       """
       config = self.GetMethodConfig('Validate')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+  class VpnTunnelsService(base_api.BaseApiService):
+    """Service class for the vpnTunnels resource."""
+
+    _NAME = u'vpnTunnels'
+
+    def __init__(self, client):
+      super(ComputeV1.VpnTunnelsService, self).__init__(client)
+      self._method_configs = {
+          'AggregatedList': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.vpnTunnels.aggregatedList',
+              ordered_params=[u'project'],
+              path_params=[u'project'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/aggregated/vpnTunnels',
+              request_field='',
+              request_type_name=u'ComputeVpnTunnelsAggregatedListRequest',
+              response_type_name=u'VpnTunnelAggregatedList',
+              supports_download=False,
+          ),
+          'Delete': base_api.ApiMethodInfo(
+              http_method=u'DELETE',
+              method_id=u'compute.vpnTunnels.delete',
+              ordered_params=[u'project', u'region', u'vpnTunnel'],
+              path_params=[u'project', u'region', u'vpnTunnel'],
+              query_params=[],
+              relative_path=u'projects/{project}/regions/{region}/vpnTunnels/{vpnTunnel}',
+              request_field='',
+              request_type_name=u'ComputeVpnTunnelsDeleteRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Get': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.vpnTunnels.get',
+              ordered_params=[u'project', u'region', u'vpnTunnel'],
+              path_params=[u'project', u'region', u'vpnTunnel'],
+              query_params=[],
+              relative_path=u'projects/{project}/regions/{region}/vpnTunnels/{vpnTunnel}',
+              request_field='',
+              request_type_name=u'ComputeVpnTunnelsGetRequest',
+              response_type_name=u'VpnTunnel',
+              supports_download=False,
+          ),
+          'Insert': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.vpnTunnels.insert',
+              ordered_params=[u'project', u'region'],
+              path_params=[u'project', u'region'],
+              query_params=[],
+              relative_path=u'projects/{project}/regions/{region}/vpnTunnels',
+              request_field=u'vpnTunnel',
+              request_type_name=u'ComputeVpnTunnelsInsertRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'List': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.vpnTunnels.list',
+              ordered_params=[u'project', u'region'],
+              path_params=[u'project', u'region'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/regions/{region}/vpnTunnels',
+              request_field='',
+              request_type_name=u'ComputeVpnTunnelsListRequest',
+              response_type_name=u'VpnTunnelList',
+              supports_download=False,
+          ),
+          }
+
+      self._upload_configs = {
+          }
+
+    def AggregatedList(self, request, global_params=None):
+      """Retrieves the list of VPN tunnels grouped by scope.
+
+      Args:
+        request: (ComputeVpnTunnelsAggregatedListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (VpnTunnelAggregatedList) The response message.
+      """
+      config = self.GetMethodConfig('AggregatedList')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Delete(self, request, global_params=None):
+      """Deletes the specified VpnTunnel resource.
+
+      Args:
+        request: (ComputeVpnTunnelsDeleteRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Delete')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Get(self, request, global_params=None):
+      """Returns the specified VpnTunnel resource.
+
+      Args:
+        request: (ComputeVpnTunnelsGetRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (VpnTunnel) The response message.
+      """
+      config = self.GetMethodConfig('Get')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Insert(self, request, global_params=None):
+      """Creates a VpnTunnel resource in the specified project and region using the data included in the request.
+
+      Args:
+        request: (ComputeVpnTunnelsInsertRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Insert')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def List(self, request, global_params=None):
+      """Retrieves the list of VpnTunnel resources contained in the specified project and region.
+
+      Args:
+        request: (ComputeVpnTunnelsListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (VpnTunnelList) The response message.
+      """
+      config = self.GetMethodConfig('List')
       return self._RunMethod(
           config, request, global_params=global_params)
 

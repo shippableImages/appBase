@@ -2,9 +2,9 @@
 
 """The calliope CLI/API is a framework for building library interfaces."""
 
+import argparse
 import os
 import re
-import subprocess
 import sys
 import uuid
 
@@ -20,78 +20,6 @@ from googlecloudsdk.core import log
 from googlecloudsdk.core import metrics
 from googlecloudsdk.core import properties
 from googlecloudsdk.core.util import resource_printer
-
-
-class NoHelpFoundError(exceptions.ToolException):
-  """Raised when a help file cannot be located."""
-
-
-def GetHelp(help_dir):
-  """Returns a function that can display long help.
-
-  Long help is displayed using the man utility if it's available on
-  the user's platform. If man is not available, a plain-text version
-  of help is written to standard out.
-
-  Args:
-    help_dir: str, The path to the directory containing help documents.
-
-  Returns:
-    func([str]), A function that can display help if help_dir exists,
-    otherwise None.
-  """
-  def Help(path, default=None):
-    """Displays help for the given subcommand.
-
-    This function first attempts to display help using the man utility.
-    If man is unavailable, a plain-text version of the help is printed
-    to standard out.
-
-    Args:
-      path: A path representing the subcommand for which help is being
-          requested (e.g., ['my-prog', 'my-subcommand'] if help is being
-          requested for "my-prog my-subcommand").
-      default: str, Text to print out if no help files can be found.
-
-    Raises:
-      HelpNotFound: If man is not available and no help exists for the
-          given subcommand. Note that if man is available and no help exists,
-          error reporting is deferred to man.
-    """
-    base = '_'.join(path)
-    try:
-      exit_code = subprocess.call(
-          ['man',
-           '-M', os.path.join(help_dir, 'man'),  # Sets the man search path.
-           base])
-      if exit_code == 0:
-        return
-      else:
-        log.debug('man process returned with exit code %s', exit_code)
-    except OSError as e:
-      log.debug('There was a problem launching man: %s', e)
-
-    log.debug('Falling back to plain-text help.')
-
-    text_help_file_path = os.path.join(help_dir, 'text.long', base)
-    try:
-      with open(text_help_file_path) as f:
-        sys.stdout.write(f.read())
-    except IOError:
-      if default:
-        print default
-      else:
-        raise NoHelpFoundError(
-            'No manual entry for command: {0}'.format(' '.join(path)))
-
-  if help_dir and os.path.exists(help_dir):
-    return Help
-  else:
-    return None
-
-
-def GoogleCloudSDKPackageRoot():
-  return config.GoogleCloudSDKPackageRoot()
 
 
 class RunHook(object):
@@ -138,8 +66,7 @@ class CLILoader(object):
 
   def __init__(self, name, command_root_directory,
                allow_non_existing_modules=False, load_context=None,
-               logs_dir=config.Paths().logs_dir, version_func=None,
-               help_func=None):
+               logs_dir=config.Paths().logs_dir, version_func=None):
     """Initialize Calliope.
 
     Args:
@@ -155,11 +82,6 @@ class CLILoader(object):
         for no log files.
       version_func: func, A function to call for a top-level -v and
         --version flag. If None, no flags will be available.
-      help_func: func([command path]), A function to call for in-depth help
-        messages. It is passed the set of subparsers used (not including the
-        top-level command). After it is called calliope will exit. This function
-        will be called when a top-level 'help' command is run, or when the
-        --help option is added on to any command.
 
     Raises:
       backend.LayoutException: If no command root directory is given.
@@ -175,7 +97,6 @@ class CLILoader(object):
     self.__config_hooks = backend.ConfigHooks(load_context=load_context)
     self.__logs_dir = logs_dir
     self.__version_func = version_func
-    self.__help_func = help_func
 
     self.__pre_run_hooks = []
     self.__post_run_hooks = []
@@ -197,7 +118,13 @@ class CLILoader(object):
       path: str, The full path the directory containing the root of this group.
       component: str, The name of the component this release track is in, if
         you want calliope to auto install it for users.
+
+    Raises:
+      ValueError: If an invalid track is registered.
     """
+    if not release_track.prefix:
+      raise ValueError('You may only register alternate release tracks that '
+                       'have a different prefix.')
     self.__release_tracks[release_track] = (path, component)
 
   def AddModule(self, name, path, component=None):
@@ -245,9 +172,65 @@ class CLILoader(object):
     self.__post_run_hooks.append(hook)
 
   def ComponentsForMissingCommand(self, command_path):
+    """Gets the components that need to be installed to run the given command.
+
+    Args:
+      command_path: [str], The path of the command being run.
+
+    Returns:
+      [str], The component names of the components that should be installed.
+    """
+    path_string = '.'.join(command_path)
     return [component
             for path, component in self.__missing_components.iteritems()
-            if command_path.startswith(self.__name + '.' + path)]
+            if path_string.startswith(self.__name + '.' + path)]
+
+  def ReplicateCommandPathForAllOtherTracks(self, command_path):
+    """Finds other release tracks this command could be in.
+
+    The returned values are not necessarily guaranteed to exist because the
+    commands could be disabled for that particular release track.  It is up to
+    the caller to determine if the commands actually exist before attempting
+    use.
+
+    Args:
+      command_path: [str], The path of the command being run.
+
+    Returns:
+      {ReleaseTrack: [str]}, A mapping of release track to command path of other
+      places this command could be found.
+    """
+    # Only a single element, it's just the root of the tree.
+    if len(command_path) < 2:
+      return []
+
+    # Determine if the first token is a release track name.
+    track = calliope_base.ReleaseTrack.FromPrefix(command_path[1])
+    if track and track not in self.__release_tracks:
+      # Make sure it's actually a track that we are using in this CLI.
+      track = None
+
+    # Remove the track from the path to get back to the GA version of the
+    # command, or  keep the existing path if it is not in a track (already GA).
+    root = command_path[0]
+    sub_path = command_path[2:] if track else command_path[1:]
+
+    if not sub_path:
+      # There are no parts to the path other than the track.
+      return []
+
+    results = dict()
+    # Calculate how this command looks under each alternate release track.
+    for t in self.__release_tracks:
+      results[t] = [root] + [t.prefix] + sub_path
+
+    if track:
+      # If the incoming command had a release track, remove that one from
+      # alternate suggestions but add GA.
+      del results[track]
+      results[calliope_base.ReleaseTrack.GA] = [root] + sub_path
+
+    return results
 
   def Generate(self):
     """Uses the registered information to generate the CLI tool.
@@ -382,7 +365,7 @@ class CLILoader(object):
       if allow_non_existing_modules:
         return None
       raise backend.LayoutException(
-          'The given module directory does not exist: {}'.format(
+          'The given module directory does not exist: {0}'.format(
               module_directory))
     elif exception_if_present:
       # pylint: disable=raising-bad-type, This will be an actual exception.
@@ -404,7 +387,7 @@ class CLILoader(object):
     (module_root, module, name, release_track) = group_info
     return backend.CommandGroup(
         module_root, module, [name], release_track, uuid.uuid4().hex, self,
-        None, self.__config_hooks, help_func=self.__help_func)
+        None, self.__config_hooks)
 
   def __AddBuiltinGlobalFlags(self, top_element):
     """Adds in calliope builtin global flags.
@@ -418,13 +401,13 @@ class CLILoader(object):
     """
     if self.__version_func is not None:
       # pylint: disable=protected-access
-      version_flag = top_element._ai.add_argument(
+      top_element.ai.add_argument(
           '-v', '--version',
+          group_flag=True,
           action=actions.FunctionExitAction(self.__version_func),
           help='Print version information.')
-      version_flag.global_only = True
     # pylint: disable=protected-access
-    top_element._ai.add_argument(
+    top_element.ai.add_argument(
         '--verbosity',
         choices=log.OrderedVerbosityNames(),
         default=None,
@@ -435,7 +418,7 @@ class CLILoader(object):
                 values=', '.join(log.OrderedVerbosityNames()),
                 default=log.DEFAULT_VERBOSITY_STRING),
         action=actions.StoreProperty(properties.VALUES.core.verbosity))
-    top_element._ai.add_argument(
+    top_element.ai.add_argument(
         '--user-output-enabled',
         default=None,
         choices=('true', 'false'),
@@ -444,9 +427,10 @@ class CLILoader(object):
             '(true/false)'),
         action=actions.StoreProperty(
             properties.VALUES.core.user_output_enabled))
-    format_flag = top_element._ai.add_argument(
-        '--format', help='Format for printed output.',
-        choices=resource_printer.SUPPORTED_FORMATS)
+    format_flag = top_element.ai.add_argument(
+        '--format',
+        choices=resource_printer.SUPPORTED_FORMATS,
+        help='Format for printed output.')
     format_flag.detailed_help = """\
         Specify a format for printed output. By default, a command-specific
         human-friendly output format is used. Setting this flag to one of
@@ -455,18 +439,18 @@ class CLILoader(object):
         `{0}`.""".format('`, `'.join(resource_printer.SUPPORTED_FORMATS))
 
     # Logs all HTTP server requests and responses to stderr.
-    top_element._ai.add_argument(
+    top_element.ai.add_argument(
         '--log-http',
         action='store_true',
         default=None,
         help='Logs all HTTP server requests and responses to stderr.')
 
     # Timeout value for HTTP requests.
-    top_element._ai.add_argument(
+    top_element.ai.add_argument(
         '--http-timeout',
         default=None,
         type=float,
-        help='Timeout in seconds for HTTP requests.')
+        help=argparse.SUPPRESS)
 
   def __MakeCLI(self, top_element):
     """Generate a CLI object from the given data.
@@ -486,32 +470,27 @@ class CLILoader(object):
     if properties.VALUES.core.disable_command_lazy_loading.GetBool():
       top_element.LoadAllSubElements(recursive=True)
 
-    cli = CLI(self.__name, top_element,
-              self.__pre_run_hooks, self.__post_run_hooks, self.__help_func)
+    cli = CLI(self.__name, top_element, self.__pre_run_hooks,
+              self.__post_run_hooks)
     return cli
 
 
 class CLI(object):
   """A generated command line tool."""
 
-  def __init__(self, name, top_element, pre_run_hooks, post_run_hooks,
-               help_func):
+  def __init__(self, name, top_element, pre_run_hooks, post_run_hooks):
     # pylint: disable=protected-access
     self.__name = name
     self.__parser = top_element._parser
     self.__top_element = top_element
     self.__pre_run_hooks = pre_run_hooks
     self.__post_run_hooks = post_run_hooks
-    self.__help_func = help_func
 
   def _ArgComplete(self):
     argcomplete.autocomplete(self.__parser, always_complete_options=False)
 
   def _TopElement(self):
     return self.__top_element
-
-  def _HelpFunc(self):
-    return self.__help_func
 
   def Execute(self, args=None, call_arg_complete=True):
     """Execute the CLI tool with the given arguments.
@@ -542,6 +521,7 @@ class CLI(object):
     try:
       properties.VALUES.PushInvocationValues()
       args = self.__parser.parse_args(args)
+      # -h|--help|--document are dispatched by parse_args and never get here.
 
       # Now that we have parsed the args, reload the settings so the flags will
       # take effect.  These will use the values from the properties.

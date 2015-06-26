@@ -6,7 +6,7 @@ SET INTERACTIVE=%ERRORLEVEL%
 
 echo Welcome to the Google Cloud SDK!
 
-SETLOCAL
+SETLOCAL EnableDelayedExpansion
 
 IF "%CLOUDSDK_PYTHON%"=="" (
   FOR %%i in (python.exe) do (SET CLOUDSDK_PYTHON=%%~$PATH:i)
@@ -16,9 +16,9 @@ IF "%CLOUDSDK_PYTHON%"=="" (
   echo To use the Google Cloud SDK, you must have Python installed and on your PATH.
   echo As an alternative, you may also set the CLOUDSDK_PYTHON environment variable
   echo to the location of your Python executable.
-  %COMSPEC% /C exit 1
+  "%COMSPEC%" /C exit 1
 ) ELSE (
-  %COMSPEC% /C "%CLOUDSDK_PYTHON% "%~dp0bin\bootstrapping\install.py" %*"
+  "%COMSPEC%" /C ""!CLOUDSDK_PYTHON!" "%~dp0bin\bootstrapping\install.py" %*"
 )
 
 IF _%INTERACTIVE%_==_0_ (
@@ -28,6 +28,4 @@ IF _%INTERACTIVE%_==_0_ (
   )
 )
 
-ENDLOCAL
-
-%COMSPEC% /C exit %ERRORLEVEL%
+"%COMSPEC%" /C exit %ERRORLEVEL%

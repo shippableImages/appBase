@@ -95,7 +95,7 @@ def _ScreenResolution(model):
   Returns:
     Returns a human readable string representation of a screen resolution.
   """
-  return '{x} x {y}'.format(x=model.screenX, y=model.screenY)
+  return '{y} x {x}'.format(y=model.screenY, x=model.screenX)
 
 
 # Guidelines for choosing your resource columns:
@@ -112,8 +112,28 @@ def _ScreenResolution(model):
 #   your fault.
 
 
+def _Default(default):
+  def Transform(item):
+    return default if item is None else item
+  return Transform
+
+
 def _SelectTime(path):
   return _Select(path, transform=lambda x: x and x.isoformat())
+
+
+def _FormatOperationErrors(errs):
+  if not errs:
+    return None
+  else:
+    return '\n'.join(['[%s: %s]' % (e.code, e.message) for e in errs])
+
+
+def _FormatResourceErrors(errs):
+  if not errs:
+    return None
+  else:
+    return '\n'.join(['[%s]' % e for e in errs])
 
 
 COLLECTION_COLUMNS = {
@@ -177,13 +197,53 @@ COLLECTION_COLUMNS = {
         ('STATUS', _Select('status')),
     ),
 
+    # CONTAINER V1BETA1
+    # TODO(user): remove this once v1 is fully rolled out
+    'containerv1beta1.projects.zones.clusters': (
+        ('NAME', _Select('name')),
+        ('ZONE', _Select('zone')),
+        ('CLUSTER_API_VERSION', _Select('clusterApiVersion')),
+        ('MASTER_IP', _Select('endpoint')),
+        ('MACHINE_TYPE', _Select(
+            'nodeConfig', transform=
+            lambda x: '%s, %s' % (x.machineType, _NameOnly(x.sourceImage)))),
+        ('NODES', _Select('numNodes')),
+        ('STATUS', _Select('status')),
+    ),
+    'containerv1beta1.projects.zones.operations': (
+        ('NAME', _Select('name')),
+        ('TYPE', _Select('operationType')),
+        ('ZONE', _Select('zone')),
+        ('TARGET', _Select('target')),
+        ('ERROR_MESSAGE', _Select('errorMessage')),
+        ('STATUS', _Select('status')),
+    ),
+    # CONTAINER
+    'container.projects.zones.clusters': (
+        ('NAME', _Select('name')),
+        ('ZONE', _Select('zone')),
+        ('MASTER_VERSION', _Select('currentMasterVersion')),
+        ('MASTER_IP', _Select('endpoint')),
+        ('MACHINE_TYPE', _Select(
+            'nodeConfig', transform=lambda x: '%s' % (x.machineType))),
+        ('STATUS', _Select('status')),
+    ),
+
+    'container.projects.zones.operations': (
+        ('NAME', _Select('name')),
+        ('TYPE', _Select('operationType')),
+        ('ZONE', _Select('zone')),
+        ('TARGET', _Select('targetLink', _NameOnly)),
+        ('STATUS_MESSAGE', _Select('statusMessage')),
+        ('STATUS', _Select('status')),
+    ),
+
     # DATAFLOW
     'dataflow.jobs': (
         ('ID', _Select('job_id')),
         ('NAME', _Select('job_name')),
         ('TYPE', _Select('job_type')),
         ('CREATION_TIME', _Select('creation_time')),
-        ('STATUS_TIME', _Select('status_time')),
         ('STATUS', _Select('status')),
     ),
 
@@ -205,7 +265,8 @@ COLLECTION_COLUMNS = {
         ('DATA', _Select('rrdatas', _CommaList(''))),
     ),
 
-    # DEPLOYMENTMANAGER V2
+    # TODO(user): Remove this section when dm-v2 is removed from preview.
+    # DEPLOYMENTMANAGER V2BETA1
     'deploymentmanager.deployments': (
         ('NAME', _Select('name')),
         ('ID', _Select('id')),
@@ -225,6 +286,40 @@ COLLECTION_COLUMNS = {
         ('ID', _Select('id')),
         ('STATE', _Select('state')),
         ('ERRORS', _Select('errors')),
+    ),
+
+    # DEPLOYMENTMANAGER V2BETA2
+    'deploymentmanagerv2beta2.deployments': (
+        ('NAME', _Select('name')),
+        ('STATE', _Select('state')),
+        ('INTENT', _Select('intent')),
+        ('ID', _Select('id')),
+        ('DESCRIPTION', _Select('description')),
+        ('MANIFEST', _Select('manifest', transform=
+                             lambda x: x.split('/')[-1] if x else None)),
+        ('ERRORS', _Select('update.errors', transform=_FormatResourceErrors)),
+    ),
+    'deploymentmanagerv2beta2.operations': (
+        ('NAME', _Select('name')),
+        ('TYPE', _Select('operationType')),
+        ('STATUS', _Select('status')),
+        ('TARGET', _Select('targetLink', transform=
+                           lambda x: x.split('/')[-1] if x else None)),
+        ('ERRORS', _Select('error.errors', transform=_FormatOperationErrors)),
+    ),
+    'deploymentmanagerv2beta2.resources': (
+        ('NAME', _Select('name')),
+        ('TYPE', _Select('type')),
+        ('ID', _Select('id')),
+        ('UPDATE_STATE', _Select('update.state', transform=
+                                 lambda x: 'COMPLETED' if x is None else x)),
+        ('ERRORS', _Select('update.errors', transform=_FormatResourceErrors)),
+    ),
+
+    # GENOMICS
+    'genomics.datasets': (
+        ('ID', _Select('id')),
+        ('NAME', _Select('name')),
     ),
 
     # SQL
@@ -266,10 +361,19 @@ COLLECTION_COLUMNS = {
     ),
 
     # projects
-    'developerprojects.projects': (
+    'cloudresourcemanager.projects': (
         ('PROJECT_ID', _Select('projectId')),
-        ('TITLE', _Select('title')),
+        ('NAME', _Select('name')),
         ('PROJECT_NUMBER', _Select('projectNumber')),
+    ),
+
+    # source
+    'source.jobs.list': (
+        ('REPO_NAME', _Select('name', _Default('default'))),
+        ('PROJECT_ID ', _Select('projectId')),
+        ('VCS', _Select('vcs')),
+        ('STATE', _Select('state')),
+        ('CREATE_TIME', _Select('createTime')),
     ),
 
     # Cloud Updater
@@ -292,11 +396,12 @@ COLLECTION_COLUMNS = {
         ('MODEL', _Select('name')),
         ('FORM', _Select('form')),
         ('SCREEN_RES', _ScreenResolution),
-        ('OS_VERSION_IDS', _Select('supportedVersionIds', _CommaList('none')))
+        ('OS_VERSION_IDS', _Select('supportedVersionIds', _CommaList('none'))),
+        ('TAGS', _Select('tags', _CommaList('')))
     ),
     'test.run.outcomes': (
         ('OUTCOME', _Select('outcome')),
-        ('TEST_PACKAGE_ID', _Select('step_name')),
+        ('STEP', _Select('step_name')),
         ('TEST_AXIS_VALUE', _Select('axis_value')),
     ),
 
@@ -312,5 +417,16 @@ COLLECTION_COLUMNS = {
         ('NAME', _Select('name')),
         ('DESTINATION', _Select('destination')),
         ('TYPE', _Select('type')),
+    ),
+    'logging.metrics': (
+        ('NAME', _Select('name')),
+        ('DESCRIPTION', _Select('description')),
+        ('FILTER', _Select('filter')),
+    ),
+
+    # Service Management (Inception)
+    'servicemanagement-v1.services': (
+        ('NAME', _Select('serviceName')),
+        ('TITLE', _Select('serviceConfig.title')),
     ),
 }

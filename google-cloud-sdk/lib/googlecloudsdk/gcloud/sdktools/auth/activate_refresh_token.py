@@ -51,8 +51,6 @@ class ActivateRefreshToken(base.Command):
     if project:
       properties.PersistProperty(properties.VALUES.core.project, project)
 
+    log.status.Print('Activated refresh token credentials: [{0}]'
+                     .format(account))
     return creds
-
-  def Display(self, args, result):
-    if result:
-      log.Print('Activated refresh token credentials for %s.' % args.account)

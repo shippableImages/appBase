@@ -108,8 +108,8 @@ class CredentialInfoResponse(messages.Message):
 
 def _SendRecv(request):
   """Communicate with the devshell access token service."""
-  port = int(os.getenv(DEVSHELL_ENV, None))
-  if port is None:
+  port = int(os.getenv(DEVSHELL_ENV, 0))
+  if not port:
     raise NoDevshellServer()
   return _SendRecvPort(request, port)
 
@@ -228,3 +228,8 @@ def LoadDevshellCredentials():
         user_agent=config.CLOUDSDK_USER_AGENT,)
   except Exception:  # pylint:disable=broad-except, any problem means None
     return None
+
+
+def IsDevshellEnvironment():
+  port = int(os.getenv(DEVSHELL_ENV, 0))
+  return port != 0

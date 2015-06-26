@@ -11,11 +11,13 @@ from oauth2client import client
 from googlecloudsdk.core import config
 from googlecloudsdk.core import exceptions
 from googlecloudsdk.core import log
+from googlecloudsdk.core import properties
 from googlecloudsdk.core.credentials import store as c_store
 from googlecloudsdk.core.util import console_io
+from googlecloudsdk.core.util import platforms
 
 
-__all__ = ['Credentials', 'Http']
+__all__ = ['Http']
 
 
 class Error(exceptions.Error):
@@ -30,24 +32,6 @@ class CannotRefreshAuthTokenError(Error, client.AccessTokenRefreshError):
     message = ('There was a problem refreshing your current auth tokens: '
                '{0}.  Please run\n  {1}.'.format(msg, auth_command))
     super(CannotRefreshAuthTokenError, self).__init__(message)
-
-
-def Credentials():
-  """Get the currently active credentials.
-
-  This function loads account credentials via core.account property
-  of core.properties module.
-
-  These credentials will be refreshed before being returned, so it makes sense
-  to cache the value returned for short-lived programs.
-
-  Returns:
-    An active, valid credentials object.
-
-  Raises:
-    c_store.Error: If an error loading the credentials occurs.
-  """
-  return c_store.Load()
 
 
 def Http(cmd_path=None, trace_token=None,
@@ -67,6 +51,9 @@ def Http(cmd_path=None, trace_token=None,
   Returns:
     An authorized httplib2.Http object, or a regular httplib2.Http object if no
     credentials are available.
+
+  Raises:
+    c_store.Error: If an error loading the credentials occurs.
   """
 
   # TODO(user): Have retry-once-if-denied logic, to allow client tools to not
@@ -79,16 +66,26 @@ def Http(cmd_path=None, trace_token=None,
     http = _WrapRequestForLogging(http)
 
   # Wrap the request method to put in our own user-agent, and trace reporting.
-  gcloud_ua = 'gcloud/{0} command/{1} invocation-id/{2} interactive/{3}'.format(
-      config.CLOUD_SDK_VERSION,
-      cmd_path,
-      uuid.uuid4().hex,
-      console_io.IsInteractive())
+  gcloud_ua = (
+      'gcloud/{0}'
+      ' command/{1}'
+      ' invocation-id/{2}'
+      ' environment/{3}'
+      ' interactive/{4}'
+      ' {5}'
+      ).format(
+          config.CLOUD_SDK_VERSION,
+          cmd_path,
+          uuid.uuid4().hex,
+          properties.VALUES.metrics.environment.Get(),
+          console_io.IsInteractive(error=True, heuristic=True),
+          platforms.Platform.Current().UserAgentFragment())
+
   http = _WrapRequestForUserAgentAndTracing(http, trace_token,
                                             gcloud_ua)
   if auth:
     if not creds:
-      creds = Credentials()
+      creds = c_store.Load()
     http = creds.authorize(http)
     # Wrap the request method to put in our own error handling.
     http = _WrapRequestForAuthErrHandling(http)
@@ -109,6 +106,7 @@ def _WrapRequestForUserAgentAndTracing(http, trace_token,
   """
   orig_request = http.request
 
+  # TODO(user): Use @functools.wraps, and then remove credentials attr check.
   def RequestWithUserAgentAndTracing(*args, **kwargs):
     """Wrap request with user-agent, and trace reporting.
 
@@ -175,6 +173,7 @@ def _WrapRequestForAuthErrHandling(http):
   """
   orig_request = http.request
 
+  # TODO(user): Use @functools.wraps, and then remove credentials attr check.
   def RequestWithErrHandling(*args, **kwargs):
     try:
       return orig_request(*args, **kwargs)
@@ -205,6 +204,7 @@ def _WrapRequestForLogging(http):
 
   orig_request = http.request
 
+  # TODO(user): Use @functools.wraps, and then remove credentials attr check.
   def RequestWithLogging(*args, **kwargs):
     """Wrap request for request/response logging.
 
@@ -233,15 +233,29 @@ def _WrapRequestForLogging(http):
 def _LogRequest(*args, **kwargs):
   """Logs request arguments."""
 
+  # http.request has the following signature:
+  # request(self, uri, method="GET", body=None, headers=None,
+  #         redirections=DEFAULT_MAX_REDIRECTS, connection_type=None)
+  uri = args[0]
+  body = ''
+  headers = {}
+  if len(args) > 2:
+    body = args[2]
+    if len(args) > 3:
+      headers = args[3]
+  if 'body' in kwargs:
+    body = kwargs['body']
+  if 'headers' in kwargs:
+    headers = kwargs['headers']
+
   log.status.Print('--request-start--')
-  log.status.Print('uri: {uri}'.format(uri=args[0]))
+  log.status.Print('uri: {uri}'.format(uri=uri))
   log.status.Print('-headers-start-')
-  for h, v in sorted(kwargs.get('headers', {}).iteritems()):
+  for h, v in sorted(headers.iteritems()):
     log.status.Print('{0}: {1}'.format(h, v))
   log.status.Print('-headers-end-')
   log.status.Print('-body-start-')
-  if 'body' in kwargs:
-    log.status.Print(kwargs['body'])
+  log.status.Print(body)
   log.status.Print('-body-end-')
   log.status.Print('--request-end--')
 

@@ -121,13 +121,16 @@ class Request(object):
 
   @body.setter
   def body(self, value):
+    """Sets the request body; handles logging and length measurement."""
     self.__body = value
     if value is not None:
-      self.headers['content-length'] = str(len(self.__body))
+      # Avoid calling len() which cannot exceed 4GiB in 32-bit python.
+      body_length = getattr(self.__body, 'length', None) or len(self.__body)
+      self.headers['content-length'] = str(body_length)
     else:
       self.headers.pop('content-length', None)
     # This line ensures we don't try to print large requests.
-    if not isinstance(value, six.string_types):
+    if not isinstance(value, basestring):
       self.loggable_body = '<media body>'
 
 
@@ -193,7 +196,7 @@ def CheckResponse(response):
     raise exceptions.BadStatusCodeError.FromResponse(response)
   elif response.status_code == http_client.UNAUTHORIZED:
     # Sometimes we get a 401 after a connection break.
-    # TODO(user): this shouldn't be a retryable exception, but
+    # TODO(craigcitro): this shouldn't be a retryable exception, but
     # for now we retry.
     raise exceptions.BadStatusCodeError.FromResponse(response)
   elif response.retry_after:
@@ -236,9 +239,11 @@ def HandleExceptionsAndRebuildHttpConnections(retry_args):
   retry_after = None
 
   # Transport failures
-  if isinstance(retry_args.exc, http_client.BadStatusLine):
-    logging.debug('Caught BadStatusLine from httplib, retrying: %s',
-                  retry_args.exc)
+  if isinstance(retry_args.exc, (http_client.BadStatusLine,
+                                 http_client.IncompleteRead,
+                                 http_client.ResponseNotReady)):
+    logging.debug('Caught HTTP error %s, retrying: %s',
+                  type(retry_args.exc).__name__, retry_args.exc)
   elif isinstance(retry_args.exc, socket.error):
     logging.debug('Caught socket error, retrying: %s', retry_args.exc)
   elif isinstance(retry_args.exc, socket.gaierror):

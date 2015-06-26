@@ -411,7 +411,7 @@ May return any of the following canonical error codes:
               method_id=u'toolresults.projects.histories.list',
               ordered_params=[u'projectId'],
               path_params=[u'projectId'],
-              query_params=[u'filterByDisplayName', u'pageSize', u'pageToken'],
+              query_params=[u'filterByName', u'pageSize', u'pageToken'],
               relative_path=u'projects/{projectId}/histories',
               request_field='',
               request_type_name=u'ToolresultsProjectsHistoriesListRequest',
@@ -486,7 +486,71 @@ May return any of the following canonical error codes:
     def __init__(self, client):
       super(ToolresultsV1beta3.ProjectsService, self).__init__(client)
       self._method_configs = {
+          'GetSettings': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'toolresults.projects.getSettings',
+              ordered_params=[u'projectId'],
+              path_params=[u'projectId'],
+              query_params=[],
+              relative_path=u'projects/{projectId}/settings',
+              request_field='',
+              request_type_name=u'ToolresultsProjectsGetSettingsRequest',
+              response_type_name=u'ProjectSettings',
+              supports_download=False,
+          ),
+          'InitializeSettings': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'toolresults.projects.initializeSettings',
+              ordered_params=[u'projectId'],
+              path_params=[u'projectId'],
+              query_params=[],
+              relative_path=u'projects/{projectId}:initializeSettings',
+              request_field='',
+              request_type_name=u'ToolresultsProjectsInitializeSettingsRequest',
+              response_type_name=u'ProjectSettings',
+              supports_download=False,
+          ),
           }
 
       self._upload_configs = {
           }
+
+    def GetSettings(self, request, global_params=None):
+      """Gets the Tool Results settings for a project.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read from project
+
+      Args:
+        request: (ToolresultsProjectsGetSettingsRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (ProjectSettings) The response message.
+      """
+      config = self.GetMethodConfig('GetSettings')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def InitializeSettings(self, request, global_params=None):
+      """Creates resources for settings which have not yet been set.
+
+Currently, this creates a single resource: a Google Cloud Storage bucket, to be used as the default bucket for this project. The bucket is created in the name of the user calling. Except in rare cases, calling this method in parallel from multiple clients will only create a single bucket. In order to avoid unnecessary storage charges, the bucket is configured to automatically delete objects older than 90 days.
+
+The bucket is created with the project-private ACL: All project team members are given permissions to the bucket and objects created within it according to their roles. Project owners have owners rights, and so on. The default ACL on objects created in the bucket is project-private as well. See Google Cloud Storage documentation for more details.
+
+If there is already a default bucket set, this call does nothing.
+
+May return any canonical error codes, including the following:
+
+- PERMISSION_DENIED - if the user is not authorized to write to project - Any error code raised by Google Cloud Storage
+
+      Args:
+        request: (ToolresultsProjectsInitializeSettingsRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (ProjectSettings) The response message.
+      """
+      config = self.GetMethodConfig('InitializeSettings')
+      return self._RunMethod(
+          config, request, global_params=global_params)

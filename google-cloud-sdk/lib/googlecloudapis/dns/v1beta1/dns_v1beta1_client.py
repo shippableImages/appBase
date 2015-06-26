@@ -175,7 +175,7 @@ class DnsV1beta1(base_api.BaseApiClient):
               method_id=u'dns.managedZones.list',
               ordered_params=[u'project'],
               path_params=[u'project'],
-              query_params=[u'maxResults', u'pageToken'],
+              query_params=[u'dnsName', u'maxResults', u'pageToken'],
               relative_path=u'projects/{project}/managedZones',
               request_field='',
               request_type_name=u'DnsManagedZonesListRequest',

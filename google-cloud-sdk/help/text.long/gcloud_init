@@ -5,14 +5,12 @@ NAME
 
 SYNOPSIS
 
-      gcloud init PROJECT [--format FORMAT] [--help]
-         [--http-timeout HTTP_TIMEOUT] [--log-http] [--project PROJECT_ID]
-         [--quiet, -q] [--trace-token TRACE_TOKEN] [-h]
+      gcloud init PROJECT [GLOBAL-FLAG ...]
 
 DESCRIPTION
 
-      This command is creates and initializes a local workspace for a Google
-      Cloud Platform project.
+      This command creates and initializes a local workspace for a Google Cloud
+      Platform project.
 
       The local workspace is indicated by the creation of a [.gcloud] folder. In
       this folder is a file [properties] which allows you to override any global
@@ -31,6 +29,9 @@ DESCRIPTION
       by gcloud auth list. Pushing to the origin's master branch will trigger an
       App Engine deployment using the contents of that branch.
 
+      **Note: this command will be changing soon. Consider using $ gcloud alpha
+      source clone to clone authenticated git repository.
+
 POSITIONAL ARGUMENTS
 
       PROJECT
@@ -40,46 +41,9 @@ POSITIONAL ARGUMENTS
          has an associated Google-hosted git repository, that repository will be
          cloned into the local workspace.
 
-FLAGS
+GLOBAL FLAGS
 
-      --format FORMAT
-
-         Specify a format for printed output. By default, a command-specific
-         human-friendly output format is used. Setting this flag to one of the
-         available options will serialize the result of the command in the
-         chosen format and print it to stdout. Supported formats are: json,
-         text, yaml.
-
-      --help
-
-         Display detailed help.
-
-      --http-timeout HTTP_TIMEOUT
-
-         Timeout in seconds for HTTP requests.
-
-      --log-http
-
-         Logs all HTTP server requests and responses to stderr.
-
-      --project PROJECT_ID
-
-         The Google Cloud Platform project name to use for this invocation. If
-         omitted then the current project is assumed.
-
-      --quiet, -q
-
-         Disable all interactive prompts when running gcloud commands. If input
-         is required, defaults will be used, or an error will be raised.
-
-      --trace-token TRACE_TOKEN
-
-         Token used to route traces of service requests for investigation of
-         issues.
-
-      -h
-
-         Print a summary help and exit.
+      Run $ gcloud help for a description of flags available to all commands.
 
 EXAMPLES
 

@@ -10,6 +10,7 @@ from googlecloudsdk.calliope import exceptions as c_exc
 from googlecloudsdk.core import config
 from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
+from googlecloudsdk.core.credentials import devshell as c_devshell
 from googlecloudsdk.core.credentials import gce as c_gce
 from googlecloudsdk.core.credentials import store as c_store
 from googlecloudsdk.core.util import console_io
@@ -52,6 +53,17 @@ class Login(base.Command):
   def Run(self, args):
     """Run the authentication command."""
 
+    if c_devshell.IsDevshellEnvironment():
+      message = """
+          You are already authenticated with gcloud when running inside
+          the Developer Shell and so do not need to run this command.
+
+          Do you wish to proceed anyway?
+        """
+      answer = console_io.PromptContinue(message=message)
+      if not answer:
+        return None
+
     if c_gce.Metadata().connected:
       message = textwrap.dedent("""
           You are running on a GCE VM. It is recommended that you use
@@ -81,8 +93,8 @@ class Login(base.Command):
 
     # No valid creds, do the web flow.
     creds = self.DoWebFlow(args.launch_browser)
-    web_flow_account = creds.token_response['id_token']['email']
-    if account and account != web_flow_account:
+    web_flow_account = creds.id_token['email']
+    if account and account.lower() != web_flow_account.lower():
       raise c_exc.ToolException(
           'You attempted to log in as account [{account}] but the received '
           'credentials were for account [{web_flow_account}].\n\n'
@@ -116,7 +128,7 @@ class Login(base.Command):
     log.status.write(
         '\nYou are now logged in as [{account}].\n'
         'Your current project is [{project}].  You can change this setting by '
-        'running:\n  $ gcloud config set project PROJECT\n'.format(
+        'running:\n  $ gcloud config set project PROJECT_ID\n'.format(
             account=account, project=properties.VALUES.core.project.Get()))
     return creds
 

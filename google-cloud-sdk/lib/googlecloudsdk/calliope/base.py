@@ -63,6 +63,22 @@ class ReleaseTrack(object):
     """
     return list(ReleaseTrack._ALL)
 
+  @staticmethod
+  def FromPrefix(prefix):
+    """Gets a ReleaseTrack from the given release track prefix.
+
+    Args:
+      prefix: str, The prefix string that might be a release track name.
+
+    Returns:
+      ReleaseTrack, The corresponding object or None if the prefix was not a
+      valid release track.
+    """
+    for track in ReleaseTrack._ALL:
+      if track.prefix == prefix:
+        return track
+    return None
+
 
 class _Common(object):
   """Base class for Command and Group.

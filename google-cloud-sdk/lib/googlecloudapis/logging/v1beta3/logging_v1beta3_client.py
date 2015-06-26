@@ -11,7 +11,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
   MESSAGES_MODULE = messages
 
   _PACKAGE = u'logging'
-  _SCOPES = [u'https://www.googleapis.com/auth/cloud-platform', u'https://www.googleapis.com/auth/cloud-platform.read-only', u'https://www.googleapis.com/auth/logging.admin', u'https://www.googleapis.com/auth/logging.read', u'https://www.googleapis.com/auth/logging.write']
+  _SCOPES = [u'https://www.googleapis.com/auth/cloud-platform', u'https://www.googleapis.com/auth/logging.admin', u'https://www.googleapis.com/auth/logging.read', u'https://www.googleapis.com/auth/logging.write']
   _VERSION = u'v1beta3'
   _CLIENT_ID = '1042881264118.apps.googleusercontent.com'
   _CLIENT_SECRET = 'x_Tw5K8nnjoRAqULM9PFAC2b'
@@ -25,7 +25,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
                credentials_args=None, default_global_params=None,
                additional_http_headers=None):
     """Create a new logging handle."""
-    url = url or u'https://www.googleapis.com/'
+    url = url or u'https://logging.googleapis.com/'
     super(LoggingV1beta3, self).__init__(
         url, credentials=credentials,
         get_credentials=get_credentials, http=http, model=model,
@@ -41,6 +41,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
     self.projects_logs_sinks = self.ProjectsLogsSinksService(self)
     self.projects_logs = self.ProjectsLogsService(self)
     self.projects_metrics = self.ProjectsMetricsService(self)
+    self.projects_sinks = self.ProjectsSinksService(self)
     self.projects = self.ProjectsService(self)
 
   class ProjectsLogEntriesService(base_api.BaseApiService):
@@ -54,7 +55,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           'List': base_api.ApiMethodInfo(
               http_method=u'GET',
               method_id=u'logging.projects.logEntries.list',
-              ordered_params=[u'projectsId', u'filter', u'orderBy', u'pageSize', u'pageToken'],
+              ordered_params=[u'projectsId'],
               path_params=[u'projectsId'],
               query_params=[u'filter', u'orderBy', u'pageSize', u'pageToken'],
               relative_path=u'v1beta3/projects/{projectsId}/logEntries',
@@ -92,7 +93,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           'List': base_api.ApiMethodInfo(
               http_method=u'GET',
               method_id=u'logging.projects.logServices.indexes.list',
-              ordered_params=[u'projectsId', u'logServicesId', u'indexPrefix', u'depth', u'log', u'pageSize', u'pageToken'],
+              ordered_params=[u'projectsId', u'logServicesId'],
               path_params=[u'logServicesId', u'projectsId'],
               query_params=[u'depth', u'indexPrefix', u'log', u'pageSize', u'pageToken'],
               relative_path=u'v1beta3/projects/{projectsId}/logServices/{logServicesId}/indexes',
@@ -193,7 +194,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           }
 
     def Create(self, request, global_params=None):
-      """Create the specified log service sink resource.
+      """Creates the specified log service sink resource.
 
       Args:
         request: (LoggingProjectsLogServicesSinksCreateRequest) input message
@@ -219,7 +220,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Get the specified log service sink resource.
+      """Gets the specified log service sink resource.
 
       Args:
         request: (LoggingProjectsLogServicesSinksGetRequest) input message
@@ -232,7 +233,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """List log service sinks associated with the specified service.
+      """Lists log service sinks associated with the specified service.
 
       Args:
         request: (LoggingProjectsLogServicesSinksListRequest) input message
@@ -245,7 +246,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Update(self, request, global_params=None):
-      """Create or update the specified log service sink resource.
+      """Creates or update the specified log service sink resource.
 
       Args:
         request: (LoggingProjectsLogServicesSinksUpdateRequest) input message
@@ -268,7 +269,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           'List': base_api.ApiMethodInfo(
               http_method=u'GET',
               method_id=u'logging.projects.logServices.list',
-              ordered_params=[u'projectsId', u'log', u'pageSize', u'pageToken'],
+              ordered_params=[u'projectsId'],
               path_params=[u'projectsId'],
               query_params=[u'log', u'pageSize', u'pageToken'],
               relative_path=u'v1beta3/projects/{projectsId}/logServices',
@@ -321,7 +322,13 @@ class LoggingV1beta3(base_api.BaseApiClient):
           }
 
     def Write(self, request, global_params=None):
-      """Creates several log entries in a log.
+      """Creates one or more log entries in a log.  You must supply a list of.
+`LogEntry` objects, named `entries`.  Each `LogEntry` object must contain a
+payload object and a `LogEntryMetadata` object that describes the
+entry. You must fill in all the fields of the entry, metadata, and payload.
+You can also supply a map, `commonLabels`, that supplies default (key,
+value) data for the `entries[].metadata.labels` maps, saving you the
+trouble of creating identical copies for each entry.
 
       Args:
         request: (LoggingProjectsLogsEntriesWriteRequest) input message
@@ -407,7 +414,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           }
 
     def Create(self, request, global_params=None):
-      """Create the specified log sink resource.
+      """Creates the specified log sink resource.
 
       Args:
         request: (LoggingProjectsLogsSinksCreateRequest) input message
@@ -420,7 +427,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified log sink.
+      """Deletes the specified log sink resource.
 
       Args:
         request: (LoggingProjectsLogsSinksDeleteRequest) input message
@@ -433,7 +440,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Get the specified log sink resource.
+      """Gets the specified log sink resource.
 
       Args:
         request: (LoggingProjectsLogsSinksGetRequest) input message
@@ -446,7 +453,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """List log sinks associated with the specified log.
+      """Lists log sinks associated with the specified log.
 
       Args:
         request: (LoggingProjectsLogsSinksListRequest) input message
@@ -459,7 +466,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Update(self, request, global_params=None):
-      """Create or update the specified log sink resource.
+      """Creates or updates the specified log sink resource.
 
       Args:
         request: (LoggingProjectsLogsSinksUpdateRequest) input message
@@ -494,7 +501,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           'List': base_api.ApiMethodInfo(
               http_method=u'GET',
               method_id=u'logging.projects.logs.list',
-              ordered_params=[u'projectsId', u'serviceName', u'serviceIndexPrefix', u'pageSize', u'pageToken'],
+              ordered_params=[u'projectsId'],
               path_params=[u'projectsId'],
               query_params=[u'pageSize', u'pageToken', u'serviceIndexPrefix', u'serviceName'],
               relative_path=u'v1beta3/projects/{projectsId}/logs',
@@ -581,7 +588,7 @@ class LoggingV1beta3(base_api.BaseApiClient):
           'List': base_api.ApiMethodInfo(
               http_method=u'GET',
               method_id=u'logging.projects.metrics.list',
-              ordered_params=[u'projectsId', u'pageToken', u'pageSize'],
+              ordered_params=[u'projectsId'],
               path_params=[u'projectsId'],
               query_params=[u'pageSize', u'pageToken'],
               relative_path=u'v1beta3/projects/{projectsId}/metrics',
@@ -667,6 +674,144 @@ class LoggingV1beta3(base_api.BaseApiClient):
         global_params: (StandardQueryParameters, default: None) global arguments
       Returns:
         (LogMetric) The response message.
+      """
+      config = self.GetMethodConfig('Update')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+  class ProjectsSinksService(base_api.BaseApiService):
+    """Service class for the projects_sinks resource."""
+
+    _NAME = u'projects_sinks'
+
+    def __init__(self, client):
+      super(LoggingV1beta3.ProjectsSinksService, self).__init__(client)
+      self._method_configs = {
+          'Create': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'logging.projects.sinks.create',
+              ordered_params=[u'projectsId'],
+              path_params=[u'projectsId'],
+              query_params=[],
+              relative_path=u'v1beta3/projects/{projectsId}/sinks',
+              request_field=u'logSink',
+              request_type_name=u'LoggingProjectsSinksCreateRequest',
+              response_type_name=u'LogSink',
+              supports_download=False,
+          ),
+          'Delete': base_api.ApiMethodInfo(
+              http_method=u'DELETE',
+              method_id=u'logging.projects.sinks.delete',
+              ordered_params=[u'projectsId', u'sinksId'],
+              path_params=[u'projectsId', u'sinksId'],
+              query_params=[],
+              relative_path=u'v1beta3/projects/{projectsId}/sinks/{sinksId}',
+              request_field='',
+              request_type_name=u'LoggingProjectsSinksDeleteRequest',
+              response_type_name=u'Empty',
+              supports_download=False,
+          ),
+          'Get': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'logging.projects.sinks.get',
+              ordered_params=[u'projectsId', u'sinksId'],
+              path_params=[u'projectsId', u'sinksId'],
+              query_params=[],
+              relative_path=u'v1beta3/projects/{projectsId}/sinks/{sinksId}',
+              request_field='',
+              request_type_name=u'LoggingProjectsSinksGetRequest',
+              response_type_name=u'LogSink',
+              supports_download=False,
+          ),
+          'List': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'logging.projects.sinks.list',
+              ordered_params=[u'projectsId'],
+              path_params=[u'projectsId'],
+              query_params=[],
+              relative_path=u'v1beta3/projects/{projectsId}/sinks',
+              request_field='',
+              request_type_name=u'LoggingProjectsSinksListRequest',
+              response_type_name=u'ListSinksResponse',
+              supports_download=False,
+          ),
+          'Update': base_api.ApiMethodInfo(
+              http_method=u'PUT',
+              method_id=u'logging.projects.sinks.update',
+              ordered_params=[u'projectsId', u'sinksId'],
+              path_params=[u'projectsId', u'sinksId'],
+              query_params=[],
+              relative_path=u'v1beta3/projects/{projectsId}/sinks/{sinksId}',
+              request_field=u'logSink',
+              request_type_name=u'LoggingProjectsSinksUpdateRequest',
+              response_type_name=u'LogSink',
+              supports_download=False,
+          ),
+          }
+
+      self._upload_configs = {
+          }
+
+    def Create(self, request, global_params=None):
+      """Creates the specified sink resource.
+
+      Args:
+        request: (LoggingProjectsSinksCreateRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (LogSink) The response message.
+      """
+      config = self.GetMethodConfig('Create')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Delete(self, request, global_params=None):
+      """Deletes the specified sink.
+
+      Args:
+        request: (LoggingProjectsSinksDeleteRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Empty) The response message.
+      """
+      config = self.GetMethodConfig('Delete')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Get(self, request, global_params=None):
+      """Gets the specified sink resource.
+
+      Args:
+        request: (LoggingProjectsSinksGetRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (LogSink) The response message.
+      """
+      config = self.GetMethodConfig('Get')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def List(self, request, global_params=None):
+      """Lists sinks associated with the specified project.
+
+      Args:
+        request: (LoggingProjectsSinksListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (ListSinksResponse) The response message.
+      """
+      config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Update(self, request, global_params=None):
+      """Creates or update the specified sink resource.
+
+      Args:
+        request: (LoggingProjectsSinksUpdateRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (LogSink) The response message.
       """
       config = self.GetMethodConfig('Update')
       return self._RunMethod(

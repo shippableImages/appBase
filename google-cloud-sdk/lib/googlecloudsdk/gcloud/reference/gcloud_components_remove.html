@@ -18,13 +18,7 @@
 <dd>gcloud components remove - remove one or more installed components</dd>
 </section><section>
 <dt>SYNOPSIS</dt>
-<dd><dl>
-<dt class="hangingindent">
-<code>gcloud components remove</code>&nbsp;&nbsp;&#32;<code><var>COMPONENT-ID</var></code>&nbsp;&nbsp;&#32;<nobr>[<code><var>COMPONENT-ID</var></code>&nbsp;&nbsp;&#32;…]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--format</code>&nbsp;&nbsp;&#32;<code><var>FORMAT</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--help</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--http-timeout</code>&nbsp;&nbsp;&#32;<code><var>HTTP_TIMEOUT</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--log-http</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--project</code>&nbsp;&nbsp;&#32;<code><var>PROJECT_ID</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--quiet</code>,&nbsp;&nbsp;&#32;<code>-q</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--trace-token</code>&nbsp;&nbsp;&#32;<code><var>TRACE_TOKEN</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>-h</code>]</nobr>
-</dt>
-
-
-</dl></dd>
+<dd><pre>gcloud components remove COMPONENT-ID [COMPONENT-ID …] [GLOBAL-FLAG …]</pre></dd>
 </section><section>
 <dt>DESCRIPTION</dt>
 <dd>Uninstall all listed components, as well as all components that
@@ -36,8 +30,8 @@ confirmation before proceeding.</dd>
 </section><section>
 <dt>POSITIONAL ARGUMENTS</dt>
 <dd><dl>
-<dt>
-<code><var>COMPONENT-ID</var></code> [<code><var>COMPONENT-ID</var></code> …]
+<dt class="hangingindent">
+<code><var>COMPONENT-ID</var></code>&nbsp;&nbsp;&#32;<nobr>[<code><var>COMPONENT-ID</var></code>&nbsp;&nbsp;&#32;…]</nobr>
 </dt>
 
 <dd>
@@ -46,86 +40,9 @@ The IDs of the components to be removed.
 
 </dl></dd>
 </section><section>
-<dt>FLAGS</dt>
-<dd><dl>
-<dt>
-<code>--format</code> <code><var>FORMAT</var></code>
-</dt>
-
-<dd>
-Specify a format for printed output. By default, a command-specific
-human-friendly output format is used. Setting this flag to one of
-the available options will serialize the result of the command in
-the chosen format and print it to stdout. Supported formats are:
-<code>json</code>, <code>text</code>, <code>yaml</code>.
-</dd>
-
-
-<dt>
-<code>--help</code>
-</dt>
-
-<dd>
-Display detailed help.
-</dd>
-
-
-<dt>
-<code>--http-timeout</code> <code><var>HTTP_TIMEOUT</var></code>
-</dt>
-
-<dd>
-Timeout in seconds for HTTP requests.
-</dd>
-
-
-<dt>
-<code>--log-http</code>
-</dt>
-
-<dd>
-Logs all HTTP server requests and responses to stderr.
-</dd>
-
-
-<dt>
-<code>--project</code> <code><var>PROJECT_ID</var></code>
-</dt>
-
-<dd>
-The Google Cloud Platform project name to use for this invocation. If
-omitted then the current project is assumed.
-</dd>
-
-
-<dt>
-<code>--quiet</code>, <code>-q</code>
-</dt>
-
-<dd>
-Disable all interactive prompts when running gcloud commands. If input
-is required, defaults will be used, or an error will be raised.
-</dd>
-
-
-<dt>
-<code>--trace-token</code> <code><var>TRACE_TOKEN</var></code>
-</dt>
-
-<dd>
-Token used to route traces of service requests for investigation of issues.
-</dd>
-
-
-<dt>
-<code>-h</code>
-</dt>
-
-<dd>
-Print a summary help and exit.
-</dd>
-
-</dl></dd>
+<dt>GLOBAL FLAGS</dt>
+<dd>Run <code>$ <a href="../">gcloud</a> help</code> for a description of flags available to
+all commands.</dd>
 </section><section>
 <dt>EXAMPLES</dt>
 <dd>To remove <code><var>COMPONENT-1</var></code>, <code><var>COMPONENT-2</var></code>, and all components that
