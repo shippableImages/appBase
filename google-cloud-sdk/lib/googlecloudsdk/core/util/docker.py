@@ -12,10 +12,13 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
+import urlparse
 
 from googlecloudsdk.core import exceptions
 from googlecloudsdk.core.credentials import store
 from googlecloudsdk.core.util import files
+from googlecloudsdk.core.util import platforms
 
 _USERNAME = '_token'
 
@@ -30,10 +33,8 @@ def GetDockerConfig():
     The path on the host machine to '.dockercfg', as expected by the docker
     client.
   """
-  # TODO(user): While os.path.expanduser('~') is more portable, here we
-  # very intentionally match the paired logic from docker/docker-py, which
-  # uses the HOME variable directly.
-  return os.path.join(os.environ.get('HOME', '.'), '.dockercfg')
+  # We very intentionally match the paired logic from docker/docker-py.
+  return os.path.join(os.path.expanduser('~'), '.dockercfg')
 
 
 def ReadDockerConfig():
@@ -56,8 +57,19 @@ def WriteDockerConfig(contents):
   Args:
     contents: The body to write to '.dockercfg'.
   """
-  with files.OpenForWritingPrivate(GetDockerConfig()) as writer:
-    writer.write(contents)
+  if platforms.OperatingSystem.Current() == platforms.OperatingSystem.WINDOWS:
+    # On windows, there is no good way to atomically write this file.
+    with files.OpenForWritingPrivate(GetDockerConfig()) as writer:
+      writer.write(contents)
+    return
+
+  # This opens files with 0600, which are the correct permissions.
+  cfg = GetDockerConfig()
+  with tempfile.NamedTemporaryFile(
+      dir=os.path.dirname(cfg), delete=False) as tf:
+    tf.write(contents)
+    # This pattern atomically writes the file on non-Windows systems.
+    os.rename(tf.name, cfg)
 
 
 def UpdateDockerCredentials(server):
@@ -104,15 +116,27 @@ def _UpdateDockerConfig(server, username, access_token):
   # Add the entry for our server.
   auth = base64.b64encode(username + ':' + access_token)
 
+  # Sanitize and normalize the server input.
+  parsed_url = urlparse.urlparse(server)
+  # Work around the fact that Python 2.6 does not properly
+  # look for :// and simply splits on colon, so something
+  # like 'gcr.io:1234' returns the scheme 'gcr.io'.
+  if '://' not in server:
+    # Server doesn't have a scheme, set it to HTTPS.
+    parsed_url = urlparse.urlparse('https://' + server)
+    if parsed_url.hostname == 'localhost':
+      # Now that it parses, if the hostname is localhost switch to HTTP.
+      parsed_url = urlparse.urlparse('http://' + server)
+
+  server = parsed_url.geturl()
+  server_unqualified = parsed_url.hostname
+
   # Clear out any unqualified stale entry for this server
-  if server in dockercfg_contents:
-    del dockercfg_contents[server]
+  if server_unqualified in dockercfg_contents:
+    del dockercfg_contents[server_unqualified]
 
-  scheme = 'https://'
-  dockercfg_contents[scheme + server] = {'auth': auth,
-                                         'email': 'not@val.id'}
+  dockercfg_contents[server] = {'auth': auth, 'email': 'not@val.id'}
 
-  # TODO(user): atomic replace?
   # Be nice and pretty-print.
   WriteDockerConfig(json.dumps(dockercfg_contents, indent=2))
 
@@ -150,16 +174,10 @@ def Execute(args):
   Args:
     args: The list of command-line arguments to docker.
 
-  Raises:
-    exceptions.Error: The docker command returned a non-zero exit code.
+  Returns:
+    The exit code from Docker.
   """
-  result = subprocess.call(['docker'] + args,
-                           stdin=sys.stdin,
-                           stdout=sys.stdout,
-                           stderr=sys.stderr)
-  if result != 0:
-    raise exceptions.Error("""\
-A Docker command did not run successfully.
-Tried to run: '{command}'
-Exit code: {exit_code}
-""".format(exit_code=result, command=' '.join(['docker'] + args)))
+  return subprocess.call(['docker'] + args,
+                         stdin=sys.stdin,
+                         stdout=sys.stdout,
+                         stderr=sys.stderr)

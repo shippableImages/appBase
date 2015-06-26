@@ -1,0 +1,74 @@
+NAME
+
+      gcloud docker - provides the docker CLI access to the Google Container
+         Registry
+
+SYNOPSIS
+
+      gcloud docker [EXTRA_ARGS ...] [--authorize-only, -a]
+      [--docker-host DOCKER_HOST]
+      [--server SERVER,[SERVER,...], -s SERVER,[SERVER,...]; default="['gcr.io', 'us.gcr.io', 'eu.gcr.io', 'asia.gcr.io', 'b.gcr.io', 'bucket.gcr.io', 'appengine.gcr.io']"]
+      [GLOBAL-FLAG ...]
+
+DESCRIPTION
+
+      The docker sub-command of gcloud wraps docker commands, so that gcloud can
+      inject the appropriate fresh authentication token into requests that
+      interact with the docker registry. As commands are simply passed through
+      to docker, see this for a full reference of command-line options that can
+      be supplied after the --
+
+         http://docs.docker.com/reference/commandline/cli/
+
+      For more information please visit https://gcr.io
+
+POSITIONAL ARGUMENTS
+
+      [EXTRA_ARGS ...]
+
+         Arguments to pass to docker
+
+FLAGS
+
+      --authorize-only, -a
+
+         Configure docker authorization only, do not launch the docker
+         command-line
+
+      --docker-host DOCKER_HOST
+
+         The URL to connect to Docker Daemon. Format: tcp://host:port or
+         unix:///path/to/socket.
+
+      --server SERVER,[SERVER,...], -s SERVER,[SERVER,...]; default="['gcr.io',
+         'us.gcr.io', 'eu.gcr.io', 'asia.gcr.io', 'b.gcr.io', 'bucket.gcr.io',
+         'appengine.gcr.io']"
+
+         The address of the Google Cloud Registry
+
+GLOBAL FLAGS
+
+      Run $ gcloud help for a description of flags available to all commands.
+
+EXAMPLES
+
+      Pull the image 'gcr.io/google-containers/pause:1.0' from the docker
+      registry:
+
+        $ gcloud docker -- pull gcr.io/google-containers/pause:1.0
+
+      Push the image 'gcr.io/example-org/example-image:latest' to our private
+      docker registry.
+
+        $ gcloud docker -- push gcr.io/example-org/example-image:latest
+
+      Configure authentication, then simply use docker:
+
+        $ gcloud docker --authorize-only
+        $ docker push gcr.io/example-org/example-image:latest
+
+NOTES
+
+      This command is in the Google Cloud SDK core component. See installing
+      components if it is not installed.
+

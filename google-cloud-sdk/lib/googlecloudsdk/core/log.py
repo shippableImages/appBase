@@ -99,6 +99,14 @@ class _ConsoleWriter(object):
     self.__logger = logger
     self.__filter = output_filter
     self.__stream_wrapper = stream_wrapper
+    self.SetEncoding()
+
+  def SetEncoding(self):
+    """Sets the encoding when __stream_wrapper.stream changes."""
+    if hasattr(self.__stream_wrapper.stream, 'encoding'):
+      self.encoding = self.__stream_wrapper.stream.encoding
+    elif hasattr(self, 'encoding'):
+      delattr(self, 'encoding')
 
   def Print(self, *msg):
     """Writes the given message to the output stream, and adds a newline.
@@ -109,19 +117,23 @@ class _ConsoleWriter(object):
     Args:
       *msg: str, The messages to print.
     """
-    message = ' '.join([str(m) for m in msg])
-    self.__logger.info(message)
-    if self.__filter.enabled:
-      self.__stream_wrapper.stream.write(message + '\n')
+
+    msg = (x.encode('utf-8') if isinstance(x, unicode) else str(x) for x in msg)
+    message = ' '.join(msg)
+    self.write(message + '\n')
 
   # pylint: disable=g-bad-name, This must match file-like objects
   def write(self, msg):
+    if isinstance(msg, unicode):
+      msg = msg.encode('utf-8')
+
     self.__logger.info(msg)
     if self.__filter.enabled:
       self.__stream_wrapper.stream.write(msg)
 
   # pylint: disable=g-bad-name, This must match file-like objects
   def writelines(self, lines):
+    lines = [x.encode('utf-8') if isinstance(x, unicode) else x for x in lines]
     for line in lines:
       self.__logger.info(line)
     if self.__filter.enabled:
@@ -221,7 +233,9 @@ class _LogManager(object):
 
     # Refresh the streams for the console writers.
     self.stdout_stream_wrapper.stream = sys.stdout
+    self.stdout_writer.SetEncoding()
     self.stderr_stream_wrapper.stream = sys.stderr
+    self.stderr_writer.SetEncoding()
 
     # Reset the color handling.
     self.console_formatter = _ConsoleFormatter(sys.stderr)

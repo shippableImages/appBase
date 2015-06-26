@@ -4,11 +4,10 @@ NAME
 
 SYNOPSIS
 
-      gcloud GROUP | COMMAND [--format FORMAT] [--help]
-         [--http-timeout HTTP_TIMEOUT] [--log-http] [--project PROJECT_ID]
-         [--quiet, -q] [--trace-token TRACE_TOKEN]
-         [--user-output-enabled USER_OUTPUT_ENABLED] [--verbosity VERBOSITY]
-         [-h] [-v, --version]
+      gcloud GROUP | COMMAND [--format FORMAT] [--help] [--log-http]
+      [--project PROJECT_ID] [--quiet, -q] [--trace-token TRACE_TOKEN]
+      [--user-output-enabled USER_OUTPUT_ENABLED] [--verbosity VERBOSITY] [-h]
+      [-v, --version]
 
 DESCRIPTION
 
@@ -28,10 +27,6 @@ FLAGS
       --help
 
          Display detailed help.
-
-      --http-timeout HTTP_TIMEOUT
-
-         Timeout in seconds for HTTP requests.
 
       --log-http
 
@@ -66,6 +61,8 @@ FLAGS
       -h
 
          Print a summary help and exit.
+
+GROUP FLAGS
 
       -v, --version
 
@@ -102,7 +99,7 @@ GROUPS
 
       dns
 
-         Manage Cloud DNS.
+         Manage your Cloud DNS managed-zones and record-sets.
 
       preview
 
@@ -112,9 +109,17 @@ GROUPS
 
          Manage Cloud SQL databases.
 
+      topic
+
+         gcloud supplementary help.
+
 COMMANDS
 
       COMMAND is one of the following:
+
+      docker
+
+         Provides the docker CLI access to the Google Container Registry.
 
       help
 

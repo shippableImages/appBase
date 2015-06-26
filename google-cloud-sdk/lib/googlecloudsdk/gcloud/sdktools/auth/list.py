@@ -7,6 +7,7 @@ import textwrap
 
 from googlecloudsdk.calliope import base
 from googlecloudsdk.core import log
+from googlecloudsdk.core import properties
 from googlecloudsdk.core.credentials import store as c_store
 from googlecloudsdk.core.util import console_io
 
@@ -23,7 +24,7 @@ class List(base.Command):
     """List the account for known credentials."""
     accounts = c_store.AvailableAccounts()
 
-    active_account = c_store.ActiveAccount()
+    active_account = properties.VALUES.core.account.Get()
 
     if args.account:
       if args.account in accounts:

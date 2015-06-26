@@ -5,6 +5,8 @@ import collections
 import datetime
 import json
 import logging
+import os
+import sys
 
 
 from protorpc import message_types
@@ -34,7 +36,7 @@ _Codec = collections.namedtuple('_Codec', ['encoder', 'decoder'])
 CodecResult = collections.namedtuple('CodecResult', ['value', 'complete'])
 
 
-# TODO(user): Make these non-global.
+# TODO(craigcitro): Make these non-global.
 _UNRECOGNIZED_FIELD_MAPPINGS = {}
 _CUSTOM_MESSAGE_CODECS = {}
 _CUSTOM_FIELD_CODECS = {}
@@ -73,7 +75,7 @@ def RegisterFieldTypeCodec(encoder, decoder):
   return Register
 
 
-# TODO(user): Delete this function with the switch to proto2.
+# TODO(craigcitro): Delete this function with the switch to proto2.
 def CopyProtoMessage(message):
   codec = protojson.ProtoJson()
   return codec.decode_message(type(message), codec.encode_message(message))
@@ -90,7 +92,7 @@ def JsonToMessage(message_type, message):
   return _ProtoJsonApiTools.Get().decode_message(message_type, message)
 
 
-# TODO(user): Do this directly, instead of via JSON.
+# TODO(craigcitro): Do this directly, instead of via JSON.
 def DictToMessage(d, message_type):
   """Convert the given dictionary to a message of type message_type."""
   return JsonToMessage(message_type, json.dumps(d))
@@ -335,7 +337,7 @@ class _ProtoJsonApiTools(protojson.ProtoJson):
     return super(_ProtoJsonApiTools, self).encode_field(field, value)
 
 
-# TODO(user): Fold this and _IncludeFields in as codecs.
+# TODO(craigcitro): Fold this and _IncludeFields in as codecs.
 def _DecodeUnknownFields(message, encoded_message):
   """Rewrite unknown fields in message into message.destination."""
   destination = _UNRECOGNIZED_FIELD_MAPPINGS.get(type(message))
@@ -347,7 +349,7 @@ def _DecodeUnknownFields(message, encoded_message):
         'Unrecognized fields must be mapped to a compound '
         'message type.')
   pair_type = pair_field.message_type
-  # TODO(user): Add more error checking around the pair
+  # TODO(craigcitro): Add more error checking around the pair
   # type being exactly what we suspect (field names, etc).
   if isinstance(pair_type.value, messages.MessageField):
     new_values = _DecodeUnknownMessages(
@@ -379,7 +381,7 @@ def _DecodeUnrecognizedFields(message, pair_type):
   """Process unrecognized fields in message."""
   new_values = []
   for unknown_field in message.all_unrecognized_fields():
-    # TODO(user): Consider validating the variant if
+    # TODO(craigcitro): Consider validating the variant if
     # the assignment below doesn't take care of it. It may
     # also be necessary to check it in the case that the
     # type has multiple encodings.
@@ -387,6 +389,8 @@ def _DecodeUnrecognizedFields(message, pair_type):
     value_type = pair_type.field_by_name('value')
     if isinstance(value_type, messages.MessageField):
       decoded_value = DictToMessage(value, pair_type.value.message_type)
+    elif isinstance(value_type, messages.EnumField):
+      decoded_value = pair_type.value.type(value)
     else:
       decoded_value = value
     new_pair = pair_type(key=str(unknown_field), value=decoded_value)
@@ -508,7 +512,30 @@ _JSON_ENUM_MAPPINGS = {}
 _JSON_FIELD_MAPPINGS = {}
 
 
-def AddCustomJsonEnumMapping(enum_type, python_name, json_name):
+def _GetTypeKey(message_type, package):
+  """Get the prefix for this message type in mapping dicts."""
+  key = message_type.definition_name()
+  if package and key.startswith(package + '.'):
+    module_name = message_type.__module__
+    # We normalize '__main__' to something unique, if possible.
+    if module_name == '__main__':
+      try:
+        file_name = sys.modules[module_name].__file__
+      except (AttributeError, KeyError):
+        pass
+      else:
+        base_name = os.path.basename(file_name)
+        split_name = os.path.splitext(base_name)
+        if len(split_name) == 1:
+          module_name = unicode(base_name)
+        else:
+          module_name = u'.'.join(split_name[:-1])
+    key = module_name + '.' + key.partition('.')[2]
+  return key
+
+
+def AddCustomJsonEnumMapping(enum_type, python_name, json_name,
+                             package=''):
   """Add a custom wire encoding for a given enum value.
 
   This is primarily used in generated code, to handle enum values
@@ -518,11 +545,14 @@ def AddCustomJsonEnumMapping(enum_type, python_name, json_name):
     enum_type: (messages.Enum) An enum type
     python_name: (basestring) Python name for this value.
     json_name: (basestring) JSON name to be used on the wire.
+    package: (basestring, optional) Package prefix for this enum, if
+        present. We strip this off the enum name in order to generate
+        unique keys.
   """
   if not issubclass(enum_type, messages.Enum):
     raise exceptions.TypecheckError(
         'Cannot set JSON enum mapping for non-enum "%s"' % enum_type)
-  enum_name = enum_type.definition_name()
+  enum_name = _GetTypeKey(enum_type, package)
   if python_name not in enum_type.names():
     raise exceptions.InvalidDataError(
         'Enum value %s not a value for type %s' % (python_name, enum_type))
@@ -531,7 +561,8 @@ def AddCustomJsonEnumMapping(enum_type, python_name, json_name):
   field_mappings[python_name] = json_name
 
 
-def AddCustomJsonFieldMapping(message_type, python_name, json_name):
+def AddCustomJsonFieldMapping(message_type, python_name, json_name,
+                              package=''):
   """Add a custom wire encoding for a given message field.
 
   This is primarily used in generated code, to handle enum values
@@ -541,11 +572,14 @@ def AddCustomJsonFieldMapping(message_type, python_name, json_name):
     message_type: (messages.Message) A message type
     python_name: (basestring) Python name for this value.
     json_name: (basestring) JSON name to be used on the wire.
+    package: (basestring, optional) Package prefix for this message, if
+        present. We strip this off the message name in order to generate
+        unique keys.
   """
   if not issubclass(message_type, messages.Message):
     raise exceptions.TypecheckError(
         'Cannot set JSON field mapping for non-message "%s"' % message_type)
-  message_name = message_type.definition_name()
+  message_name = _GetTypeKey(message_type, package)
   try:
     _ = message_type.field_by_name(python_name)
   except KeyError:

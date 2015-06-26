@@ -13,9 +13,9 @@ import re
 import sys
 
 from googlecloudsdk.calliope import actions
+from googlecloudsdk.calliope import arg_parsers
 from googlecloudsdk.calliope import base
 from googlecloudsdk.calliope import exceptions
-from googlecloudsdk.calliope import markdown
 from googlecloudsdk.calliope import usage_text
 from googlecloudsdk.core import cli as core_cli
 from googlecloudsdk.core import log
@@ -55,6 +55,28 @@ class ArgumentParser(argparse.ArgumentParser):
     self._calliope_command = kwargs.pop('calliope_command', None)
     self._is_group = isinstance(self._calliope_command, CommandGroup)
     super(ArgumentParser, self).__init__(*args, **kwargs)
+
+  # Assume we will never have a flag called ----calliope-internal...
+  CIDP = '__calliope_internal_deepest_parser'
+
+  def parse_known_args(self, args=None, namespace=None):
+    """Override's argparse.ArgumentParser's .parse_known_args method."""
+    args, argv = super(ArgumentParser, self).parse_known_args(args, namespace)
+    # Pass back a reference to the deepest parser used in the parse
+    # as part of the returned args.
+    if not hasattr(args, self.CIDP):
+      setattr(args, self.CIDP, self)
+    return (args, argv)
+
+  def parse_args(self, args=None, namespace=None):
+    """Override's argparse.ArgumentParser's .parse_args method."""
+    args, argv = self.parse_known_args(args, namespace)
+    if argv:
+      # Content of this block differs from argparser's parse_args
+      msg = 'unrecognized arguments: %s'
+      deepest_parser = getattr(args, self.CIDP, self)
+      deepest_parser.error(msg % ' '.join(argv))
+    return args
 
   def _check_value(self, action, value):
     """Override's argparse.ArgumentParser's ._check_value(action, value) method.
@@ -96,7 +118,7 @@ class ArgumentParser(argparse.ArgumentParser):
     # pylint:disable=protected-access
     cli_generator = self._calliope_command._cli_generator
     missing_components = cli_generator.ComponentsForMissingCommand(
-        '.'.join(self._calliope_command.GetPath() + [value]))
+        self._calliope_command.GetPath() + [value])
     if missing_components:
       msg = ('You do not currently have this command group installed.  Using '
              'it requires the installation of components: '
@@ -110,17 +132,48 @@ class ArgumentParser(argparse.ArgumentParser):
       # everything.  Do this here so that choices gets populated.
       self._calliope_command.LoadAllSubElements()
 
-    choices = sorted(action.choices)
-    suggestion = usage_text.CommandChoiceSuggester().SuggestCommandChoice(
-        value, choices)
-    if suggestion:
-      suggest = ' Did you mean %r?' % suggestion
+    # Command is not valid, see what we can suggest as a fix...
+    message = "Invalid choice: '{0}'.".format(value)
+
+    # Determine if the requested command is available in another release track.
+    existing_alternatives = self._ExistingAlternativeReleaseTracks(value)
+    if existing_alternatives:
+      message += ('\nThis command is available in one or more alternate '
+                  'release tracks.  Try:\n  ')
+      message += '\n  '.join(existing_alternatives)
+    # See if the spelling was close to something else that exists here.
     else:
-      suggest = ''
-    message = """\
-Invalid choice: %r.%s
-""" % (value, suggest)
+      choices = sorted(action.choices)
+      suggestion = usage_text.CommandChoiceSuggester().SuggestCommandChoice(
+          value, choices)
+      if suggestion:
+        message += " Did you mean '{0}'?".format(suggestion)
     raise argparse.ArgumentError(action, message)
+
+  def _ExistingAlternativeReleaseTracks(self, value):
+    """Gets the path of alternatives for the command in other release tracks.
+
+    Args:
+      value: str, The value being parsed.
+
+    Returns:
+      [str]: The names of alternate commands that the user may have meant.
+    """
+    existing_alternatives = []
+    # Get possible alternatives.
+    # pylint:disable=protected-access
+    cli_generator = self._calliope_command._cli_generator
+    alternates = cli_generator.ReplicateCommandPathForAllOtherTracks(
+        self._calliope_command.GetPath() + [value])
+    # See if the command is actually enabled in any of those alternative tracks.
+    if alternates:
+      top_element = self._calliope_command._TopCLIElement()
+      # Sort by the release track prefix.
+      for _, command_path in sorted(alternates.iteritems(),
+                                    key=lambda x: x[0].prefix):
+        if top_element.IsValidSubPath(command_path[1:]):
+          existing_alternatives.append(' '.join(command_path))
+    return existing_alternatives
 
   def error(self, message):
     """Override's argparse.ArgumentParser's .error(message) method.
@@ -131,15 +184,13 @@ Invalid choice: %r.%s
       message: str, The error message to print.
     """
     if self._is_group:
-      # pylint:disable=protected-access
       shorthelp = usage_text.ShortHelpText(
-          self._calliope_command, self._calliope_command._ai)
+          self._calliope_command, self._calliope_command.ai)
       # pylint:disable=protected-access
       argparse._sys.stderr.write(shorthelp + '\n')
     else:
       self.usage = usage_text.GenerateUsage(
-          # pylint:disable=protected-access
-          self._calliope_command, self._calliope_command._ai)
+          self._calliope_command, self._calliope_command.ai)
       # pylint:disable=protected-access
       self.print_usage(argparse._sys.stderr)
 
@@ -308,6 +359,10 @@ class ArgumentInterceptor(object):
       dest = name.lstrip(self.parser.prefix_chars).replace('-', '_')
     default = kwargs.get('default')
     required = kwargs.get('required')
+    # A flag declared somewhere between the top and leaf command.
+    group_flag = kwargs.pop('group_flag', False)
+    # A flag that each group/command has a unique copy of.
+    unique_flag = kwargs.pop('unique_flag', False)
 
     self.defaults[dest] = default
     if required:
@@ -325,6 +380,9 @@ class ArgumentInterceptor(object):
       self.positional_args.append(added_argument)
     else:
       self.flag_args.append(added_argument)
+
+    added_argument.group_flag = group_flag
+    added_argument.unique_flag = unique_flag
 
     return added_argument
 
@@ -422,8 +480,7 @@ class CommandCommon(object):
   """
 
   def __init__(self, common_type, path, release_track, cli_generator,
-               config_hooks, help_func, parser_group, allow_positional_args,
-               parent_group):
+               config_hooks, parser_group, allow_positional_args, parent_group):
     """Create a new CommandCommon.
 
     Args:
@@ -437,7 +494,6 @@ class CommandCommon(object):
         this command group is in.  This will apply to all commands under it.
       cli_generator: cli.CLILoader, The builder used to generate this CLI.
       config_hooks: a ConfigHooks object to use for loading context.
-      help_func: func([command path]), A function to call with --help.
       parser_group: argparse.Parser, The parser that this command or group will
         live in.
       allow_positional_args: bool, True if this command can have positional
@@ -445,7 +501,6 @@ class CommandCommon(object):
       parent_group: CommandGroup, The parent of this command or group. None if
         at the root.
     """
-    self._help_func = help_func
     self._config_hooks = config_hooks
     self._parent_group = parent_group
 
@@ -475,20 +530,11 @@ class CommandCommon(object):
       if legacy_release_track and not self._common_type._legacy_release_track:
         self._common_type._legacy_release_track = legacy_release_track
 
-    (self.short_help, self.long_help) = usage_text.ExtractHelpStrings(
-        self._common_type.__doc__)
-    # Add an annotation to the help strings to mark the release stage.
-    if self.ReleaseTrack(for_help=True).help_tag:
-      self.short_help = (self.ReleaseTrack(for_help=True).help_tag +
-                         (self.short_help if self.short_help else ''))
-      self.long_help = (self.ReleaseTrack(for_help=True).help_tag +
-                        (self.long_help if self.long_help else ''))
-
     self.detailed_help = getattr(self._common_type, 'detailed_help', {})
+    self._ExtractHelpStrings(self._common_type.__doc__)
 
     self._AssignParser(
         parser_group=parser_group,
-        help_func=help_func,
         allow_positional_args=allow_positional_args)
 
   def ReleaseTrack(self, for_help=False):
@@ -499,13 +545,51 @@ class CommandCommon(object):
     """Gets the hidden status of this command or group."""
     return self._common_type.IsHidden()
 
-  def _AssignParser(self, parser_group, help_func, allow_positional_args):
+  def _TopCLIElement(self):
+    """Gets the top group of this CLI."""
+    if not self._parent_group:
+      return self
+    return self._parent_group._TopCLIElement()
+
+  def _ExtractHelpStrings(self, docstring):
+    """Extracts short help, long help and man page index from a docstring.
+
+    Sets self.short_help, self.long_help and self.index_help and adds release
+    track tags if needed.
+
+    Args:
+      docstring: The docstring from which short and long help are to be taken
+    """
+    self.short_help, self.long_help = usage_text.ExtractHelpStrings(docstring)
+
+    if 'brief' in self.detailed_help:
+      self.short_help = self.detailed_help['brief']
+    if self.short_help and not self.short_help.endswith('.'):
+      self.short_help += '.'
+
+    self.index_help = self.short_help
+    if len(self.index_help) > 1:
+      if self.index_help[0].isupper() and not self.index_help[1].isupper():
+        self.index_help = self.index_help[0].lower() + self.index_help[1:]
+      if self.index_help[-1] == '.':
+        self.index_help = self.index_help[:-1]
+
+    # Add an annotation to the help strings to mark the release stage.
+    tag = self.ReleaseTrack(for_help=True).help_tag
+    if tag:
+      self.short_help = tag + self.short_help
+      self.long_help = tag + self.long_help
+      # TODO(user):b/21208128: Drop these 4 lines.
+      prefix = self.ReleaseTrack(for_help=True).prefix
+      if len(self._path) < 2 or self._path[1] != prefix:
+        self.index_help = tag + self.index_help
+
+  def _AssignParser(self, parser_group, allow_positional_args):
     """Assign a parser group to model this Command or CommandGroup.
 
     Args:
       parser_group: argparse._ArgumentGroup, the group that will model this
           command or group's arguments.
-      help_func: func([str]), The long help function that is used for --help.
       allow_positional_args: bool, Whether to allow positional args for this
           group or not.
 
@@ -530,51 +614,80 @@ class CommandCommon(object):
 
     self._sub_parser = None
 
-    self._ai = ArgumentInterceptor(
+    self.ai = ArgumentInterceptor(
         parser=self._parser,
         allow_positional=allow_positional_args)
 
-    short_help_action = actions.ShortHelpAction(self)
-    long_help_action = (actions.LongHelpAction(self, help_func)
-                        if help_func else short_help_action)
-    self._ai.add_argument('-h', action=short_help_action,
-                          help='Print a summary help and exit.')
-    self._ai.add_argument('--help', action=long_help_action,
-                          help='Display detailed help.')
-
-    def Markdown(command):
-      """Returns an action that lists the markdown help for command."""
-
-      class Action(argparse.Action):
-
-        def __call__(self, parser, namespace, values, option_string=None):
-          command.LoadAllSubElements()
-          markdown.Markdown(command, sys.stdout.write)
-          sys.exit(0)
-
-      return Action
-
-    self._ai.add_argument(
-        '--markdown', action=Markdown(self),
-        nargs=0,
+    self.ai.add_argument(
+        '-h', action=actions.ShortHelpAction(self),
+        unique_flag=True,
+        help='Print a summary help and exit.')
+    self.ai.add_argument(
+        '--help', action=actions.RenderDocumentAction(self, '--help'),
+        unique_flag=True,
+        help='Display detailed help.')
+    self.ai.add_argument(
+        '--document', action=actions.RenderDocumentAction(self),
+        unique_flag=True,
+        nargs=1,
+        metavar='ATTRIBUTES',
+        type=arg_parsers.ArgDict(),
+        help=argparse.SUPPRESS)
+    # TODO(user): Drop --markdown when the asciidoc purge lands.
+    self.ai.add_argument(
+        '--markdown', action=actions.RenderDocumentAction(self, 'markdown'),
+        unique_flag=True,
         help=argparse.SUPPRESS)
 
     self._AcquireArgs()
 
+  def IsValidSubPath(self, command_path):
+    """Determines if the given sub command path is valid from this node.
+
+    Args:
+      command_path: [str], The pieces of the command path.
+
+    Returns:
+      True, if the given path parts exist under this command or group node.
+      False, if the sub path does not lead to a valid command or group.
+    """
+    current = self
+    for part in command_path:
+      current = current.LoadSubElement(part)
+      if not current:
+        return False
+    return True
+
   def AllSubElements(self):
+    """Gets all the sub elements of this group.
+
+    Returns:
+      set(str), The names of all sub groups or commands under this group.
+    """
     return []
 
   def LoadAllSubElements(self, recursive=False):
+    """Load all the sub groups and commands of this group."""
     pass
 
-  def LoadSubElement(self, name):
+  def LoadSubElement(self, name, allow_empty=False):
+    """Load a specific sub group or command.
+
+    Args:
+      name: str, The name of the element to load.
+      allow_empty: bool, True to allow creating this group as empty to start
+        with.
+
+    Returns:
+      _CommandCommon, The loaded sub element, or None if it did not exist.
+    """
     pass
 
   def GetPath(self):
     return self._path
 
   def GetShortHelp(self):
-    return usage_text.ShortHelpText(self, self._ai)
+    return usage_text.ShortHelpText(self, self.ai)
 
   def GetSubCommandHelps(self):
     return {}
@@ -627,18 +740,17 @@ class CommandCommon(object):
     args_func = self._common_type.Args
     if not args_func:
       return
-    args_func(self._ai)
+    args_func(self.ai)
 
     if self._parent_group:
       # Add parent flags to children, if they aren't represented already
       for flag in self._parent_group.GetAllAvailableFlags():
-        if flag.option_strings in [['-h'], ['--help'], ['-h', '--help'],
-                                   ['--markdown']]:
+        if flag.unique_flag:
           # Each command or group gets its own unique help flags.
           continue
-        # Don't propagate down flags that we only want to be present at the top
-        # level.
-        if getattr(flag, 'global_only', False):
+        if flag.group_flag:
+          # Don't propagate down flags that only apply to the group with no
+          # subcommand.
           continue
         if flag.required:
           # It is not easy to replicate required flags to subgroups and
@@ -646,7 +758,7 @@ class CommandCommon(object):
           # flags, and we'd want only one of them to be necessary.
           continue
         try:
-          self._ai.AddFlagActionFromAncestors(flag)
+          self.ai.AddFlagActionFromAncestors(flag)
         except argparse.ArgumentError:
           raise ArgumentException(
               'repeated flag in {command}: {flag}'.format(
@@ -654,10 +766,10 @@ class CommandCommon(object):
                   flag=flag.option_strings))
 
   def GetAllAvailableFlags(self):
-    return self._ai.flag_args + self._ai.ancestor_flag_args
+    return self.ai.flag_args + self.ai.ancestor_flag_args
 
   def GetSpecificFlags(self):
-    return self._ai.flag_args
+    return self.ai.flag_args
 
 
 class CommandGroup(CommandCommon):
@@ -665,7 +777,7 @@ class CommandGroup(CommandCommon):
 
   def __init__(self, module_dir, module_path, path, release_track,
                construction_id, cli_generator, parser_group, config_hooks,
-               help_func, parent_group=None, allow_empty=False):
+               parent_group=None, allow_empty=False):
     """Create a new command group.
 
     Args:
@@ -685,7 +797,6 @@ class CommandGroup(CommandCommon):
         command group.  The root command group will allocate the initial
         top level argparse parser.
       config_hooks: a ConfigHooks object to use for loading context
-      help_func: func([command path]), A function to call with --help.
       parent_group: CommandGroup, The parent of this group. None if at the
         root.
       allow_empty: bool, True to allow creating this group as empty to start
@@ -707,7 +818,6 @@ class CommandGroup(CommandCommon):
         release_track=release_track,
         cli_generator=cli_generator,
         config_hooks=config_hooks,
-        help_func=help_func,
         allow_positional_args=False,
         parser_group=parser_group,
         parent_group=parent_group)
@@ -898,15 +1008,14 @@ class CommandGroup(CommandCommon):
         element = CommandGroup(
             module_dir, module_path, self._path + [name], track,
             self._construction_id, self._cli_generator, self.SubParser(),
-            self._config_hooks, help_func=self._help_func,
-            parent_group=self, allow_empty=allow_empty)
+            self._config_hooks, parent_group=self, allow_empty=allow_empty)
         self.groups[element.name] = element
       elif name in self._commands_to_load:
         (module_dir, module_path, name, track) = self._commands_to_load[name]
         element = Command(
             module_dir, module_path, self._path + [name], track,
             self._construction_id, self._cli_generator, self._config_hooks,
-            self.SubParser(), self._help_func, parent_group=self)
+            self.SubParser(), parent_group=self)
         self.commands[element.name] = element
     except base.ReleaseTrackNotImplementedException as e:
       self._unloadable_elements.add(name)
@@ -929,16 +1038,13 @@ class CommandGroup(CommandCommon):
                              release_track=item.ReleaseTrack(for_help=True)))
         for item in self.groups.values())
 
-  def GetHelpFunc(self):
-    return self._help_func
-
 
 class Command(CommandCommon):
   """A class that encapsulates the configuration for a single command."""
 
   def __init__(self, module_dir, module_path, path, release_track,
                construction_id, cli_generator, config_hooks, parser_group,
-               help_func, parent_group=None):
+               parent_group=None):
     """Create a new command.
 
     Args:
@@ -955,7 +1061,6 @@ class Command(CommandCommon):
       cli_generator: cli.CLILoader, The builder used to generate this CLI.
       config_hooks: a ConfigHooks object to use for loading context
       parser_group: argparse.Parser, The parser to be used for this command.
-      help_func: func([str]), Detailed help function.
       parent_group: CommandGroup, The parent of this command.
     """
     # pylint:disable=protected-access, The base module is effectively an
@@ -971,7 +1076,6 @@ class Command(CommandCommon):
         release_track=release_track,
         cli_generator=cli_generator,
         config_hooks=config_hooks,
-        help_func=help_func,
         allow_positional_args=True,
         parser_group=parser_group,
         parent_group=parent_group)

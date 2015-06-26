@@ -25,7 +25,7 @@ class TestingV1(base_api.BaseApiClient):
                credentials_args=None, default_global_params=None,
                additional_http_headers=None):
     """Create a new testing handle."""
-    url = url or u'https://testing.googleapis.com/v1/'
+    url = url or u'https://testing.googleapis.com/'
     super(TestingV1, self).__init__(
         url, credentials=credentials,
         get_credentials=get_credentials, http=http, model=model,
@@ -33,50 +33,10 @@ class TestingV1(base_api.BaseApiClient):
         credentials_args=credentials_args,
         default_global_params=default_global_params,
         additional_http_headers=additional_http_headers)
-    self.projects_device = self.ProjectsDeviceService(self)
     self.projects_devices = self.ProjectsDevicesService(self)
-    self.projects_testExecutions = self.ProjectsTestExecutionsService(self)
     self.projects_testMatrices = self.ProjectsTestMatricesService(self)
     self.projects = self.ProjectsService(self)
     self.testEnvironmentCatalog = self.TestEnvironmentCatalogService(self)
-
-  class ProjectsDeviceService(base_api.BaseApiService):
-    """Service class for the projects_device resource."""
-
-    _NAME = u'projects_device'
-
-    def __init__(self, client):
-      super(TestingV1.ProjectsDeviceService, self).__init__(client)
-      self._method_configs = {
-          'Delete': base_api.ApiMethodInfo(
-              http_method=u'DELETE',
-              method_id=u'testing.projects.device.delete',
-              ordered_params=[u'projectId', u'deviceId'],
-              path_params=[u'deviceId', u'projectId'],
-              query_params=[],
-              relative_path=u'projects/{projectId}/device/{deviceId}',
-              request_field='',
-              request_type_name=u'TestingProjectsDeviceDeleteRequest',
-              response_type_name=u'Empty',
-              supports_download=False,
-          ),
-          }
-
-      self._upload_configs = {
-          }
-
-    def Delete(self, request, global_params=None):
-      """Deletes a GCE Android device instance. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the project does not exist.
-
-      Args:
-        request: (TestingProjectsDeviceDeleteRequest) input message
-        global_params: (StandardQueryParameters, default: None) global arguments
-      Returns:
-        (Empty) The response message.
-      """
-      config = self.GetMethodConfig('Delete')
-      return self._RunMethod(
-          config, request, global_params=global_params)
 
   class ProjectsDevicesService(base_api.BaseApiService):
     """Service class for the projects_devices resource."""
@@ -91,11 +51,23 @@ class TestingV1(base_api.BaseApiClient):
               method_id=u'testing.projects.devices.create',
               ordered_params=[u'projectId'],
               path_params=[u'projectId'],
-              query_params=[],
-              relative_path=u'projects/{projectId}/devices',
+              query_params=[u'sshPublicKey'],
+              relative_path=u'v1/projects/{projectId}/devices',
               request_field=u'device',
               request_type_name=u'TestingProjectsDevicesCreateRequest',
               response_type_name=u'Device',
+              supports_download=False,
+          ),
+          'Delete': base_api.ApiMethodInfo(
+              http_method=u'DELETE',
+              method_id=u'testing.projects.devices.delete',
+              ordered_params=[u'projectId', u'deviceId'],
+              path_params=[u'deviceId', u'projectId'],
+              query_params=[],
+              relative_path=u'v1/projects/{projectId}/devices/{deviceId}',
+              request_field='',
+              request_type_name=u'TestingProjectsDevicesDeleteRequest',
+              response_type_name=u'Empty',
               supports_download=False,
           ),
           'Get': base_api.ApiMethodInfo(
@@ -104,10 +76,22 @@ class TestingV1(base_api.BaseApiClient):
               ordered_params=[u'projectId', u'deviceId'],
               path_params=[u'deviceId', u'projectId'],
               query_params=[],
-              relative_path=u'projects/{projectId}/devices/{deviceId}',
+              relative_path=u'v1/projects/{projectId}/devices/{deviceId}',
               request_field='',
               request_type_name=u'TestingProjectsDevicesGetRequest',
               response_type_name=u'Device',
+              supports_download=False,
+          ),
+          'Keepalive': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'testing.projects.devices.keepalive',
+              ordered_params=[u'projectId', u'deviceId'],
+              path_params=[u'deviceId', u'projectId'],
+              query_params=[],
+              relative_path=u'v1/projects/{projectId}/devices/{deviceId}/keepalive',
+              request_field='',
+              request_type_name=u'TestingProjectsDevicesKeepaliveRequest',
+              response_type_name=u'Empty',
               supports_download=False,
           ),
           'List': base_api.ApiMethodInfo(
@@ -116,7 +100,7 @@ class TestingV1(base_api.BaseApiClient):
               ordered_params=[u'projectId'],
               path_params=[u'projectId'],
               query_params=[u'pageSize', u'pageToken'],
-              relative_path=u'projects/{projectId}/devices',
+              relative_path=u'v1/projects/{projectId}/devices',
               request_field='',
               request_type_name=u'TestingProjectsDevicesListRequest',
               response_type_name=u'ListDevicesResponse',
@@ -128,7 +112,13 @@ class TestingV1(base_api.BaseApiClient):
           }
 
     def Create(self, request, global_params=None):
-      """Creates a new GCE Android device. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to write to project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the device type or project does not exist.
+      """Creates a new GCE Android device.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to write to project
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the device type or project does not exist
 
       Args:
         request: (TestingProjectsDevicesCreateRequest) input message
@@ -140,8 +130,33 @@ class TestingV1(base_api.BaseApiClient):
       return self._RunMethod(
           config, request, global_params=global_params)
 
+    def Delete(self, request, global_params=None):
+      """Deletes a GCE Android device instance.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read project
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the project does not exist
+
+      Args:
+        request: (TestingProjectsDevicesDeleteRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Empty) The response message.
+      """
+      config = self.GetMethodConfig('Delete')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
     def Get(self, request, global_params=None):
-      """Returns the GCE Android device. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the device type or project does not exist.
+      """Returns the GCE Android device.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read project
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the device type or project does not exist
 
       Args:
         request: (TestingProjectsDevicesGetRequest) input message
@@ -153,152 +168,39 @@ class TestingV1(base_api.BaseApiClient):
       return self._RunMethod(
           config, request, global_params=global_params)
 
+    def Keepalive(self, request, global_params=None):
+      """Issues a keep-alive to a GCE Android device instance.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read project
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the project does not exist
+
+      Args:
+        request: (TestingProjectsDevicesKeepaliveRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Empty) The response message.
+      """
+      config = self.GetMethodConfig('Keepalive')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
     def List(self, request, global_params=None):
-      """Lists all the current devices. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the project does not exist.
+      """Lists all the current devices.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read project
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the project does not exist
 
       Args:
         request: (TestingProjectsDevicesListRequest) input message
         global_params: (StandardQueryParameters, default: None) global arguments
       Returns:
         (ListDevicesResponse) The response message.
-      """
-      config = self.GetMethodConfig('List')
-      return self._RunMethod(
-          config, request, global_params=global_params)
-
-  class ProjectsTestExecutionsService(base_api.BaseApiService):
-    """Service class for the projects_testExecutions resource."""
-
-    _NAME = u'projects_testExecutions'
-
-    def __init__(self, client):
-      super(TestingV1.ProjectsTestExecutionsService, self).__init__(client)
-      self._method_configs = {
-          'Cancel': base_api.ApiMethodInfo(
-              http_method=u'POST',
-              method_id=u'testing.projects.testExecutions.cancel',
-              ordered_params=[u'projectId', u'testExecutionId'],
-              path_params=[u'projectId', u'testExecutionId'],
-              query_params=[],
-              relative_path=u'projects/{projectId}/testExecutions/{testExecutionId}:cancel',
-              request_field='',
-              request_type_name=u'TestingProjectsTestExecutionsCancelRequest',
-              response_type_name=u'CancelTestExecutionResponse',
-              supports_download=False,
-          ),
-          'Create': base_api.ApiMethodInfo(
-              http_method=u'POST',
-              method_id=u'testing.projects.testExecutions.create',
-              ordered_params=[u'projectId'],
-              path_params=[u'projectId'],
-              query_params=[],
-              relative_path=u'projects/{projectId}/testExecutions',
-              request_field=u'testExecution',
-              request_type_name=u'TestingProjectsTestExecutionsCreateRequest',
-              response_type_name=u'TestExecution',
-              supports_download=False,
-          ),
-          'Delete': base_api.ApiMethodInfo(
-              http_method=u'DELETE',
-              method_id=u'testing.projects.testExecutions.delete',
-              ordered_params=[u'projectId', u'testExecutionId'],
-              path_params=[u'projectId', u'testExecutionId'],
-              query_params=[],
-              relative_path=u'projects/{projectId}/testExecutions/{testExecutionId}',
-              request_field='',
-              request_type_name=u'TestingProjectsTestExecutionsDeleteRequest',
-              response_type_name=u'Empty',
-              supports_download=False,
-          ),
-          'Get': base_api.ApiMethodInfo(
-              http_method=u'GET',
-              method_id=u'testing.projects.testExecutions.get',
-              ordered_params=[u'projectId', u'testExecutionId'],
-              path_params=[u'projectId', u'testExecutionId'],
-              query_params=[],
-              relative_path=u'projects/{projectId}/testExecutions/{testExecutionId}',
-              request_field='',
-              request_type_name=u'TestingProjectsTestExecutionsGetRequest',
-              response_type_name=u'TestExecution',
-              supports_download=False,
-          ),
-          'List': base_api.ApiMethodInfo(
-              http_method=u'GET',
-              method_id=u'testing.projects.testExecutions.list',
-              ordered_params=[u'projectId'],
-              path_params=[u'projectId'],
-              query_params=[u'query'],
-              relative_path=u'projects/{projectId}/testExecutions',
-              request_field='',
-              request_type_name=u'TestingProjectsTestExecutionsListRequest',
-              response_type_name=u'ListTestExecutionsResponse',
-              supports_download=False,
-          ),
-          }
-
-      self._upload_configs = {
-          }
-
-    def Cancel(self, request, global_params=None):
-      """Cancel an individual test execution. If the specified test execution is running it will be aborted. If it's pending then it will simply be removed from the queue. The cancelled test execution will still be visible in the results of ListTestExecutions and GetTestExecution. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the Test Execution does not exist.
-
-      Args:
-        request: (TestingProjectsTestExecutionsCancelRequest) input message
-        global_params: (StandardQueryParameters, default: None) global arguments
-      Returns:
-        (CancelTestExecutionResponse) The response message.
-      """
-      config = self.GetMethodConfig('Cancel')
-      return self._RunMethod(
-          config, request, global_params=global_params)
-
-    def Create(self, request, global_params=None):
-      """Request to execute a single test according to the given specification. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to write to project - INVALID_ARGUMENT - if the request is malformed - UNSUPPORTED - if the given test environment is not supported.
-
-      Args:
-        request: (TestingProjectsTestExecutionsCreateRequest) input message
-        global_params: (StandardQueryParameters, default: None) global arguments
-      Returns:
-        (TestExecution) The response message.
-      """
-      config = self.GetMethodConfig('Create')
-      return self._RunMethod(
-          config, request, global_params=global_params)
-
-    def Delete(self, request, global_params=None):
-      """Delete all record of an individual test execution. The test execution will first be canceled if it is running or queued. It will no longer appear in the response from ListTestExecutions or GetTestExecution. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the Test Execution does not exist.
-
-      Args:
-        request: (TestingProjectsTestExecutionsDeleteRequest) input message
-        global_params: (StandardQueryParameters, default: None) global arguments
-      Returns:
-        (Empty) The response message.
-      """
-      config = self.GetMethodConfig('Delete')
-      return self._RunMethod(
-          config, request, global_params=global_params)
-
-    def Get(self, request, global_params=None):
-      """Check the status of an individual test execution. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the Test Execution does not exist.
-
-      Args:
-        request: (TestingProjectsTestExecutionsGetRequest) input message
-        global_params: (StandardQueryParameters, default: None) global arguments
-      Returns:
-        (TestExecution) The response message.
-      """
-      config = self.GetMethodConfig('Get')
-      return self._RunMethod(
-          config, request, global_params=global_params)
-
-    def List(self, request, global_params=None):
-      """List Test Executions The executions are sorted by creation_time in descending order. The test_execution_id key will be used to order the executions with the same creation_time. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed.
-
-      Args:
-        request: (TestingProjectsTestExecutionsListRequest) input message
-        global_params: (StandardQueryParameters, default: None) global arguments
-      Returns:
-        (ListTestExecutionsResponse) The response message.
       """
       config = self.GetMethodConfig('List')
       return self._RunMethod(
@@ -318,7 +220,7 @@ class TestingV1(base_api.BaseApiClient):
               ordered_params=[u'projectId', u'testMatrixId'],
               path_params=[u'projectId', u'testMatrixId'],
               query_params=[],
-              relative_path=u'projects/{projectId}/testMatrices/{testMatrixId}:cancel',
+              relative_path=u'v1/projects/{projectId}/testMatrices/{testMatrixId}:cancel',
               request_field='',
               request_type_name=u'TestingProjectsTestMatricesCancelRequest',
               response_type_name=u'CancelTestMatrixResponse',
@@ -330,9 +232,9 @@ class TestingV1(base_api.BaseApiClient):
               ordered_params=[u'projectId'],
               path_params=[u'projectId'],
               query_params=[],
-              relative_path=u'projects/{projectId}/testMatrices',
-              request_field='<request>',
-              request_type_name=u'TestMatrix',
+              relative_path=u'v1/projects/{projectId}/testMatrices',
+              request_field=u'testMatrix',
+              request_type_name=u'TestingProjectsTestMatricesCreateRequest',
               response_type_name=u'TestMatrix',
               supports_download=False,
           ),
@@ -342,7 +244,7 @@ class TestingV1(base_api.BaseApiClient):
               ordered_params=[u'projectId', u'testMatrixId'],
               path_params=[u'projectId', u'testMatrixId'],
               query_params=[],
-              relative_path=u'projects/{projectId}/testMatrices/{testMatrixId}',
+              relative_path=u'v1/projects/{projectId}/testMatrices/{testMatrixId}',
               request_field='',
               request_type_name=u'TestingProjectsTestMatricesDeleteRequest',
               response_type_name=u'Empty',
@@ -354,7 +256,7 @@ class TestingV1(base_api.BaseApiClient):
               ordered_params=[u'projectId', u'testMatrixId'],
               path_params=[u'projectId', u'testMatrixId'],
               query_params=[],
-              relative_path=u'projects/{projectId}/testMatrices/{testMatrixId}',
+              relative_path=u'v1/projects/{projectId}/testMatrices/{testMatrixId}',
               request_field='',
               request_type_name=u'TestingProjectsTestMatricesGetRequest',
               response_type_name=u'TestMatrix',
@@ -365,8 +267,8 @@ class TestingV1(base_api.BaseApiClient):
               method_id=u'testing.projects.testMatrices.list',
               ordered_params=[u'projectId'],
               path_params=[u'projectId'],
-              query_params=[u'query'],
-              relative_path=u'projects/{projectId}/testMatrices',
+              query_params=[],
+              relative_path=u'v1/projects/{projectId}/testMatrices',
               request_field='',
               request_type_name=u'TestingProjectsTestMatricesListRequest',
               response_type_name=u'ListTestMatricesResponse',
@@ -378,7 +280,13 @@ class TestingV1(base_api.BaseApiClient):
           }
 
     def Cancel(self, request, global_params=None):
-      """Cancel a test matrix. If the test executions associated with the matrix are running they will be aborted. If they're pending then they will simply be removed from the queue. The cancelled tests may still be queried via calls to List* and Get*. This is equivalent to calling CancelTestExecution once for each test execution in the matrix. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the Test Matrix does not exist.
+      """Cancels unfinished test executions in a test matrix.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read project
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the Test Matrix does not exist
 
       Args:
         request: (TestingProjectsTestMatricesCancelRequest) input message
@@ -391,10 +299,16 @@ class TestingV1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Create(self, request, global_params=None):
-      """Request to run a matrix of tests according to the given specifications. Unsupported environments will be ignored. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to write to project - INVALID_ARGUMENT - if the request is malformed.
+      """Request to run a matrix of tests according to the given specifications.
+Unsupported environments will be returned in the state UNSUPPORTED.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to write to project
+- INVALID_ARGUMENT - if the request is malformed
 
       Args:
-        request: (TestMatrix) input message
+        request: (TestingProjectsTestMatricesCreateRequest) input message
         global_params: (StandardQueryParameters, default: None) global arguments
       Returns:
         (TestMatrix) The response message.
@@ -404,7 +318,13 @@ class TestingV1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Delete(self, request, global_params=None):
-      """Delete all record of a test matrix plus any associated test executions. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the Test Matrix does not exist.
+      """Delete all record of a test matrix plus any associated test executions.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read project
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the Test Matrix does not exist
 
       Args:
         request: (TestingProjectsTestMatricesDeleteRequest) input message
@@ -417,7 +337,13 @@ class TestingV1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Check the status of a test matrix. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the Test Matrix does not exist.
+      """Check the status of a test matrix.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read project
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the Test Matrix does not exist
 
       Args:
         request: (TestingProjectsTestMatricesGetRequest) input message
@@ -430,7 +356,13 @@ class TestingV1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """List test matrices. The returned matrices are currently unsorted. May return any of the following canonical error codes: - PERMISSION_DENIED - if the user is not authorized to read project - INVALID_ARGUMENT - if the request is malformed.
+      """List test matrices.
+The matrices are returned in the order of newest first by submit time.
+
+May return any of the following canonical error codes:
+
+- PERMISSION_DENIED - if the user is not authorized to read project
+- INVALID_ARGUMENT - if the request is malformed
 
       Args:
         request: (TestingProjectsTestMatricesListRequest) input message
@@ -469,7 +401,7 @@ class TestingV1(base_api.BaseApiClient):
               ordered_params=[u'environmentType'],
               path_params=[u'environmentType'],
               query_params=[],
-              relative_path=u'testEnvironmentCatalog/{environmentType}',
+              relative_path=u'v1/testEnvironmentCatalog/{environmentType}',
               request_field='',
               request_type_name=u'TestingTestEnvironmentCatalogGetRequest',
               response_type_name=u'TestEnvironmentCatalog',
@@ -481,7 +413,13 @@ class TestingV1(base_api.BaseApiClient):
           }
 
     def Get(self, request, global_params=None):
-      """Get the catalog of supported test environments. May return any of the following canonical error codes: - INVALID_ARGUMENT - if the request is malformed - NOT_FOUND - if the environment type does not exist - INTERNAL - if an internal error occurred.
+      """Get the catalog of supported test environments.
+
+May return any of the following canonical error codes:
+
+- INVALID_ARGUMENT - if the request is malformed
+- NOT_FOUND - if the environment type does not exist
+- INTERNAL - if an internal error occurred
 
       Args:
         request: (TestingTestEnvironmentCatalogGetRequest) input message

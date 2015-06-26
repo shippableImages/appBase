@@ -1,0 +1,26 @@
+NAME
+
+      gcloud topic formats - resource formats supplementary help
+
+DESCRIPTION
+
+      Resource formats supplementary help.
+
+Formats
+
+      Resource printing formats are specified by the --format=FORMAT flag. The
+      supported formats are:
+
+      YAML, YAML ain't markup language.
+
+EXAMPLES
+
+      List the compute instances resourcesa JSON format:
+
+        $ gcloud compute instances list --format=json
+
+NOTES
+
+      This command is in the Google Cloud SDK core component. See installing
+      components if it is not installed.
+

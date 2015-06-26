@@ -42,16 +42,16 @@ class DictionaryParser(object):
 
   def _Get(self, field, default, required):
     if required and field not in self.__dictionary:
-      raise ParseError('Required field [{}] not found while parsing [{}]'
+      raise ParseError('Required field [{0}] not found while parsing [{1}]'
                        .format(field, self.__cls))
     return self.__dictionary.get(field, default)
 
-  def Parse(self, field, required=True, default=None, func=None):
+  def Parse(self, field, required=False, default=None, func=None):
     """Parses a single element out of the dictionary.
 
     Args:
       field: str, The name of the field to parse.
-      required: bool, If the field must be present or not (True by default).
+      required: bool, If the field must be present or not (False by default).
       default: str or dict, The value to use if a non-required field is not
         present.
       func: An optional function to call with the value before returning (if
@@ -72,12 +72,12 @@ class DictionaryParser(object):
         value = func(value)
     self.__args[field] = value
 
-  def ParseList(self, field, required=True, default=None, func=None):
+  def ParseList(self, field, required=False, default=None, func=None):
     """Parses a element out of the dictionary that is a list of items.
 
     Args:
       field: str, The name of the field to parse.
-      required: bool, If the field must be present or not (True by default).
+      required: bool, If the field must be present or not (False by default).
       default: str or dict, The value to use if a non-required field is not
         present.
       func: An optional function to call with each value in the parsed list
@@ -91,7 +91,7 @@ class DictionaryParser(object):
     value = self._Get(field, default, required)
     if value:
       if not isinstance(value, list):
-        raise ParseError('Expected a list for field [{}] in component [{}]'
+        raise ParseError('Expected a list for field [{0}] in component [{1}]'
                          .format(field, self.__cls))
       if func:
         value = [func(v) for v in value]
@@ -161,8 +161,8 @@ class ComponentDetails(object):
   @classmethod
   def FromDictionary(cls, dictionary):
     p = DictionaryParser(cls, dictionary)
-    p.Parse('display_name')
-    p.Parse('description')
+    p.Parse('display_name', required=True)
+    p.Parse('description', required=True)
     return cls(**p.Args())
 
   def ToDictionary(self):
@@ -188,8 +188,8 @@ class ComponentVersion(object):
   @classmethod
   def FromDictionary(cls, dictionary):
     p = DictionaryParser(cls, dictionary)
-    p.Parse('build_number')
-    p.Parse('version_string')
+    p.Parse('build_number', required=True)
+    p.Parse('version_string', required=True)
     return cls(**p.Args())
 
   def ToDictionary(self):
@@ -218,11 +218,11 @@ class ComponentData(object):
   @classmethod
   def FromDictionary(cls, dictionary):
     p = DictionaryParser(cls, dictionary)
-    p.Parse('type')
-    p.Parse('source')
-    p.Parse('size', required=False)
-    p.Parse('checksum', required=False)
-    p.Parse('contents_checksum', required=False)
+    p.Parse('type', required=True)
+    p.Parse('source', required=True)
+    p.Parse('size')
+    p.Parse('checksum')
+    p.Parse('contents_checksum')
     return cls(**p.Args())
 
   def ToDictionary(self):
@@ -257,10 +257,8 @@ class ComponentPlatform(object):
   @classmethod
   def FromDictionary(cls, dictionary):
     p = DictionaryParser(cls, dictionary)
-    p.ParseList('operating_systems', required=False,
-                func=platforms.OperatingSystem.FromId)
-    p.ParseList('architectures', required=False,
-                func=platforms.Architecture.FromId)
+    p.ParseList('operating_systems', func=platforms.OperatingSystem.FromId)
+    p.ParseList('architectures', func=platforms.Architecture.FromId)
     return cls(**p.Args())
 
   def ToDictionary(self):
@@ -366,20 +364,32 @@ class Component(object):
 
   @classmethod
   def FromDictionary(cls, dictionary):
+    """Converts a dictionary object to an instantiated Component class.
+
+    Args:
+      dictionary: The Dictionary to to convert from.
+
+    Returns:
+      A Component object initialized from the dictionary object.
+    """
     p = DictionaryParser(cls, dictionary)
-    p.Parse('id')
-    p.Parse('details', func=ComponentDetails.FromDictionary)
-    p.Parse('version', func=ComponentVersion.FromDictionary)
-    p.Parse('is_hidden', required=False, default=False)
-    p.Parse('is_required', required=False, default=False)
-    p.Parse('is_configuration', required=False, default=False)
-    p.Parse('data', required=False, func=ComponentData.FromDictionary)
-    p.Parse('platform', required=False, default={},
-            func=ComponentPlatform.FromDictionary)
-    p.ParseList('dependencies', required=False, default=[])
+    p.Parse('id', required=True)
+    p.Parse('details', required=True, func=ComponentDetails.FromDictionary)
+    p.Parse('version', required=True, func=ComponentVersion.FromDictionary)
+    p.Parse('is_hidden', default=False)
+    p.Parse('is_required', default=False)
+    p.Parse('is_configuration', default=False)
+    p.Parse('data', func=ComponentData.FromDictionary)
+    p.Parse('platform', default={}, func=ComponentPlatform.FromDictionary)
+    p.ParseList('dependencies', default=[])
     return cls(**p.Args())
 
   def ToDictionary(self):
+    """Converts a Component object to a Dictionary object.
+
+    Returns:
+      A Dictionary object initialized from self.
+    """
     w = DictionaryWriter(self)
     w.Write('id')
     w.Write('details', func=ComponentDetails.ToDictionary)
@@ -455,10 +465,10 @@ class SchemaVersion(object):
   @classmethod
   def FromDictionary(cls, dictionary):
     p = DictionaryParser(cls, dictionary)
-    p.Parse('version')
-    p.Parse('no_update', required=False, default=False)
-    p.Parse('message', required=False)
-    p.Parse('url')
+    p.Parse('version', required=True)
+    p.Parse('no_update', default=False)
+    p.Parse('message')
+    p.Parse('url', required=True)
     return cls(**p.Args())
 
   def ToDictionary(self):
@@ -489,8 +499,9 @@ class SDKDefinition(object):
   @classmethod
   def FromDictionary(cls, dictionary):
     p = cls._ParseBase(dictionary)
-    p.Parse('revision')
-    p.ParseList('components', func=Component.FromDictionary)
+    p.Parse('revision', required=True)
+    p.Parse('release_notes_url')
+    p.ParseList('components', required=True, func=Component.FromDictionary)
     return cls(**p.Args())
 
   @classmethod
@@ -500,21 +511,22 @@ class SDKDefinition(object):
   @classmethod
   def _ParseBase(cls, dictionary):
     p = DictionaryParser(cls, dictionary)
-    p.Parse('schema_version', required=False,
-            default={'version': 1, 'url': ''},
+    p.Parse('schema_version', default={'version': 1, 'url': ''},
             func=SchemaVersion.FromDictionary)
     return p
 
   def ToDictionary(self):
     w = DictionaryWriter(self)
     w.Write('revision')
+    w.Write('release_notes_url')
     w.Write('schema_version', func=SchemaVersion.ToDictionary)
     w.WriteList('components', func=Component.ToDictionary)
     return w.Dictionary()
 
-  def __init__(self, revision, schema_version, components):
+  def __init__(self, revision, schema_version, release_notes_url, components):
     self.revision = revision
     self.schema_version = schema_version
+    self.release_notes_url = release_notes_url
     self.components = components
 
   def LastUpdatedString(self):

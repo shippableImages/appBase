@@ -187,11 +187,11 @@ def MoveDir(src, dst):
     Error: If the src or dst directories are not valid.
   """
   if not os.path.isdir(src):
-    raise Error("Source path '{}' must be a directory".format(src))
+    raise Error("Source path '{0}' must be a directory".format(src))
   if os.path.exists(dst):
-    raise Error("Destination path '{}' already exists".format(dst))
+    raise Error("Destination path '{0}' already exists".format(dst))
   if _DestInSrc(src, dst):
-    raise Error("Cannot move a directory '{}' into itself '{}'."
+    raise Error("Cannot move a directory '{0}' into itself '{0}'."
                 .format(src, dst))
   try:
     logging.debug('Attempting to move directory [%s] to [%s]', src, dst)

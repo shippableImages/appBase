@@ -10,6 +10,7 @@ START_TIME = time.time()
 import os
 import signal
 import sys
+import traceback
 
 
 # Disable stack traces when people kill a command.
@@ -69,7 +70,7 @@ def _SetPriorityCloudSDKPath():
   module_root = _GetRootContainingGoogle()
 
   # check if we're already set
-  if sys.path and module_root == sys.path[0]:
+  if (not module_root) or (sys.path and module_root == sys.path[0]):
     return
   sys.path.insert(0, module_root)
 
@@ -81,6 +82,7 @@ def _DoStartupChecks():
     sys.exit(1)
   if not platforms.Platform.Current().IsSupported():
     sys.exit(1)
+
 
 _SetPriorityCloudSDKPath()
 _DoStartupChecks()
@@ -96,11 +98,11 @@ from googlecloudsdk.core import metrics
 from googlecloudsdk.core import properties
 from googlecloudsdk.core.updater import local_state
 from googlecloudsdk.core.updater import update_manager
-from googlecloudsdk.core.util import resource_registration
-
-resource_registration.RegisterReleasedAPIs()
 
 
+if not config.Paths().sdk_root:
+  # Don't do update checks if there is no install root.
+  properties.VALUES.component_manager.disable_update_check.Set(True)
 
 
 def UpdateCheck():
@@ -118,22 +120,13 @@ def VersionFunc():
 
 def CreateCLI():
   """Generates the gcloud CLI."""
-  sdk_root = config.Paths().sdk_root
-  if sdk_root:
-    help_dir = os.path.join(sdk_root, 'help')
-  else:
-    help_dir = None
+  pkg_root = config.GoogleCloudSDKPackageRoot()
   loader = cli.CLILoader(
       name='gcloud',
       command_root_directory=os.path.join(
-          cli.GoogleCloudSDKPackageRoot(),
-          'gcloud',
-          'sdktools',
-          'root'),
+          pkg_root, 'gcloud', 'sdktools', 'root'),
       allow_non_existing_modules=True,
-      version_func=VersionFunc,
-      help_func=cli.GetHelp(help_dir))
-  pkg_root = cli.GoogleCloudSDKPackageRoot()
+      version_func=VersionFunc)
 
   loader.AddReleaseTrack(base.ReleaseTrack.ALPHA,
                          os.path.join(pkg_root, 'gcloud', 'sdktools', 'alpha'),
@@ -144,17 +137,26 @@ def CreateCLI():
 
   loader.AddModule('auth', os.path.join(pkg_root, 'gcloud', 'sdktools', 'auth'))
   loader.AddModule('bigquery', os.path.join(pkg_root, 'bigquery', 'commands'))
+  loader.AddModule('bigtable', os.path.join(pkg_root, 'bigtable', 'commands'))
   loader.AddModule('components',
                    os.path.join(pkg_root, 'gcloud', 'sdktools', 'components'))
   loader.AddModule('compute', os.path.join(pkg_root, 'compute', 'subcommands'),
                    component='compute')
   loader.AddModule('config',
                    os.path.join(pkg_root, 'gcloud', 'sdktools', 'config'))
-  loader.AddModule('dns', os.path.join(pkg_root, 'dns', 'dnstools'),
+  loader.AddModule('container',
+                   os.path.join(pkg_root, 'container', 'commands'),
+                   component='gcloud')
+  loader.AddModule('dataflow',
+                   os.path.join(pkg_root, 'dataflow', 'commands'))
+  loader.AddModule('deployment_manager',
+                   os.path.join(pkg_root, 'deployment_manager', 'commands'))
+  loader.AddModule('dns', os.path.join(pkg_root, 'dns', 'commands'),
                    component='dns')
   loader.AddModule('endpoints', os.path.join(pkg_root, 'endpoints', 'commands'))
   loader.AddModule('internal',
                    os.path.join(pkg_root, 'gcloud', 'sdktools', 'internal'))
+  loader.AddModule('meta', os.path.join(pkg_root, 'gcloud', 'sdktools', 'meta'))
   loader.AddModule('preview', os.path.join(pkg_root, 'preview', 'commands'),
                    component='preview')
   # Put app and datastore under preview for now.
@@ -163,25 +165,30 @@ def CreateCLI():
   loader.AddModule('preview.app',
                    os.path.join(pkg_root, 'appengine', 'app_commands'),
                    component='app')
-  loader.AddModule('preview.container',
-                   os.path.join(pkg_root, 'container', 'commands'))
   loader.AddModule('preview.datastore',
                    os.path.join(pkg_root, 'appengine', 'datastore_commands'),
                    component='app')
-  loader.AddModule('preview.dns', os.path.join(pkg_root, 'dns', 'commands'))
-  loader.AddModule('preview.genomics',
+  loader.AddModule('genomics',
                    os.path.join(pkg_root, 'genomics', 'commands'))
   # TODO(user): Put logging in preview for now.
   loader.AddModule('preview.logging',
                    os.path.join(pkg_root, 'logging', 'commands'))
-  loader.AddModule('preview.projects',
-                   os.path.join(pkg_root, 'projects', 'commands'))
   loader.AddModule('preview.rolling_updates',
                    os.path.join(
                        pkg_root, 'updater', 'commands', 'rolling_updates'))
-  loader.AddModule('preview.test', os.path.join(pkg_root, 'test', 'commands'))
+  loader.AddModule('projects',
+                   os.path.join(pkg_root, 'projects', 'commands'),
+                   component='gcloud')
+  loader.AddModule('pubsub',
+                   os.path.join(pkg_root, 'pubsub', 'commands'),
+                   component='gcloud')
+  loader.AddModule('services',
+                   os.path.join(pkg_root, 'service_management', 'subcommands'))
+  loader.AddModule('source',
+                   os.path.join(pkg_root, 'source', 'commands'))
   loader.AddModule('sql', os.path.join(pkg_root, 'sql', 'tools'),
                    component='sql')
+  loader.AddModule('test', os.path.join(pkg_root, 'test', 'commands'))
 
   # Check for updates on shutdown but not for any of the updater commands.
   loader.RegisterPostRunHook(UpdateCheck,
@@ -197,7 +204,13 @@ def main():
   metrics.Executions(
       'gcloud',
       local_state.InstallationState.VersionForInstalledComponent('core'))
-  _cli.Execute()
+  try:
+    _cli.Execute()
+  except Exception as err:  # pylint:disable=broad-except
+    if isinstance(err, KeyboardInterrupt):
+      raise
+    traceback.print_exc()
+    sys.exit(1)
 
 if __name__ == '__main__':
   try:

@@ -3,11 +3,13 @@
 """Generates credentials for gsutil."""
 
 import base64
+import json
 import os
 import textwrap
 
 from oauth2client import client as oauth2_client
 from oauth2client import multistore_file as oauth2_multistore_file
+from oauth2client import service_account as oauth2_service_account
 
 from googlecloudsdk.core import config
 from googlecloudsdk.core.util import files
@@ -52,12 +54,13 @@ class LegacyGenerator(CredentialGenerator):
   """A class to generate the credential file for legacy tools."""
 
   def __init__(self, multistore_path, json_path, gae_java_path, gsutil_path,
-               key_path, credentials, scopes):
+               key_path, json_key_path, credentials, scopes):
     self._multistore_path = multistore_path
     self._json_path = json_path
     self._gae_java_path = gae_java_path
     self._gsutil_path = gsutil_path
     self._key_path = key_path
+    self._json_key_path = json_key_path
     super(LegacyGenerator, self).__init__(
         path=None,
         credentials=credentials,
@@ -126,3 +129,28 @@ class LegacyGenerator(CredentialGenerator):
           """).format(account=self.credentials.service_account_name,
                       key_file=self._key_path,
                       key_password=self.credentials.private_key_password))
+
+    # pylint: disable=protected-access
+    # Remove linter directive when
+    # https://github.com/google/oauth2client/issues/165 is addressed.
+    if isinstance(self.credentials,
+                  oauth2_service_account._ServiceAccountCredentials):
+      # TODO(user): Currently activate-service-account discards the JSON
+      # key file after reading it; save it so that we can hand it to gsutil.
+      # For now, serialize the credentials back to their original
+      # JSON key file form.
+      json_key_dict = {
+          'client_id': self.credentials._service_account_id,
+          'client_email': self.credentials._service_account_email,
+          'private_key': self.credentials._private_key_pkcs8_text,
+          'private_key_id': self.credentials._private_key_id,
+          'type': 'service_account'
+      }
+      with files.OpenForWritingPrivate(self._json_key_path) as pk:
+        pk.write(json.dumps(json_key_dict))
+      self._WriteFileContents(self._gsutil_path, textwrap.dedent("""\
+          [Credentials]
+          gs_service_key_file = {key_file}
+          """).format(key_file=self._json_key_path))
+    # pylint: enable=protected-access
+

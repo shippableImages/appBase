@@ -184,7 +184,7 @@ The cluster is created in the project's default network.
 
 A firewall is added that allows traffic into port 443 on the master, which enables HTTPS. A firewall and a route is added for each node to allow the containers on that node to communicate with all other instances in the cluster.
 
-Finally, a route named k8s-iproute-10-xx-0-0 is created to track that the cluster's 10.xx.0.0/16 CIDR has been assigned.
+Finally, an entry is added to the project's global metadata indicating which CIDR range is being used by the cluster.
 
       Args:
         request: (ContainerProjectsZonesClustersCreateRequest) input message

@@ -1,12 +1,8 @@
 # Copyright 2013 Google Inc. All Rights Reserved.
 
-"""A calliope command that calls a help function."""
+"""A calliope command that prints help for another calliope command."""
 
 from googlecloudsdk.calliope import base
-from googlecloudsdk.calliope import cli
-from googlecloudsdk.calliope import exceptions as c_exc
-from googlecloudsdk.core import log
-from googlecloudsdk.core import metrics
 
 
 @base.ReleaseTracks(base.ReleaseTrack.GA)
@@ -14,7 +10,7 @@ class Help(base.Command):
   """Prints detailed help messages for the specified commands.
 
   This command prints a detailed help message for the commands specified
-  after the ``help`' operand.
+  after the ``help'' operand.
   """
 
   @staticmethod
@@ -27,33 +23,8 @@ class Help(base.Command):
         A sequence of group and command names with no flags.
         """
 
-  @c_exc.RaiseToolExceptionInsteadOf(cli.NoHelpFoundError)
   def Run(self, args):
-    # pylint: disable=protected-access
-    help_func = self.cli._HelpFunc()
-    command_path = [self.cli._TopElement().name] + (args.command or [])
-    metrics.Help('.'.join(command_path), 'help')
-
-    def RaiseError():
-      raise c_exc.ToolException(
-          'Unknown command: {command}'.format(command='.'.join(args.command)))
-
-    def ShowShortHelp():
-      """Print short help text."""
-      segments = [segment.replace('-', '_') for segment in args.command]
-      # pylint: disable=protected-access
-      current_element = self.cli._TopElement()
-
-      for segment in segments:
-        current_element = current_element.LoadSubElement(segment)
-        if not current_element:
-          RaiseError()
-      log.out.write((current_element.GetShortHelp()))
-
-    if not help_func:
-      ShowShortHelp()
-    else:
-      try:
-        help_func(command_path)
-      except cli.NoHelpFoundError:
-        ShowShortHelp()
+    # --document=style=help to signal the metrics.Help() 'help' label in
+    # actions.RenderDocumentAction().Action().
+    self.cli.Execute(args.command + ['--document=style=help'])
+    return None

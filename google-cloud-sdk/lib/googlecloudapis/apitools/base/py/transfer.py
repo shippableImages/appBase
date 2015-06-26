@@ -132,7 +132,7 @@ class _Transfer(object):
       self.__stream.close()
 
   def _ExecuteCallback(self, callback, response):
-    # TODO(user): Push these into a queue.
+    # TODO(craigcitro): Push these into a queue.
     if callback is not None:
       threading.Thread(target=callback, args=(response, self)).start()
 
@@ -226,7 +226,7 @@ class Download(_Transfer):
 
   def ConfigureRequest(self, http_request, url_builder):
     url_builder.query_params['alt'] = 'media'
-    # TODO(user): We need to send range requests because by
+    # TODO(craigcitro): We need to send range requests because by
     # default httplib2 stores entire reponses in memory. Override
     # httplib2's download method (as gsutil does) so that this is not
     # necessary.
@@ -340,7 +340,7 @@ class Download(_Transfer):
       self.stream.write(response.content)
       self.__progress += response.length
       if response.info and 'content-encoding' in response.info:
-        # TODO(user): Handle the case where this changes over a
+        # TODO(craigcitro): Handle the case where this changes over a
         # download.
         self.__encoding = response.info['content-encoding']
     elif response.status_code == http_client.NO_CONTENT:
@@ -404,6 +404,8 @@ class Download(_Transfer):
       else:
         response = self.__GetChunk(self.progress,
                                    additional_headers=additional_headers)
+      if self.total_size is None:
+        self.__SetTotal(response.info)
       response = self.__ProcessResponse(response)
       self._ExecuteCallback(callback, response)
       if (response.status_code == http_client.OK or
@@ -715,7 +717,7 @@ class Upload(_Transfer):
 
   def __GetLastByte(self, range_header):
     _, _, end = range_header.partition('-')
-    # TODO(user): Validate start == 0?
+    # TODO(craigcitro): Validate start == 0?
     return int(end)
 
   def __ValidateChunksize(self, chunksize=None):
@@ -757,13 +759,13 @@ class Upload(_Transfer):
         break
       self.__progress = self.__GetLastByte(response.info['range'])
       if self.progress + 1 != self.stream.tell():
-        # TODO(user): Add a better way to recover here.
+        # TODO(craigcitro): Add a better way to recover here.
         raise exceptions.CommunicationError(
             'Failed to transfer all bytes in chunk, upload paused at byte '
             '%d' % self.progress)
       self._ExecuteCallback(callback, response)
     if self.__complete:
-      # TODO(user): Decide how to handle errors in the
+      # TODO(craigcitro): Decide how to handle errors in the
       # non-seekable case.
       current_pos = self.stream.tell()
       self.stream.seek(0, os.SEEK_END)
@@ -858,7 +860,7 @@ class Upload(_Transfer):
     else:
       end = min(start + self.chunksize, self.total_size)
       body_stream = stream_slice.StreamSlice(self.stream, end - start)
-    # TODO(user): Think about clearer errors on "no data in
+    # TODO(craigcitro): Think about clearer errors on "no data in
     # stream".
     request = http_wrapper.Request(url=self.url, http_method='PUT',
                                    body=body_stream)

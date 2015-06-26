@@ -140,6 +140,18 @@ class ReplicapoolV1beta2(base_api.BaseApiClient):
               response_type_name=u'Operation',
               supports_download=False,
           ),
+          'SetAutoHealingPolicy': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'replicapool.instanceGroupManagers.setAutoHealingPolicy',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/setAutoHealingPolicy',
+              request_field=u'instanceGroupManagersSetAutoHealingPolicyRequest',
+              request_type_name=u'ReplicapoolInstanceGroupManagersSetAutoHealingPolicyRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
           'SetInstanceTemplate': base_api.ApiMethodInfo(
               http_method=u'POST',
               method_id=u'replicapool.instanceGroupManagers.setInstanceTemplate',
@@ -270,6 +282,19 @@ class ReplicapoolV1beta2(base_api.BaseApiClient):
         (Operation) The response message.
       """
       config = self.GetMethodConfig('Resize')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def SetAutoHealingPolicy(self, request, global_params=None):
+      """Sets the auto-healing policy.
+
+      Args:
+        request: (ReplicapoolInstanceGroupManagersSetAutoHealingPolicyRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetAutoHealingPolicy')
       return self._RunMethod(
           config, request, global_params=global_params)
 

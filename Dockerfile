@@ -11,11 +11,13 @@ ADD 90forceyes /etc/apt/apt.conf.d/
 
 RUN echo "================= Installing core binaries ==================="
 RUN apt-get update
-RUN apt-get install python-dev;
+RUN apt-get install -yy python-dev software-properties-common;
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe restricted multiverse" > /etc/apt/sources.list
 
 RUN apt-get update
-RUN apt-get install wget \
+RUN apt-get install -yy g++-4.9 \
+                    wget \
                     curl \
                     texinfo \
                     make \
@@ -24,10 +26,8 @@ RUN apt-get install wget \
                     gdb \
                     sudo \
                     git-core \
-                    g++ \
                     vim \
-                    htop \
-                    software-properties-common;
+                    htop ;
 
 RUN apt-get install python-pip \
                     python-software-properties \

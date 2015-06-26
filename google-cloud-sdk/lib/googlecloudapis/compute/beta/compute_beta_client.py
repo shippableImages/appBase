@@ -579,7 +579,7 @@ class ComputeBeta(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def CreateSnapshot(self, request, global_params=None):
-      """CreateSnapshot method for the disks service.
+      """Creates a snapshot of this disk.
 
       Args:
         request: (ComputeDisksCreateSnapshotRequest) input message
@@ -1861,7 +1861,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified instance template resource.
+      """Deletes the specified instance template.
 
       Args:
         request: (ComputeInstanceTemplatesDeleteRequest) input message
@@ -1887,7 +1887,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Insert(self, request, global_params=None):
-      """Creates an instance template resource in the specified project using the data included in the request.
+      """Creates an instance template in the specified project using the data that is included in the request.
 
       Args:
         request: (ComputeInstanceTemplatesInsertRequest) input message
@@ -1900,7 +1900,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of instance template resources contained within the specified project.
+      """Retrieves a list of instance templates that are contained within the specified project and zone.
 
       Args:
         request: (ComputeInstanceTemplatesListRequest) input message
@@ -2009,7 +2009,7 @@ If an empty request body is given, clears the deprecation status instead.
               method_id=u'compute.instances.getSerialPortOutput',
               ordered_params=[u'project', u'zone', u'instance'],
               path_params=[u'instance', u'project', u'zone'],
-              query_params=[],
+              query_params=[u'port'],
               relative_path=u'projects/{project}/zones/{zone}/instances/{instance}/serialPort',
               request_field='',
               request_type_name=u'ComputeInstancesGetSerialPortOutputRequest',
@@ -3361,6 +3361,30 @@ If an empty request body is given, clears the deprecation status instead.
               response_type_name=u'TargetHttpsProxyList',
               supports_download=False,
           ),
+          'SetSslCertificates': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.targetHttpsProxies.setSslCertificates',
+              ordered_params=[u'project', u'targetHttpsProxy'],
+              path_params=[u'project', u'targetHttpsProxy'],
+              query_params=[],
+              relative_path=u'projects/{project}/targetHttpsProxies/{targetHttpsProxy}/setSslCertificates',
+              request_field=u'targetHttpsProxiesSetSslCertificatesRequest',
+              request_type_name=u'ComputeTargetHttpsProxiesSetSslCertificatesRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'SetUrlMap': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.targetHttpsProxies.setUrlMap',
+              ordered_params=[u'project', u'targetHttpsProxy'],
+              path_params=[u'project', u'targetHttpsProxy'],
+              query_params=[],
+              relative_path=u'projects/{project}/targetHttpsProxies/{targetHttpsProxy}/setUrlMap',
+              request_field=u'urlMapReference',
+              request_type_name=u'ComputeTargetHttpsProxiesSetUrlMapRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
           }
 
       self._upload_configs = {
@@ -3415,6 +3439,32 @@ If an empty request body is given, clears the deprecation status instead.
         (TargetHttpsProxyList) The response message.
       """
       config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def SetSslCertificates(self, request, global_params=None):
+      """Replaces SslCertificates for TargetHttpsProxy.
+
+      Args:
+        request: (ComputeTargetHttpsProxiesSetSslCertificatesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetSslCertificates')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def SetUrlMap(self, request, global_params=None):
+      """Changes the URL map for TargetHttpsProxy.
+
+      Args:
+        request: (ComputeTargetHttpsProxiesSetUrlMapRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetUrlMap')
       return self._RunMethod(
           config, request, global_params=global_params)
 

@@ -60,7 +60,7 @@ class Remove(base.Command):
       for url in args.url:
         if url not in repos:
           raise exceptions.ToolException(
-              'URL [{}] was not a known registered repository.'.format(url))
+              'URL [{0}] was not a known registered repository.'.format(url))
       for url in args.url:
         repos.remove(url)
       removed_repos.extend(args.url)

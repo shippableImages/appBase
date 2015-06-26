@@ -7,16 +7,14 @@
 .HP
 gcloud \- manage Google Cloud Platform resources and developer workflow
 .SH "SYNOPSIS"
-.HP
-gcloud\ \fIGROUP\fR\ | \ \fICOMMAND\fR [\fB\-\-format\fR\ \fIFORMAT\fR] [\fB\-\-help\fR] [\fB\-\-http\-timeout\fR\ \fIHTTP_TIMEOUT\fR] [\fB\-\-log\-http\fR] [\fB\-\-project\fR\ \fIPROJECT_ID\fR] [\fB\-\-quiet\fR,\ \fB\-q\fR] [\fB\-\-trace\-token\fR\ \fITRACE_TOKEN\fR] [\fB\-\-user\-output\-enabled\fR\ \fIUSER_OUTPUT_ENABLED\fR] [\fB\-\-verbosity\fR\ \fIVERBOSITY\fR] [\fB\-h\fR] [\fB\-v\fR,\ \fB\-\-version\fR]
+.sp
+gcloud \fIGROUP\fR | \fICOMMAND\fR [\fB\-\-format\fR \fIFORMAT\fR] [\fB\-\-help\fR] [\fB\-\-log\-http\fR] [\fB\-\-project\fR \fIPROJECT_ID\fR] [\fB\-\-quiet\fR, \fB\-q\fR] [\fB\-\-trace\-token\fR \fITRACE_TOKEN\fR] [\fB\-\-user\-output\-enabled\fR \fIUSER_OUTPUT_ENABLED\fR] [\fB\-\-verbosity\fR \fIVERBOSITY\fR] [\fB\-h\fR] [\fB\-v\fR, \fB\-\-version\fR]
 .SH "DESCRIPTION"
 .sp
 The \fBgcloud\fR CLI manages authentication, local configuration, developer workflow, and interactions with the Google Cloud Platform APIs\&.
 .SH "FLAGS"
-.PP
+.HP
 \fB\-\-format\fR \fIFORMAT\fR
-.RS 4
-Specify a format for printed output\&. By default, a command\-specific human\-friendly output format is used\&. Setting this flag to one of the available options will serialize the result of the command in the chosen format and print it to stdout\&. Supported formats are:
 json,
 text,
 yaml\&.
@@ -25,11 +23,6 @@ yaml\&.
 \fB\-\-help\fR
 .RS 4
 Display detailed help\&.
-.RE
-.PP
-\fB\-\-http\-timeout\fR \fIHTTP_TIMEOUT\fR
-.RS 4
-Timeout in seconds for HTTP requests\&.
 .RE
 .PP
 \fB\-\-log\-http\fR
@@ -66,6 +59,7 @@ Override the default verbosity for this command\&. This must be a standard loggi
 .RS 4
 Print a summary help and exit\&.
 .RE
+.SH "GROUP FLAGS"
 .PP
 \fB\-v\fR, \fB\-\-version\fR
 .RS 4
@@ -109,7 +103,7 @@ View and edit Google Cloud SDK properties\&.
 .PP
 \fBdns\fR
 .RS 4
-Manage Cloud DNS\&.
+Manage your Cloud DNS managed\-zones and record\-sets\&.
 .RE
 .PP
 \fBpreview\fR
@@ -121,9 +115,19 @@ Manage Preview CLI command groups\&.
 .RS 4
 Manage Cloud SQL databases\&.
 .RE
+.PP
+\fBtopic\fR
+.RS 4
+gcloud supplementary help\&.
+.RE
 .SH "COMMANDS"
 .sp
 \fICOMMAND\fR is one of the following:
+.PP
+\fBdocker\fR
+.RS 4
+Provides the docker CLI access to the Google Container Registry\&.
+.RE
 .PP
 \fBhelp\fR
 .RS 4

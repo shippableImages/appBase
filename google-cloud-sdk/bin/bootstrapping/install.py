@@ -72,10 +72,10 @@ Usage reporting is always on for alternate release channels.
 
   if usage_reporting is None:
     print("""
-The Google Cloud SDK is currently in developer preview. To help improve the
-quality of this product, we collect anonymized data on how the SDK is used.
-You may choose to opt out of this collection now (by choosing 'N' at the below
-prompt), or at any time in the future by running the following command:
+To help improve the quality of this product, we collect anonymized data on how
+the SDK is used. You may choose to opt out of this collection now (by choosing
+'N' at the below prompt), or at any time in the future by running the following
+command:
     gcloud config set --scope=user disable_usage_reporting true
 """)
 

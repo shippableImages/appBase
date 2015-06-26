@@ -1,0 +1,23 @@
+NAME
+
+      gcloud topic - gcloud supplementary help
+
+DESCRIPTION
+
+      This command provides supplementary help for topics not directly
+      associated with individual commands. Run $ gcloud help TOPIC to list help
+      for TOPIC.
+
+TOPICS
+
+      The supplementary help topics are:
+
+      formats
+
+         Resource formats supplementary help.
+
+NOTES
+
+      This command is in the Google Cloud SDK core component. See installing
+      components if it is not installed.
+

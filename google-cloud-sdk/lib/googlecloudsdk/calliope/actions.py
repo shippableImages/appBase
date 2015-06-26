@@ -5,13 +5,17 @@
 
 # pylint:disable=g-bad-import-order
 import argparse
+import cStringIO
 import os
 import sys
 
 
+from googlecloudsdk.calliope import markdown
 from googlecloudsdk.calliope import usage_text
 from googlecloudsdk.core import metrics
 from googlecloudsdk.core import properties
+from googlecloudsdk.core.document_renderers import render_document
+from googlecloudsdk.core.util import console_io
 
 
 def FunctionExitAction(func):
@@ -31,6 +35,7 @@ def FunctionExitAction(func):
       super(Action, self).__init__(**kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
+      metrics.Loaded()
       func()
       sys.exit(0)
 
@@ -229,25 +234,82 @@ def ShortHelpAction(command):
   """
   def Func():
     metrics.Help(command.dotted_name, '-h')
-    # pylint:disable=protected-access
-    print usage_text.ShortHelpText(command, command._ai)
+    print usage_text.ShortHelpText(command, command.ai)
   return FunctionExitAction(Func)
 
 
-def LongHelpAction(command, help_func):
-  """Get an argparse.Action that prints a long help.
+def RenderDocumentAction(command, default_style=None):
+  """Get an argparse.Action that renders a help document from markdown.
 
   Args:
     command: calliope._CommandCommon, The command object that we're helping.
-    help_func: func([str]), The long help function that is used for --help.
+    default_style: str, The default style if not specified in flag value.
 
   Returns:
-    argparse.Action, the action to use.
+    argparse.Action, The action to use.
   """
-  def Func():
-    metrics.Help(command.dotted_name, '--help')
-    # pylint:disable=protected-access
-    help_func(
-        command._path,
-        default=usage_text.ShortHelpText(command, command._ai))
-  return FunctionExitAction(Func)
+
+  class Action(argparse.Action):
+
+
+    def __init__(self, **kwargs):
+      if default_style:
+        kwargs['nargs'] = 0
+      super(Action, self).__init__(**kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+      """Render a help document according to the style in values.
+
+      Args:
+        parser: The ArgParse object.
+        namespace: The ArgParse namespace.
+        values: The --document flag ArgDict() value:
+          style=STYLE
+            The output style. Must be specified.
+          title=DOCUMENT TITLE
+            The document title.
+          notes=SENTENCES
+            Inserts SENTENCES into the document NOTES section.
+        option_string: The ArgParse flag string.
+
+      Raises:
+        ArgumentTypeError: For unknown flag value attribute name.
+      """
+      if default_style:
+        # --help
+        metrics.Loaded()
+      style = default_style
+      notes = None
+      title = None
+
+      for attributes in values:
+        for name, value in attributes.iteritems():
+          if name == 'notes':
+            notes = value
+          elif name == 'style':
+            style = value
+          elif name == 'title':
+            title = value
+          else:
+            raise argparse.ArgumentTypeError(
+                'Unknown document attribute [{}]'.format(name))
+
+      if title is None:
+        title = command.dotted_name
+
+      metrics.Help(command.dotted_name, style)
+      # '--help' is set by the --help flag, the others by gcloud <style> ... .
+      if style in ('--help', 'help', 'topic'):
+        style = 'text'
+      md = cStringIO.StringIO(markdown.Markdown(command))
+      out = (cStringIO.StringIO() if console_io.IsInteractive(output=True)
+             else None)
+      render_document.RenderDocument(style, md, out=out, notes=notes,
+                                     title=title)
+      metrics.Ran()
+      if out:
+        console_io.More(out.getvalue())
+
+      sys.exit(0)
+
+  return Action

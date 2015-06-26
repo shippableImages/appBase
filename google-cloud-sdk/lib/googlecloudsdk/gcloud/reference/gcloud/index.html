@@ -18,13 +18,7 @@
 <dd>gcloud - manage Google Cloud Platform resources and developer workflow</dd>
 </section><section>
 <dt>SYNOPSIS</dt>
-<dd><dl>
-<dt class="hangingindent">
-<code>gcloud</code>&nbsp;&nbsp;&#32;<code><var>GROUP</var></code>&nbsp;&nbsp;&#32;|&nbsp;&nbsp;&#32;<code><var>COMMAND</var></code>&nbsp;&nbsp;&#32;<nobr>[<code>--format</code>&nbsp;&nbsp;&#32;<code><var>FORMAT</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--help</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--http-timeout</code>&nbsp;&nbsp;&#32;<code><var>HTTP_TIMEOUT</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--log-http</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--project</code>&nbsp;&nbsp;&#32;<code><var>PROJECT_ID</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--quiet</code>,&nbsp;&nbsp;&#32;<code>-q</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--trace-token</code>&nbsp;&nbsp;&#32;<code><var>TRACE_TOKEN</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--user-output-enabled</code>&nbsp;&nbsp;&#32;<code><var>USER_OUTPUT_ENABLED</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>--verbosity</code>&nbsp;&nbsp;&#32;<code><var>VERBOSITY</var></code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>-h</code>]</nobr>&nbsp;&nbsp;&#32;<nobr>[<code>-v</code>,&nbsp;&nbsp;&#32;<code>--version</code>]</nobr>
-</dt>
-
-
-</dl></dd>
+<dd><pre>gcloud GROUP | COMMAND [--format FORMAT] [--help] [--log-http] [--project PROJECT_ID] [--quiet, -q] [--trace-token TRACE_TOKEN] [--user-output-enabled USER_OUTPUT_ENABLED] [--verbosity VERBOSITY] [-h] [-v, --version]</pre></dd>
 </section><section>
 <dt>DESCRIPTION</dt>
 <dd>The <code>gcloud</code> CLI manages authentication, local configuration, developer
@@ -32,8 +26,8 @@ workflow, and interactions with the Google Cloud Platform APIs.</dd>
 </section><section>
 <dt>FLAGS</dt>
 <dd><dl>
-<dt>
-<code>--format</code> <code><var>FORMAT</var></code>
+<dt class="hangingindent">
+<code>--format</code>&nbsp;&nbsp;&#32;<code><var>FORMAT</var></code>
 </dt>
 
 <dd>
@@ -51,15 +45,6 @@ the chosen format and print it to stdout. Supported formats are:
 
 <dd>
 Display detailed help.
-</dd>
-
-
-<dt>
-<code>--http-timeout</code> <code><var>HTTP_TIMEOUT</var></code>
-</dt>
-
-<dd>
-Timeout in seconds for HTTP requests.
 </dd>
 
 
@@ -127,7 +112,10 @@ Override the default verbosity for this command.  This must be a standard loggin
 Print a summary help and exit.
 </dd>
 
-
+</dl></dd>
+</section><section>
+<dt>GROUP FLAGS</dt>
+<dd><dl>
 <dt>
 <code>-v</code>, <code>--version</code>
 </dt>
@@ -201,7 +189,7 @@ View and edit Google Cloud SDK properties.
 </dt>
 
 <dd>
-Manage Cloud DNS.
+Manage your Cloud DNS managed-zones and record-sets.
 </dd>
 
 
@@ -222,12 +210,30 @@ Manage Preview CLI command groups.
 Manage Cloud SQL databases.
 </dd>
 
+
+<dt>
+<code><a href="topic">topic</a></code>
+</dt>
+
+<dd>
+gcloud supplementary help.
+</dd>
+
 </dl></dd>
 </section><section>
 <dt>COMMANDS</dt>
 <dd>
 <code><var>COMMAND</var></code> is one of the following:</dd>
 <dd><dl>
+<dt>
+<code><a href="docker">docker</a></code>
+</dt>
+
+<dd>
+Provides the docker CLI access to the Google Container Registry.
+</dd>
+
+
 <dt>
 <code><a href="help">help</a></code>
 </dt>

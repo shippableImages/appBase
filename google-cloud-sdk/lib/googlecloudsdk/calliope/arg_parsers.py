@@ -14,9 +14,9 @@ Example usage:
   parser = argparse.ArgumentParser()
 
   parser.add_argument(
-      'metadata',
-      nargs='+',
-      action=arg_parsers.AssociativeList())
+      '--metadata',
+      type=arg_parsers.ArgDict(),
+      action=arg_parser.FloatingListValuesCatcher())
   parser.add_argument(
       '--delay',
       default='5s',
@@ -26,21 +26,23 @@ Example usage:
       default='10GB',
       type=arg_parsers.BinarySize(lower_bound='1GB', upper_bound='10TB')
 
+  # will emit a warning about space-separated metadata
   res = parser.parse_args(
-      '--names --metadata x=y a=b --delay 1s --disk-size 10gb'.split())
+      '--names --metadata x=y,a=b c=d --delay 1s --disk-size 10gb'.split())
 
-  assert res.metadata == {'a': 'b', 'x': 'y'}
+  assert res.metadata == {'a': 'b', 'c': 'd', 'x': 'y'}
   assert res.delay == 1
   assert res.disk_size == 10737418240
 
 """
 
 import argparse
+import datetime
 import re
 
-from googlecloudsdk.calliope import tokenizer
+from googlecloudsdk.core import log
 
-__all__ = ['AssociativeList', 'Duration', 'BinarySize']
+__all__ = ['Duration', 'BinarySize']
 
 
 class Error(Exception):
@@ -271,84 +273,6 @@ def BinarySize(lower_bound=None, upper_bound=None):
 _KV_PAIR_DELIMITER = '='
 
 
-def AssociativeList(spec=None, append=False):
-  """A parser for parsing sequences of key/value pairs.
-
-  The argument can contain zero or more values. Each value must be of
-  the form:
-
-    KEY=VALUE
-
-  Keys and values can be arbitrary strings as long as any occurrence
-  of "=" in the key or value is escaped with a single preceding "\".
-
-  Args:
-    spec: {str: function}, A mapping of expected keys to functions.
-      The functions are applied to the values. If None, an arbitrary
-      set of keys will be accepted. If not None, it is an error for the
-      user to supply a key that is not in the spec.
-    append: bool, If True, repeated invocations of a flag with this action
-      will cause the results to be collected into a list. If False, in
-      repeated invocations, the last flag wins. This is behavior is similar
-      to the 'store' and 'append' actions of argparse.
-
-  Returns:
-    argparse.Action, An action for parsing key/value pairs.
-  """
-
-  class Action(argparse.Action):
-
-    def __call__(self, parser, namespace, values, option_string=None):
-      if not isinstance(values, list):
-        values = [values]
-      res = self._Parse(values)
-      if append:
-        current_list = getattr(namespace, self.dest, None)
-        if current_list:
-          current_list.append(res)
-        else:
-          setattr(namespace, self.dest, [res])
-      else:
-        setattr(namespace, self.dest, res)
-
-    def _Parse(self, pairs):
-      res = {}
-      for pair in pairs:
-        try:
-          parts = tokenizer.Tokenize(pair, [_KV_PAIR_DELIMITER])
-        except ValueError as e:
-          raise ArgumentParsingError(self, e.message)
-        if len(parts) != 3 or parts[1] != tokenizer.Separator(
-            _KV_PAIR_DELIMITER):
-          raise ArgumentParsingError(
-              self, _GenerateErrorMessage(
-                  'key/value pair must be of the form KEY{0}VALUE'.format(
-                      _KV_PAIR_DELIMITER),
-                  user_input=pair))
-
-        key, value = parts[0], parts[2]
-        if key in res:
-          raise ArgumentParsingError(
-              self, _GenerateErrorMessage('duplicate key', user_input=key))
-        res[key] = self.ApplySpec(key, value)
-
-      return res
-
-    def ApplySpec(self, key, value):
-      if spec is None:
-        return value
-      else:
-        if key in spec:
-          return spec[key](value)
-        else:
-          raise ArgumentParsingError(
-              self, _GenerateErrorMessage(
-                  'valid keys are {0}'.format(', '.join(sorted(spec.keys()))),
-                  user_input=key))
-
-  return Action
-
-
 class HostPort(object):
   """A class for holding host and port information."""
 
@@ -382,6 +306,44 @@ class HostPort(object):
     return HostPort(parts[0] or None, parts[1] or None)
 
 
+class Day(object):
+  """A class for parsing a datetime object for a specific day."""
+
+  @staticmethod
+  def Parse(s):
+    if not s:
+      return None
+    try:
+      return datetime.datetime.strptime(s, '%Y-%m-%d').date()
+    except ValueError:
+      raise ArgumentTypeError(
+          _GenerateErrorMessage(
+              "Failed to parse date. Value should be in the form 'YYYY-MM-DD",
+              user_input=s))
+
+
+class Datetime(object):
+  """A class for parsing a datetime object in UTC timezone."""
+
+  @staticmethod
+  def Parse(s):
+    """Parses a string value into a Datetime object."""
+    if not s:
+      return None
+    accepted_formats = ('%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M:%S.%f',
+                        '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%dT%H:%M:%S.%fZ')
+    # TODO(user): Add timezone support.
+    for date_format in accepted_formats:
+      try:
+        return datetime.datetime.strptime(s, date_format)
+      except ValueError:
+        pass
+    raise ArgumentTypeError(
+        _GenerateErrorMessage(
+            'Failed to parse date. Value should be in ISO or RFC3339 format',
+            user_input=s))
+
+
 def BoundedInt(lower_bound=None, upper_bound=None):
   """Returns a function that can parse integers within some bound."""
 
@@ -406,22 +368,20 @@ def BoundedInt(lower_bound=None, upper_bound=None):
   return _Parse
 
 
-def _TokenizeQuotedList(arg_value):
+def _TokenizeQuotedList(arg_value, delim=','):
   """Tokenize an argument into a list.
 
   Args:
     arg_value: str, The raw argument.
+    delim: str, The delimiter on which to split the argument string.
 
   Returns:
     [str], The tokenized list.
-
-  Raises:
-    ArgumentTypeError: If the list is malformed.
   """
   if arg_value:
-    if not arg_value.endswith(','):
-      arg_value += ','
-    return arg_value.split(',')[:-1]
+    if not arg_value.endswith(delim):
+      arg_value += delim
+    return arg_value.split(delim)[:-1]
   return []
 
 
@@ -433,16 +393,29 @@ class ArgList(ArgType):
   """Interpret an argument value as a list.
 
   Intended to be used as the type= for a flag argument. Splits the string on
-  commas and returns a list.
+  commas or another delimiter and returns a list.
+
+  By default, splits on commas:
+      'a,b,c' -> ['a', 'b', 'c']
+  There is an available syntax for using an alternate delimiter:
+      '^:^a,b:c' -> ['a,b', 'c']
+      '^::^a:b::c' -> ['a:b', 'c']
+      '^,^^a^,b,c' -> ['^a^', ',b', 'c']
   """
 
-  def __init__(self, element_type=None, min_length=0, max_length=None):
+  DEFAULT_DELIM_CHAR = ','
+  ALT_DELIM_CHAR = '^'
+
+  def __init__(self, element_type=None, min_length=0, max_length=None,
+               choices=None):
     """Initialize an ArgList.
 
     Args:
       element_type: (str)->str, A function to apply to each of the list items.
       min_length: int, The minimum size of the list.
       max_length: int, The maximum size of the list.
+      choices: [element_type], a list of valid possibilities for elements. If
+          None, then no constraints are imposed.
 
     Returns:
       (str)->[str], A function to parse the list of values in the argument.
@@ -451,12 +424,33 @@ class ArgList(ArgType):
       ArgumentTypeError: If the list is malformed.
     """
     self.element_type = element_type
+
+    if choices:
+      def ChoiceType(raw_value):
+        if element_type:
+          typed_value = element_type(raw_value)
+        else:
+          typed_value = raw_value
+        if typed_value not in choices:
+          raise ArgumentTypeError('{value} must be one of [{choices}]'.format(
+              value=typed_value, choices=', '.join(
+                  [str(choice) for choice in choices])))
+        return typed_value
+      self.element_type = ChoiceType
+
     self.min_length = min_length
     self.max_length = max_length
 
   def __call__(self, arg_value):  # pylint:disable=missing-docstring
 
-    arg_list = _TokenizeQuotedList(arg_value)
+    # TODO(user): add documentation for this once 'gcloud topic' lands
+    delim = self.DEFAULT_DELIM_CHAR
+    if (arg_value.startswith(self.ALT_DELIM_CHAR) and
+        self.ALT_DELIM_CHAR in arg_value[1:]):
+      delim, arg_value = arg_value[1:].split(self.ALT_DELIM_CHAR, 1)
+      if not delim:
+        raise ArgumentTypeError('Invalid delimiter.')
+    arg_list = _TokenizeQuotedList(arg_value, delim=delim)
 
     # TODO(user): These exceptions won't present well to the user.
     if len(arg_list) < self.min_length:
@@ -521,10 +515,10 @@ class ArgDict(ArgList):
       split_arg = arg.split('=', 1)  # only use the first =
       # TODO(user): These exceptions won't present well to the user.
       if len(split_arg) != 2:
-        raise ArgumentTypeError('bad syntax for dict arg')
+        raise ArgumentTypeError('bad syntax for dict arg: '+repr(arg))
       key, value = split_arg
       if not key:
-        raise ArgumentTypeError('bad key for dict arg')
+        raise ArgumentTypeError('bad key for dict arg: '+repr(arg))
       if self.value_type:
         value = self.value_type(value)
       if self.spec:
@@ -535,51 +529,101 @@ class ArgDict(ArgList):
 
 
 # pylint:disable=protected-access
-class FloatingListValueCatcher(argparse._StoreAction):
-  """This is to assist with refactoring argument lists.
+def FloatingListValuesCatcher(
+    action=argparse._StoreAction, switch_value=None):
+  """Create an action for catching floating list values.
 
-  Provides a error for users who type (or have a script) that specifies a list
-  with the elements in different arguments. eg.
-   $ gcloud sql instances create foo --authorized-networks x y
-   usage: gcloud sql instances create  INSTANCE [optional flags]
-   ERROR: (gcloud.sql.instances.create) argument --authorized-networks: lists
-   are separated by commas, try "--authorized-networks=x,y"
+  Args:
+    action: argparse.Action, the superclass of the new action.
+    switch_value: obj, If not none, allow users to specify no value for the
+        flag. If the flag is given and no value is specified, the switch_value
+        will be used instead.
 
-  To do this, with flags that used to (but no longer) have nargs set to take
-  multiple values we apply an action designed to catch them by transparently
-  setting nargs to '+', and then making sure only 1 value is provided.
-
-  As a caveat, this means that people still cannot put positional arguments
-  after the flags. So, this is a temporary mechanism designed to inform users,
-  and we'll remove it eventually.
+  Returns:
+    argparse.Action, an action that will catch list values separated by spaces.
   """
 
-  def __init__(self, *args, **kwargs):
-    if 'nargs' in kwargs:
-      # Make sure nothing weird is happening, first. This action is intended
-      # only for use with --flags that have the type as ArgList or ArgDict, and
-      # do not set nargs at all.
-      raise ValueError(
-          'trying to catch floating lists for a misspecified flag list')
-    kwargs['nargs'] = '+'
-    super(FloatingListValueCatcher, self).__init__(*args, **kwargs)
+  class FloatingListValuesCatcherAction(action):
+    """This is to assist with refactoring argument lists.
 
-  def __call__(self, parser, namespace, values, option_string=None):
-    if len(values) > 1:
+    Provides a error for users who type (or have a script) that specifies a list
+    with the elements in different arguments. eg.
+     $ gcloud sql instances create foo --authorized-networks x y
+     usage: gcloud sql instances create  INSTANCE [optional flags]
+     ERROR: (gcloud.sql.instances.create) argument --authorized-networks: lists
+     are separated by commas, try "--authorized-networks=x,y"
 
-      class ArgShell(object):
-        """Class designed to trick argparse into displaying a nice error."""
+    To do this, with flags that used to (but no longer) have nargs set to take
+    multiple values we apply an action designed to catch them by transparently
+    setting nargs to '+', and then making sure only 1 value is provided.
 
-        def __init__(self, name):
-          self.option_strings = [name]
+    As a caveat, this means that people still cannot put positional arguments
+    after the flags. So, this is a temporary mechanism designed to inform users,
+    and we'll remove it eventually.
+    """
 
-      msg = ('lists are separated by commas, try "{flag}={values}".'
-             ' If you intend to use {extras} for positional arguments, put them'
-             ' before the flag.').format(
-                 flag=option_string,
-                 values=','.join([value[0] for value in values]),
-                 extras=', '.join([repr(value[0]) for value in values[1:]]))
 
-      raise argparse.ArgumentError(ArgShell(option_string), msg)
-    super(FloatingListValueCatcher, self).__call__(
-        parser, namespace, values[0], option_string=option_string)
+    def __init__(self, *args, **kwargs):
+      if 'nargs' in kwargs:
+        # Make sure nothing weird is happening, first. This action is intended
+        # only for use with --flags that have the type as ArgList or ArgDict,
+        # and do not set nargs at all.
+        raise ValueError(
+            'trying to catch floating lists for a misspecified flag list')
+      if switch_value is not None:
+        kwargs['nargs'] = '*'
+      else:
+        kwargs['nargs'] = '+'
+      super(FloatingListValuesCatcherAction, self).__init__(*args, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+      if not values and switch_value is not None:
+        super(FloatingListValuesCatcherAction, self).__call__(
+            parser, namespace, switch_value, option_string=option_string)
+        return
+
+      if len(values) > 1:
+
+        class ArgShell(object):
+          """Class designed to trick argparse into displaying a nice error."""
+
+          def __init__(self, name):
+            self.option_strings = [name]
+
+        suggestions = []
+        if values and isinstance(values[0], dict):
+          aggregate_value = {}
+          for valdict in values:
+            aggregate_value.update(valdict)
+            suggestions.extend(
+                ['%s=%s' % (k, v) for k, v in valdict.iteritems()])
+        if values and isinstance(values[0], list):
+          aggregate_value = []
+          suggestions.extend(
+              [','.join(map(str, vallist)) for vallist in values])
+          for vallist in values:
+            aggregate_value.extend(vallist)
+        extras = suggestions[1:]
+
+        msg = ('Lists should be separated by commas, try "{flag} {values}".'
+               ' If you intend to use {extras} for positional arguments, put'
+               ' them before the flag.').format(
+                   flag=option_string,
+                   values=','.join(suggestions),
+                   extras=', '.join(extras))
+
+        # TODO(user): stop warning when we're ready
+        warn_only = True
+
+        if not warn_only:
+          raise argparse.ArgumentError(ArgShell(option_string), msg)
+        else:
+          log.warn(msg)
+
+        super(FloatingListValuesCatcherAction, self).__call__(
+            parser, namespace, aggregate_value, option_string=option_string)
+      else:
+        super(FloatingListValuesCatcherAction, self).__call__(
+            parser, namespace, values[0], option_string=option_string)
+
+  return FloatingListValuesCatcherAction

@@ -101,7 +101,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes a deployment and all of the resources in the deployment.
+      """! Deletes a deployment and all of the resources in the deployment.
 
       Args:
         request: (DeploymentmanagerDeploymentsDeleteRequest) input message
@@ -114,7 +114,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Gets information about a specific deployment.
+      """! Gets information about a specific deployment.
 
       Args:
         request: (DeploymentmanagerDeploymentsGetRequest) input message
@@ -127,7 +127,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Insert(self, request, global_params=None):
-      """Creates a deployment and all of the resources described by the deployment manifest.
+      """! Creates a deployment and all of the resources described by the ! deployment manifest.
 
       Args:
         request: (DeploymentmanagerDeploymentsInsertRequest) input message
@@ -140,7 +140,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Lists all deployments for a given project.
+      """! Lists all deployments for a given project.
 
       Args:
         request: (DeploymentmanagerDeploymentsListRequest) input message
@@ -190,7 +190,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           }
 
     def Get(self, request, global_params=None):
-      """Gets information about a specific manifest.
+      """! Gets information about a specific manifest.
 
       Args:
         request: (DeploymentmanagerManifestsGetRequest) input message
@@ -203,7 +203,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Lists all manifests for a given deployment.
+      """! Lists all manifests for a given deployment.
 
       Args:
         request: (DeploymentmanagerManifestsListRequest) input message
@@ -253,7 +253,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           }
 
     def Get(self, request, global_params=None):
-      """Gets information about a specific Operation.
+      """! Gets information about a specific Operation.
 
       Args:
         request: (DeploymentmanagerOperationsGetRequest) input message
@@ -266,7 +266,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Lists all Operations for a project.
+      """! Lists all Operations for a project.
 
       Args:
         request: (DeploymentmanagerOperationsListRequest) input message
@@ -316,7 +316,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           }
 
     def Get(self, request, global_params=None):
-      """Gets information about a single resource.
+      """! Gets information about a single resource.
 
       Args:
         request: (DeploymentmanagerResourcesGetRequest) input message
@@ -329,7 +329,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Lists all resources in a given deployment.
+      """! Lists all resources in a given deployment.
 
       Args:
         request: (DeploymentmanagerResourcesListRequest) input message
@@ -367,7 +367,7 @@ class DeploymentmanagerV2beta1(base_api.BaseApiClient):
           }
 
     def List(self, request, global_params=None):
-      """Lists all Types for Deployment Manager.
+      """! Lists all Types for Deployment Manager.
 
       Args:
         request: (DeploymentmanagerTypesListRequest) input message

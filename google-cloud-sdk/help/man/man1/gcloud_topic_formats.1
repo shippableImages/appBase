@@ -1,0 +1,32 @@
+.TH "GCLOUD TOPIC FORMATS" "1" "" "" ""
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.nh
+.ad l
+.SH "NAME"
+.HP
+gcloud_topic_formats \- resource formats supplementary help
+.SH "DESCRIPTION"
+.sp
+Resource formats supplementary help\&.
+.SS "Formats"
+.sp
+Resource printing formats are specified by the \-\-format=\fIFORMAT\fR flag\&. The supported formats are:
+.sp
+YAML, YAML ain\(cqt markup language\&.
+.SH "EXAMPLES"
+.sp
+List the compute instances resourcesa JSON format:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ gcloud compute instances list \-\-format=json
+.fi
+.if n \{\
+.RE
+.\}
+.SH "NOTES"
+.sp
+This command is in the Google Cloud SDK \fBcore\fR component\&. See installing components if it is not installed\&.

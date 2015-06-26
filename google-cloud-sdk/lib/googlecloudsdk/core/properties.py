@@ -5,6 +5,7 @@
 import collections
 import ConfigParser
 import os
+import re
 import threading
 
 from googlecloudsdk.core import config
@@ -13,6 +14,41 @@ from googlecloudsdk.core.credentials import devshell as c_devshell
 from googlecloudsdk.core.credentials import gce as c_gce
 from googlecloudsdk.core.util import constants as const_lib
 from googlecloudsdk.core.util import files
+
+
+_SET_PROJECT_HELP = """\
+To set your project, run:
+
+  $ gcloud config set project PROJECT_ID
+
+or to unset it, run:
+
+  $ gcloud config unset project"""
+
+
+_VALID_PROJECT_REGEX = (
+    r'^'
+    # An optional domain-like component, ending with a colon, e.g.,
+    # google.com:
+    r'(?:(?:[-a-z0-9]{1,63}\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?'
+    # Followed by a required identifier-like component, for example:
+    #   waffleHouse    match
+    #   -foozle        no match
+    #   Foozle         no match
+    # We specifically disallow project number, even though some GCP backends
+    # could accept them.
+    r'(?:(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))'
+    r'$'
+    )
+
+
+def _LooksLikeAProjectName(project):
+  """Heuristics testing if a string looks like a project name, but an id."""
+
+  if re.match(r'[-0-9A-Z]', project[0]):
+    return True
+
+  return any(c in project for c in ' !"\'')
 
 
 class Error(exceptions.Error):
@@ -46,12 +82,21 @@ class InvalidScopeValueError(Error):
       given: str, The given string that could not be parsed.
     """
     super(InvalidScopeValueError, self).__init__(
-        'Could not parse [{}] into a valid configuration scope.  '
-        'Valid values are [{}]'.format(given, ', '.join(Scope.AllScopeNames())))
+        'Could not parse [{0}] into a valid configuration scope.  '
+        'Valid values are [{1}]'.format(given,
+                                        ', '.join(Scope.AllScopeNames())))
 
 
 class InvalidValueError(Error):
   """An exception to be raised when the set value of a property is invalid."""
+
+
+class InvalidProjectError(InvalidValueError):
+  """An exception for bad project names, with a little user help."""
+
+  def __init__(self, given):
+    super(InvalidProjectError, self).__init__(
+        given + os.linesep + _SET_PROJECT_HELP)
 
 
 class RequiredPropertyError(Error):
@@ -102,6 +147,8 @@ class _Sections(object):
       self.flag = flag
 
   def __init__(self):
+    self.api_endpoint_overrides = _SectionApiEndpointOverrides()
+    self.api_client_overrides = _SectionApiClientOverrides()
     self.app = _SectionApp()
     self.auth = _SectionAuth()
     self.core = _SectionCore()
@@ -110,14 +157,15 @@ class _Sections(object):
     self.container = _SectionContainer()
     self.devshell = _SectionDevshell()
     self.experimental = _SectionExperimental()
-    self.endpoints = _SectionEndpoints()
+    self.metrics = _SectionMetrics()
     self.test = _SectionTest()
 
-    self.__sections = dict((section.name, section) for section in
-                           [self.app, self.auth, self.core,
-                            self.component_manager, self.compute,
-                            self.container, self.devshell, self.endpoints,
-                            self.experimental, self.test])
+    self.__sections = dict(
+        (section.name, section) for section in
+        [self.api_endpoint_overrides, self.api_client_overrides, self.app,
+         self.auth, self.core, self.component_manager, self.compute,
+         self.container, self.devshell, self.experimental, self.metrics,
+         self.test])
     self.__invocation_value_stack = [{}]
 
   @property
@@ -318,6 +366,21 @@ class _SectionApp(_Section):
   def __init__(self):
     super(_SectionApp, self).__init__('app')
     self.hosted_registry = self._Add('hosted_registry')
+    self.host = self._Add('host')
+    self.admin_host = self._Add('admin_host')
+    self.api_host = self._Add('api_host')
+    self.hosted_build_image = self._Add(
+        'hosted_build_image',
+        callbacks=[lambda: 'gae-builder-vm'],
+        hidden=True)
+    self.hosted_build_zone = self._Add(
+        'hosted_build_zone',
+        callbacks=[lambda: 'us-central1-f'],
+        hidden=True)
+    self.hosted_build_machine_type = self._Add(
+        'hosted_build_machine_type',
+        callbacks=[lambda: 'n1-standard-1'],
+        hidden=True)
 
 
 class _SectionContainer(_Section):
@@ -328,14 +391,14 @@ class _SectionContainer(_Section):
     self.cluster = self._Add('cluster')
 
 
-def _GetGCEProject():
-  if VALUES.core.check_gce_metadata.GetBool():
-    return c_gce.Metadata().Project()
-
-
 def _GetGCEAccount():
   if VALUES.core.check_gce_metadata.GetBool():
     return c_gce.Metadata().DefaultAccount()
+
+
+def _GetGCEProject():
+  if VALUES.core.check_gce_metadata.GetBool():
+    return c_gce.Metadata().Project()
 
 
 class _SectionCore(_Section):
@@ -343,18 +406,15 @@ class _SectionCore(_Section):
 
   def __init__(self):
     super(_SectionCore, self).__init__('core')
-    # pylint: disable=unnecessary-lambda, We don't want to call Metadata()
-    # unless we really have to.
     self.account = self._Add(
         'account', callbacks=[
-            lambda: c_devshell.DefaultAccount(),
+            c_devshell.DefaultAccount,
             _GetGCEAccount])
     self.disable_color = self._Add('disable_color')
     self.disable_command_lazy_loading = self._Add(
         'disable_command_lazy_loading', hidden=True)
     self.disable_prompts = self._Add('disable_prompts')
     self.disable_usage_reporting = self._Add('disable_usage_reporting')
-    # pylint: disable=unnecessary-lambda, Just a value return.
     self.api_host = self._Add(
         'api_host', hidden=True,
         callbacks=[lambda: 'https://www.googleapis.com'])
@@ -365,14 +425,29 @@ class _SectionCore(_Section):
         callbacks=[lambda: True])
 
     def ProjectValidator(project):
-      if not project:
+      """Checks to see if the project string is valid."""
+      if project is None:
         return
+      if re.match(_VALID_PROJECT_REGEX, project):
+        return
+
       if not isinstance(project, basestring):
         raise InvalidValueError('project must be a string')
+      if project == '':  # pylint: disable=g-explicit-bool-comparison
+        raise InvalidProjectError('The project property is set to the '
+                                  'empty string, which is invalid.')
       if project.isdigit():
-        raise InvalidValueError(
-            'project must be the project ID, not the project number [%s]' %
-            project)
+        raise InvalidProjectError(
+            'The project property must be set to a valid project ID, not the '
+            'project number [{value}]'.format(value=project))
+      if _LooksLikeAProjectName(project):
+        raise InvalidProjectError(
+            'The project property must be set to a valid project ID, not the '
+            'project name [{value}]'.format(value=project))
+      # Non heuristics for a better error message.
+      raise InvalidProjectError(
+          'The project property must be set to a valid project ID, '
+          '[{value}] is not a valid project ID.'.format(value=project))
 
     # pylint: disable=unnecessary-lambda, We don't want to call Metadata()
     # unless we really have to.
@@ -408,6 +483,14 @@ class _SectionAuth(_Section):
         callbacks=[lambda: config.CLOUDSDK_CLIENT_NOTSOSECRET])
 
 
+class _SectionMetrics(_Section):
+  """Contains the properties for the 'metrics' section."""
+
+  def __init__(self):
+    super(_SectionMetrics, self).__init__('metrics', hidden=True)
+    self.environment = self._Add('environment', hidden=True)
+
+
 class _SectionComponentManager(_Section):
   """Contains the properties for the 'component_manager' section."""
 
@@ -434,6 +517,7 @@ class _SectionTest(_Section):
 
   def __init__(self):
     super(_SectionTest, self).__init__('test')
+    self.results_base_url = self._Add('results_base_url', hidden=True)
 
 
 class _SectionDevshell(_Section):
@@ -449,17 +533,44 @@ class _SectionDevshell(_Section):
         callbacks=[lambda: const_lib.METADATA_IMAGE])
 
 
-class _SectionEndpoints(_Section):
-  """Contains the properties for the 'endpoints' section."""
+class _SectionApiEndpointOverrides(_Section):
+  """Contains the properties for the 'api-endpoint-overrides' section.
 
-  def _AddEndpointFor(self, api_name):
-    setattr(self, api_name, self._Add(api_name, hidden=True))
+  This overrides what endpoint to use when talking to the given API.
+  """
 
   def __init__(self):
-    super(_SectionEndpoints, self).__init__('endpoints')
-    self._AddEndpointFor('container')
-    self._AddEndpointFor('testing')
-    self._AddEndpointFor('toolresults')
+    super(_SectionApiEndpointOverrides, self).__init__(
+        'api_endpoint_overrides', hidden=True)
+    self.appengine = self._Add('appengine')
+    self.bigquery = self._Add('bigquery')
+    self.bigtableclusteradmin = self._Add('bigtableclusteradmin')
+    self.cloudresourcemanager = self._Add('cloudresourcemanager')
+    self.compute = self._Add('compute')
+    self.computeaccounts = self._Add('computeaccounts')
+    self.container = self._Add('container')
+    self.dataflow = self._Add('dataflow')
+    self.datastore = self._Add('datastore')
+    self.dns = self._Add('dns')
+    self.genomics = self._Add('genomics')
+    self.logging = self._Add('logging')
+    self.testing = self._Add('testing')
+    self.toolresults = self._Add('toolresults')
+    self.source = self._Add('source')
+
+
+class _SectionApiClientOverrides(_Section):
+  """Contains the properties for the 'api-client-overrides' section.
+
+  This overrides the API client version to use when talking to this API.
+  """
+
+  def __init__(self):
+    super(_SectionApiClientOverrides, self).__init__(
+        'api_client_overrides', hidden=True)
+    self.appengine = self._Add('appengine')
+    self.compute = self._Add('compute')
+    self.container = self._Add('container')
 
 
 class _Property(object):

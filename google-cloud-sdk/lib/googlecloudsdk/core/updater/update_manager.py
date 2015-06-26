@@ -2,6 +2,7 @@
 
 """Higher level functions to support updater operations at the CLI level."""
 
+import hashlib
 import os
 import subprocess
 import sys
@@ -19,6 +20,16 @@ from googlecloudsdk.core.util import console_io
 from googlecloudsdk.core.util import execution_utils
 from googlecloudsdk.core.util import files as file_utils
 from googlecloudsdk.core.util import platforms
+
+
+_SHELL_RCFILES = [
+    'completion.bash.inc',
+    'completion.zsh.inc',
+    'path.bash.inc',
+    'path.zsh.inc',
+    'gcfilesys.bash.inc',
+    'gcfilesys.zsh.inc'
+]
 
 
 class Error(exceptions.Error):
@@ -62,7 +73,30 @@ class UpdateManager(object):
   UPDATE_CHECK_FREQUENCY_IN_SECONDS = 86400  # once a day.
   UPDATE_CHECK_NAG_FREQUENCY_IN_SECONDS = 86400  # once a day.
   BIN_DIR_NAME = 'bin'
-  VERSIONED_SNAPSHOT_FORMAT = 'components-v{}.json'
+  VERSIONED_SNAPSHOT_FORMAT = 'components-v{0}.json'
+
+  def HashRcfiles(self, shell_rc_files):
+    """Creates the md5 checksums of files.
+
+    Args:
+      shell_rc_files: list, A list of files to get the md5 checksums.
+    Returns:
+      md5dict, dictionary of m5 file sums.
+    """
+
+    md5dict = {}
+    for name in shell_rc_files:
+      try:
+        fpath = os.path.join(self.__sdk_root, name)
+        if not os.path.exists(fpath):
+          continue
+        with open(fpath, 'rb') as f:
+          md5 = hashlib.md5(f.read()).hexdigest()
+          md5dict[name] = md5
+      except OSError:
+        md5dict[name] = 0
+        continue
+    return md5dict
 
   @staticmethod
   def GetAdditionalRepositories():
@@ -306,7 +340,7 @@ class UpdateManager(object):
           >= UpdateManager.UPDATE_CHECK_NAG_FREQUENCY_IN_SECONDS):
         self.__Write(
             log.status,
-            '\nThere are available updates for some Cloud SDK components.  To '
+            '\nUpdates are available for some Cloud SDK components.  To '
             'install them, please run:', word_wrap=True)
         self.__Write(
             log.status, ' $ gcloud components update\n', word_wrap=False)
@@ -465,6 +499,7 @@ class UpdateManager(object):
     Raises:
       InvalidComponentError: If any of the given component ids do not exist.
     """
+    md5dict1 = self.HashRcfiles(_SHELL_RCFILES)
     self._EnsureNotDisabled()
     try:
       install_state, diff = self._GetStateAndDiff()
@@ -504,6 +539,11 @@ class UpdateManager(object):
                              'installed')
     self.__Write(log.status)
 
+    if diff.latest.sdk_definition.release_notes_url:
+      self.__Write(log.status,
+                   'For the latest release notes, please visit:\n  {0}'
+                   .format(diff.latest.sdk_definition.release_notes_url))
+
     message = self._GetDontCancelMessage(disable_backup)
     if not console_io.PromptContinue(
         message=message, throw_if_unattended=throw_if_unattended):
@@ -538,11 +578,15 @@ class UpdateManager(object):
 
     with install_state.LastUpdateCheck() as update_check:
       update_check.SetFromSnapshot(diff.latest, force=True)
+    md5dict2 = self.HashRcfiles(_SHELL_RCFILES)
+    if md5dict1 != md5dict2:
+      self.__Write(log.status,
+                   '\nStart a new shell for the changes to take effect.\n')
     self.__Write(log.status, '\nUpdate done!\n')
 
     if self.__warn:
       bad_commands = self.FindAllOldToolsOnPath()
-      if bad_commands:
+      if bad_commands and not os.environ.get('CLOUDSDK_REINSTALL_COMPONENTS'):
         log.warning("""\
 There are older versions of Google Cloud Platform tools on your system PATH.
 Please remove the following to avoid accidentally invoking these old tools:

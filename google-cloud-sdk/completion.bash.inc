@@ -1,16 +1,33 @@
 _python_argcomplete() {
     local IFS=''
+    local prefix=
+    typeset -i n
+    if [[ $3 == ssh  && $2 == *@* ]] ;then
+        # handle ssh user@instance specially
+        prefix=${2%@*}@
+        COMP_LINE=${COMP_LINE%$2}"${2#*@}"
+    elif [[ $3 == '=' ]] ; then
+        # handle --flag=value
+        flag=${COMP_WORDS[-3]}
+        prefix=$flag=$2
+        line=${COMP_LINE%$prefix};
+        COMP_LINE=$line${prefix/=/ };
+        prefix=
+    fi
     COMPREPLY=( $(IFS="$IFS"                   COMP_LINE="$COMP_LINE"                   COMP_POINT="$COMP_POINT"                   _ARGCOMPLETE_COMP_WORDBREAKS="$COMP_WORDBREAKS"                   _ARGCOMPLETE=1                   "$1" 8>&1 9>&2 1>/dev/null 2>/dev/null) )
     if [[ $? != 0 ]]; then
         unset COMPREPLY
         return
     fi
+    if [[ $prefix != '' ]]; then
+        for ((n=0; n < ${#COMPREPLY[@]}; n++)); do
+            COMPREPLY[$n]=$prefix${COMPREPLY[$n]}
+        done
+    fi
     pat='\ '
-    typeset -i n
-    for n in ${!COMPREPLY[@]}
-    do
+    for ((n=0; n < ${#COMPREPLY[@]}; n++)); do
         match=${COMPREPLY[$n]%' '}
-        if [[ -n $match ]]; then
+        if [[ $match != '' ]]; then
             COMPREPLY[$n]=${match//? /' '}' '
         fi
     done

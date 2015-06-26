@@ -16,6 +16,7 @@ import uuid
 from googlecloudsdk.core import config
 from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
+from googlecloudsdk.core.util import console_io
 from googlecloudsdk.core.util import execution_utils
 from googlecloudsdk.core.util import files
 from googlecloudsdk.core.util import platforms
@@ -132,12 +133,15 @@ class _MetricsCollector(object):
 
     hostname = socket.getfqdn()
     install_type = 'Google' if hostname.endswith('.google.com') else 'External'
-    self._ga_params = [('v', '1'),
-                       ('tid', _GA_TID),
-                       ('cid', _MetricsCollector._GetCID()),
-                       ('t', 'event'),
-                       ('cd1', config.INSTALLATION_CONFIG.release_channel),
-                       ('cd2', install_type)]
+    self._ga_params = [
+        ('v', '1'),
+        ('tid', _GA_TID),
+        ('cid', _MetricsCollector._GetCID()),
+        ('t', 'event'),
+        ('cd1', config.INSTALLATION_CONFIG.release_channel),
+        ('cd2', install_type),
+        ('cd3', properties.VALUES.metrics.environment.Get()),
+        ('cd4', console_io.IsInteractive(error=True, heuristic=True))]
 
     self._csi_params = [('s', _CSI_ID),
                         ('v', '2'),

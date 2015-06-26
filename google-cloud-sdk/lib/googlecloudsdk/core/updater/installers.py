@@ -139,7 +139,7 @@ class ComponentInstaller(object):
       return []
 
     if not re.search(r'^\w+://', url):
-      raise ValueError('Cannot install component [{}] from a relative path '
+      raise ValueError('Cannot install component [{0}] from a relative path '
                        'because the base URL of the snapshot is not defined.'
                        .format(component.id))
 
