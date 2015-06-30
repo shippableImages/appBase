@@ -12,10 +12,11 @@ import StringIO
 import sys
 import textwrap
 
+from googlecloudsdk.core.util import platforms
+
 from googlecloudsdk.core import config
 from googlecloudsdk.core import properties
 from googlecloudsdk.core.updater import update_manager
-from googlecloudsdk.core.util import platforms
 
 
 class InfoHolder(object):

@@ -35,9 +35,9 @@ def ParseArgs():
                       help='(true/false) Disable anonymous usage reporting.')
   parser.add_argument('--rc-path',
                       help='Profile to update with PATH and completion.')
-  parser.add_argument('--bash-completion',
+  parser.add_argument('--command-completion', '--bash-completion',
                       default=None, type=Bool,
-                      help=('(true/false) Add a line for bash completion in'
+                      help=('(true/false) Add a line for command completion in'
                             ' the profile.'))
   parser.add_argument('--path-update',
                       default=None, type=Bool,
@@ -138,7 +138,7 @@ def main():
         Install(pargs.override_components, pargs.additional_components)
 
       platforms_install.UpdateRC(
-          bash_completion=pargs.bash_completion,
+          command_completion=pargs.command_completion,
           path_update=pargs.path_update,
           rc_path=pargs.rc_path,
           bin_path=bootstrapping.BIN_DIR,

@@ -50,7 +50,7 @@ class Retryer(object):
 
   def __init__(self, max_retrials=None, max_wait_ms=None,
                exponential_sleep_multiplier=None, jitter_ms=_DEFAULT_JITTER_MS,
-               status_update_func=None):
+               status_update_func=None, wait_ceiling_ms=None):
     """Initializer for Retryer.
 
     Args:
@@ -61,6 +61,8 @@ class Retryer(object):
       jitter_ms: int, random [0, jitter_ms] additional value to wait.
       status_update_func: func(retrial, time_passed_ms, time_to_wait_ms, result)
           called right after each trail.
+      wait_ceiling_ms: int, maximum wait time between retries, regardless of
+          modifiers added like exponential multiplier or jitter.
     """
 
     self._max_retrials = max_retrials
@@ -68,6 +70,7 @@ class Retryer(object):
     self._exponential_sleep_multiplier = exponential_sleep_multiplier
     self._jitter_ms = jitter_ms
     self._status_update_func = status_update_func
+    self._wait_ceiling_ms = wait_ceiling_ms
 
   def _RaiseIfStop(self, result, retrial, time_passed_ms, time_to_wait_ms):
     if self._max_wait_ms is not None:
@@ -79,12 +82,26 @@ class Retryer(object):
                                  time_to_wait_ms)
 
   def _GetTimeToWait(self, last_retrial, sleep_ms):
+    """Get time to wait after applying modifyers.
+
+    Apply the exponential sleep multiplyer, jitter and ceiling limiting to the
+    base sleep time.
+
+    Args:
+      last_retrial: int, which retry attempt we just tried. First try this is 0.
+      sleep_ms: int, how long to wait between the current trials.
+
+    Returns:
+      int, ms to wait before trying next attempt with all waiting logic applied.
+    """
     wait_time_ms = sleep_ms
     if wait_time_ms:
       if self._exponential_sleep_multiplier:
         wait_time_ms *= self._exponential_sleep_multiplier ** last_retrial
       if self._jitter_ms:
         wait_time_ms += random.random() * self._jitter_ms
+      if self._wait_ceiling_ms:
+        wait_time_ms = min(wait_time_ms, self._wait_ceiling_ms)
       return wait_time_ms
     return 0
 

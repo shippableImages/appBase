@@ -4,6 +4,21 @@ All rights reserved.
 
 Google Cloud SDK - Release Notes
 
+0.9.67 (2015/07/01)
+==================
+  - GAE components updated to 1.9.23. Please visit
+    https://code.google.com/p/googleappengine/wiki/SdkReleaseNotes for details.
+  - Added the "gen-config" command to app surface to generate configuration
+    files for node.js apps.
+  - New `compute instance-groups unmanaged` commands group for Instance Groups
+    which are not managed by Instance Group Manager
+  - Moved `gcloud beta sql instances connect` to `gcloud beta sql connect`.
+  - Smarter polling while waiting for SQL operations to finish, reducing the
+    number of requests sent to the server.
+  - Linux/Mac install script disables prompts if there is no controlling tty.
+  - Linux/Mac install script now properly detects zsh and ksh RC files.
+  - Bug fixes.
+
 0.9.66 (2015/06/24)
 ==================
 

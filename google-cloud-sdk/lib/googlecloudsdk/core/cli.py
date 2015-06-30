@@ -6,6 +6,7 @@ import urllib
 import urlparse
 import uuid
 
+from googlecloudsdk.core.util import platforms
 from oauth2client import client
 
 from googlecloudsdk.core import config
@@ -14,7 +15,6 @@ from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
 from googlecloudsdk.core.credentials import store as c_store
 from googlecloudsdk.core.util import console_io
-from googlecloudsdk.core.util import platforms
 
 
 __all__ = ['Http']

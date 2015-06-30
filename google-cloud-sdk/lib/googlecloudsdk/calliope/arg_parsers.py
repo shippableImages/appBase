@@ -443,13 +443,14 @@ class ArgList(ArgType):
 
   def __call__(self, arg_value):  # pylint:disable=missing-docstring
 
-    # TODO(user): add documentation for this once 'gcloud topic' lands
     delim = self.DEFAULT_DELIM_CHAR
     if (arg_value.startswith(self.ALT_DELIM_CHAR) and
         self.ALT_DELIM_CHAR in arg_value[1:]):
       delim, arg_value = arg_value[1:].split(self.ALT_DELIM_CHAR, 1)
       if not delim:
-        raise ArgumentTypeError('Invalid delimiter.')
+        raise ArgumentTypeError(
+            'Invalid delimiter. Please see `gcloud topic escaping` for '
+            'information on escaping list or dictionary flag values.')
     arg_list = _TokenizeQuotedList(arg_value, delim=delim)
 
     # TODO(user): These exceptions won't present well to the user.
@@ -515,7 +516,10 @@ class ArgDict(ArgList):
       split_arg = arg.split('=', 1)  # only use the first =
       # TODO(user): These exceptions won't present well to the user.
       if len(split_arg) != 2:
-        raise ArgumentTypeError('bad syntax for dict arg: '+repr(arg))
+        raise ArgumentTypeError(
+            ('Bad syntax for dict arg: {0}. Please see `gcloud topic escaping` '
+             'if you would like information on escaping list or dictionary '
+             'flag values.').format(repr(arg)))
       key, value = split_arg
       if not key:
         raise ArgumentTypeError('bad key for dict arg: '+repr(arg))

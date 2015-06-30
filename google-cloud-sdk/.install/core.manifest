@@ -517,6 +517,8 @@ lib/googlecloudsdk/core/credentials/legacy.py
 lib/googlecloudsdk/core/credentials/service_account.py
 lib/googlecloudsdk/core/credentials/store.py
 lib/googlecloudsdk/core/credentials/gce.py
+lib/googlecloudsdk/core/credentials/gce_cache.py
+lib/googlecloudsdk/core/credentials/gce_read.py
 lib/googlecloudsdk/core/document_renderers/
 lib/googlecloudsdk/core/document_renderers/__init__.py
 lib/googlecloudsdk/core/document_renderers/devsite_renderer.py
@@ -527,6 +529,9 @@ lib/googlecloudsdk/core/document_renderers/markdown_renderer.py
 lib/googlecloudsdk/core/document_renderers/render_document.py
 lib/googlecloudsdk/core/document_renderers/renderer.py
 lib/googlecloudsdk/core/document_renderers/text_renderer.py
+lib/googlecloudsdk/core/iam/
+lib/googlecloudsdk/core/iam/__init__.py
+lib/googlecloudsdk/core/iam/iam_util.py
 lib/googlecloudsdk/core/resource/
 lib/googlecloudsdk/core/resource/__init__.py
 lib/googlecloudsdk/core/resource/csv_printer.py
@@ -553,6 +558,8 @@ lib/googlecloudsdk/core/updater/snapshots.py
 lib/googlecloudsdk/core/updater/update_manager.py
 lib/googlecloudsdk/core/util/
 lib/googlecloudsdk/core/util/__init__.py
+lib/googlecloudsdk/core/util/platforms.py
+lib/googlecloudsdk/core/util/version.py
 lib/googlecloudsdk/core/util/attrpath.py
 lib/googlecloudsdk/core/util/compat26.py
 lib/googlecloudsdk/core/util/console_attr.py
@@ -567,12 +574,10 @@ lib/googlecloudsdk/core/util/fake_metadata.py
 lib/googlecloudsdk/core/util/files.py
 lib/googlecloudsdk/core/util/list_printer.py
 lib/googlecloudsdk/core/util/pkg_resources.py
-lib/googlecloudsdk/core/util/platforms.py
 lib/googlecloudsdk/core/util/platforms_install.py
 lib/googlecloudsdk/core/util/resource_printer.py
 lib/googlecloudsdk/core/util/retry.py
 lib/googlecloudsdk/core/util/tokenizer.py
-lib/googlecloudsdk/core/util/version.py
 lib/googlecloudsdk/calliope/
 lib/googlecloudsdk/calliope/__init__.py
 lib/googlecloudsdk/calliope/actions.py
@@ -632,6 +637,7 @@ lib/googlecloudsdk/gcloud/sdktools/root/init.py
 lib/googlecloudsdk/gcloud/sdktools/root/version.py
 lib/googlecloudsdk/gcloud/sdktools/root/topic/
 lib/googlecloudsdk/gcloud/sdktools/root/topic/__init__.py
+lib/googlecloudsdk/gcloud/sdktools/root/topic/escaping.py
 lib/googlecloudsdk/gcloud/sdktools/root/topic/formats.py
 lib/googlecloudsdk/gcloud/lib/
 lib/googlecloudsdk/gcloud/lib/__init__.py
@@ -660,6 +666,7 @@ lib/googlecloudsdk/gcloud/reference/gcloud_docker.html
 lib/googlecloudsdk/gcloud/reference/gcloud_help.html
 lib/googlecloudsdk/gcloud/reference/gcloud_info.html
 lib/googlecloudsdk/gcloud/reference/gcloud_init.html
+lib/googlecloudsdk/gcloud/reference/gcloud_topic_escaping.html
 lib/googlecloudsdk/gcloud/reference/gcloud_topic_formats.html
 lib/googlecloudsdk/gcloud/reference/gcloud_version.html
 lib/googlecloudsdk/gcloud/reference/gcloud_auth/
@@ -676,6 +683,12 @@ lib/googlecloudsdk/gcloud/reference/gcloud_topic/
 lib/googlecloudsdk/gcloud/reference/gcloud_topic/index.html
 lib/googlecloudapis/
 lib/googlecloudapis/__init__.py
+lib/googlecloudapis/apheleia/
+lib/googlecloudapis/apheleia/__init__.py
+lib/googlecloudapis/apheleia/v1beta1/
+lib/googlecloudapis/apheleia/v1beta1/__init__.py
+lib/googlecloudapis/apheleia/v1beta1/apheleia_v1beta1_client.py
+lib/googlecloudapis/apheleia/v1beta1/apheleia_v1beta1_messages.py
 lib/googlecloudapis/autoscaler/
 lib/googlecloudapis/autoscaler/__init__.py
 lib/googlecloudapis/autoscaler/v1beta2/
@@ -730,10 +743,6 @@ lib/googlecloudapis/container/v1beta1/
 lib/googlecloudapis/container/v1beta1/__init__.py
 lib/googlecloudapis/container/v1beta1/container_v1beta1_client.py
 lib/googlecloudapis/container/v1beta1/container_v1beta1_messages.py
-lib/googlecloudapis/container/v1beta2/
-lib/googlecloudapis/container/v1beta2/__init__.py
-lib/googlecloudapis/container/v1beta2/container_v1beta2_client.py
-lib/googlecloudapis/container/v1beta2/container_v1beta2_messages.py
 lib/googlecloudapis/container/v1/
 lib/googlecloudapis/container/v1/__init__.py
 lib/googlecloudapis/container/v1/container_v1_client.py
@@ -903,6 +912,7 @@ help/man/man1/gcloud_help.1
 help/man/man1/gcloud_info.1
 help/man/man1/gcloud_init.1
 help/man/man1/gcloud_topic.1
+help/man/man1/gcloud_topic_escaping.1
 help/man/man1/gcloud_topic_formats.1
 help/man/man1/gcloud_version.1
 help/text.long/
@@ -935,5 +945,6 @@ help/text.long/gcloud_help
 help/text.long/gcloud_info
 help/text.long/gcloud_init
 help/text.long/gcloud_topic
+help/text.long/gcloud_topic_escaping
 help/text.long/gcloud_topic_formats
 help/text.long/gcloud_version

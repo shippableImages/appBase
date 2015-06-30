@@ -546,10 +546,25 @@ class ComputeAddressesAggregatedListRequest(_messages.Message):
   """A ComputeAddressesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -605,10 +620,25 @@ class ComputeAddressesListRequest(_messages.Message):
   """A ComputeAddressesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     region: The name of the region for this request.
   """
@@ -677,10 +707,25 @@ class ComputeBackendServicesListRequest(_messages.Message):
   """A ComputeBackendServicesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -724,10 +769,25 @@ class ComputeDiskTypesAggregatedListRequest(_messages.Message):
   """A ComputeDiskTypesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -755,10 +815,25 @@ class ComputeDiskTypesListRequest(_messages.Message):
   """A ComputeDiskTypesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -774,10 +849,25 @@ class ComputeDisksAggregatedListRequest(_messages.Message):
   """A ComputeDisksAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -851,10 +941,25 @@ class ComputeDisksListRequest(_messages.Message):
   """A ComputeDisksListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -906,10 +1011,25 @@ class ComputeFirewallsListRequest(_messages.Message):
   """A ComputeFirewallsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -951,10 +1071,25 @@ class ComputeForwardingRulesAggregatedListRequest(_messages.Message):
   """A ComputeForwardingRulesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -1011,10 +1146,25 @@ class ComputeForwardingRulesListRequest(_messages.Message):
   """A ComputeForwardingRulesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
     region: Name of the region scoping this request.
   """
@@ -1084,10 +1234,25 @@ class ComputeGlobalAddressesListRequest(_messages.Message):
   """A ComputeGlobalAddressesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1138,10 +1303,25 @@ class ComputeGlobalForwardingRulesListRequest(_messages.Message):
   """A ComputeGlobalForwardingRulesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -1171,10 +1351,25 @@ class ComputeGlobalOperationsAggregatedListRequest(_messages.Message):
   """A ComputeGlobalOperationsAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1188,7 +1383,7 @@ class ComputeGlobalOperationsDeleteRequest(_messages.Message):
   """A ComputeGlobalOperationsDeleteRequest object.
 
   Fields:
-    operation: Name of the operation resource to delete.
+    operation: Name of the Operations resource to delete.
     project: Project ID for this request.
   """
 
@@ -1204,7 +1399,7 @@ class ComputeGlobalOperationsGetRequest(_messages.Message):
   """A ComputeGlobalOperationsGetRequest object.
 
   Fields:
-    operation: Name of the operation resource to return.
+    operation: Name of the Operations resource to return.
     project: Project ID for this request.
   """
 
@@ -1216,10 +1411,25 @@ class ComputeGlobalOperationsListRequest(_messages.Message):
   """A ComputeGlobalOperationsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1270,10 +1480,25 @@ class ComputeHttpHealthChecksListRequest(_messages.Message):
   """A ComputeHttpHealthChecksListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -1368,10 +1593,25 @@ class ComputeImagesListRequest(_messages.Message):
   """A ComputeImagesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1379,6 +1619,441 @@ class ComputeImagesListRequest(_messages.Message):
   maxResults = _messages.IntegerField(2, variant=_messages.Variant.UINT32, default=500)
   pageToken = _messages.StringField(3)
   project = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupManagersAbandonInstancesRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersAbandonInstancesRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the instance group manager.
+    instanceGroupManagersAbandonInstancesRequest: A
+      InstanceGroupManagersAbandonInstancesRequest resource to be passed as
+      the request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  instanceGroupManagersAbandonInstancesRequest = _messages.MessageField('InstanceGroupManagersAbandonInstancesRequest', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupManagersAggregatedListRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersAggregatedListRequest object.
+
+  Fields:
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
+    maxResults: Maximum count of results to be returned.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
+    project: The project ID for this request.
+  """
+
+  filter = _messages.StringField(1)
+  maxResults = _messages.IntegerField(2, variant=_messages.Variant.UINT32, default=500)
+  pageToken = _messages.StringField(3)
+  project = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupManagersDeleteInstancesRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersDeleteInstancesRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the instance group manager.
+    instanceGroupManagersDeleteInstancesRequest: A
+      InstanceGroupManagersDeleteInstancesRequest resource to be passed as the
+      request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  instanceGroupManagersDeleteInstancesRequest = _messages.MessageField('InstanceGroupManagersDeleteInstancesRequest', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupManagersDeleteRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersDeleteRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the instance group manager to delete.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeInstanceGroupManagersGetRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersGetRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the instance group manager resource.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeInstanceGroupManagersInsertRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersInsertRequest object.
+
+  Fields:
+    instanceGroupManager: A InstanceGroupManager resource to be passed as the
+      request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.MessageField('InstanceGroupManager', 1)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeInstanceGroupManagersListManagedInstancesRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersListManagedInstancesRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the managed instance group.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeInstanceGroupManagersListRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersListRequest object.
+
+  Fields:
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
+    maxResults: Maximum count of results to be returned.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  filter = _messages.StringField(1)
+  maxResults = _messages.IntegerField(2, variant=_messages.Variant.UINT32, default=500)
+  pageToken = _messages.StringField(3)
+  project = _messages.StringField(4, required=True)
+  zone = _messages.StringField(5, required=True)
+
+
+class ComputeInstanceGroupManagersRecreateInstancesRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersRecreateInstancesRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the instance group manager.
+    instanceGroupManagersRecreateInstancesRequest: A
+      InstanceGroupManagersRecreateInstancesRequest resource to be passed as
+      the request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  instanceGroupManagersRecreateInstancesRequest = _messages.MessageField('InstanceGroupManagersRecreateInstancesRequest', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupManagersResizeRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersResizeRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the instance group manager.
+    project: The project ID for this request.
+    size: The number of running instances that the managed instance group
+      should maintain at any given time. The group automatically adds or
+      removes instances to maintain the number of instances specified by this
+      parameter.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+  size = _messages.IntegerField(3, required=True, variant=_messages.Variant.INT32)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupManagersSetInstanceTemplateRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersSetInstanceTemplateRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the instance group manager.
+    instanceGroupManagersSetInstanceTemplateRequest: A
+      InstanceGroupManagersSetInstanceTemplateRequest resource to be passed as
+      the request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  instanceGroupManagersSetInstanceTemplateRequest = _messages.MessageField('InstanceGroupManagersSetInstanceTemplateRequest', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupManagersSetTargetPoolsRequest(_messages.Message):
+  """A ComputeInstanceGroupManagersSetTargetPoolsRequest object.
+
+  Fields:
+    instanceGroupManager: The name of the instance group manager.
+    instanceGroupManagersSetTargetPoolsRequest: A
+      InstanceGroupManagersSetTargetPoolsRequest resource to be passed as the
+      request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  instanceGroupManager = _messages.StringField(1, required=True)
+  instanceGroupManagersSetTargetPoolsRequest = _messages.MessageField('InstanceGroupManagersSetTargetPoolsRequest', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupsAddInstancesRequest(_messages.Message):
+  """A ComputeInstanceGroupsAddInstancesRequest object.
+
+  Fields:
+    instanceGroup: The name of the instance group where you are adding
+      instances.
+    instanceGroupsAddInstancesRequest: A InstanceGroupsAddInstancesRequest
+      resource to be passed as the request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  instanceGroup = _messages.StringField(1, required=True)
+  instanceGroupsAddInstancesRequest = _messages.MessageField('InstanceGroupsAddInstancesRequest', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupsAggregatedListRequest(_messages.Message):
+  """A ComputeInstanceGroupsAggregatedListRequest object.
+
+  Fields:
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
+    maxResults: Maximum count of results to be returned.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
+    project: The project ID for this request.
+  """
+
+  filter = _messages.StringField(1)
+  maxResults = _messages.IntegerField(2, variant=_messages.Variant.UINT32, default=500)
+  pageToken = _messages.StringField(3)
+  project = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupsDeleteRequest(_messages.Message):
+  """A ComputeInstanceGroupsDeleteRequest object.
+
+  Fields:
+    instanceGroup: The name of the instance group to delete.
+    project: The project ID for this request.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  instanceGroup = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeInstanceGroupsGetRequest(_messages.Message):
+  """A ComputeInstanceGroupsGetRequest object.
+
+  Fields:
+    instanceGroup: The name of the instance group.
+    project: The project ID for this request.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  instanceGroup = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeInstanceGroupsInsertRequest(_messages.Message):
+  """A ComputeInstanceGroupsInsertRequest object.
+
+  Fields:
+    instanceGroup: A InstanceGroup resource to be passed as the request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  instanceGroup = _messages.MessageField('InstanceGroup', 1)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeInstanceGroupsListInstancesRequest(_messages.Message):
+  """A ComputeInstanceGroupsListInstancesRequest object.
+
+  Fields:
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
+    instanceGroup: The name of the instance group from which you want to
+      generate a list of included instances.
+    instanceGroupsListInstancesRequest: A InstanceGroupsListInstancesRequest
+      resource to be passed as the request body.
+    maxResults: Maximum count of results to be returned.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
+    project: The project ID for this request.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  filter = _messages.StringField(1)
+  instanceGroup = _messages.StringField(2, required=True)
+  instanceGroupsListInstancesRequest = _messages.MessageField('InstanceGroupsListInstancesRequest', 3)
+  maxResults = _messages.IntegerField(4, variant=_messages.Variant.UINT32, default=500)
+  pageToken = _messages.StringField(5)
+  project = _messages.StringField(6, required=True)
+  zone = _messages.StringField(7, required=True)
+
+
+class ComputeInstanceGroupsListRequest(_messages.Message):
+  """A ComputeInstanceGroupsListRequest object.
+
+  Fields:
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
+    maxResults: Maximum count of results to be returned.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
+    project: The project ID for this request.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  filter = _messages.StringField(1)
+  maxResults = _messages.IntegerField(2, variant=_messages.Variant.UINT32, default=500)
+  pageToken = _messages.StringField(3)
+  project = _messages.StringField(4, required=True)
+  zone = _messages.StringField(5, required=True)
+
+
+class ComputeInstanceGroupsRemoveInstancesRequest(_messages.Message):
+  """A ComputeInstanceGroupsRemoveInstancesRequest object.
+
+  Fields:
+    instanceGroup: The name of the instance group where the specified
+      instances will be removed.
+    instanceGroupsRemoveInstancesRequest: A
+      InstanceGroupsRemoveInstancesRequest resource to be passed as the
+      request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  instanceGroup = _messages.StringField(1, required=True)
+  instanceGroupsRemoveInstancesRequest = _messages.MessageField('InstanceGroupsRemoveInstancesRequest', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeInstanceGroupsSetNamedPortsRequest(_messages.Message):
+  """A ComputeInstanceGroupsSetNamedPortsRequest object.
+
+  Fields:
+    instanceGroup: The name of the instance group where the named ports are
+      updated.
+    instanceGroupsSetNamedPortsRequest: A InstanceGroupsSetNamedPortsRequest
+      resource to be passed as the request body.
+    project: The project ID for this request.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  instanceGroup = _messages.StringField(1, required=True)
+  instanceGroupsSetNamedPortsRequest = _messages.MessageField('InstanceGroupsSetNamedPortsRequest', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
 
 
 class ComputeInstanceTemplatesDeleteRequest(_messages.Message):
@@ -1422,10 +2097,25 @@ class ComputeInstanceTemplatesListRequest(_messages.Message):
   """A ComputeInstanceTemplatesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: The project ID for this request.
   """
 
@@ -1458,10 +2148,25 @@ class ComputeInstancesAggregatedListRequest(_messages.Message):
   """A ComputeInstancesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1554,7 +2259,7 @@ class ComputeInstancesGetSerialPortOutputRequest(_messages.Message):
 
   Fields:
     instance: Name of the instance scoping this request.
-    port: Which COM port to retrieve data from.
+    port: Specifies which COM or serial port to retrieve data from.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -1583,10 +2288,25 @@ class ComputeInstancesListRequest(_messages.Message):
   """A ComputeInstancesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -1722,10 +2442,25 @@ class ComputeMachineTypesAggregatedListRequest(_messages.Message):
   """A ComputeMachineTypesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1753,10 +2488,25 @@ class ComputeMachineTypesListRequest(_messages.Message):
   """A ComputeMachineTypesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -1808,10 +2558,25 @@ class ComputeNetworksListRequest(_messages.Message):
   """A ComputeNetworksListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1886,7 +2651,7 @@ class ComputeRegionOperationsDeleteRequest(_messages.Message):
   """A ComputeRegionOperationsDeleteRequest object.
 
   Fields:
-    operation: Name of the operation resource to delete.
+    operation: Name of the Operations resource to delete.
     project: Project ID for this request.
     region: Name of the region scoping this request.
   """
@@ -1904,7 +2669,7 @@ class ComputeRegionOperationsGetRequest(_messages.Message):
   """A ComputeRegionOperationsGetRequest object.
 
   Fields:
-    operation: Name of the operation resource to return.
+    operation: Name of the Operations resource to return.
     project: Project ID for this request.
     region: Name of the zone scoping this request.
   """
@@ -1918,10 +2683,25 @@ class ComputeRegionOperationsListRequest(_messages.Message):
   """A ComputeRegionOperationsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     region: Name of the region scoping this request.
   """
@@ -1949,10 +2729,25 @@ class ComputeRegionsListRequest(_messages.Message):
   """A ComputeRegionsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -2002,10 +2797,25 @@ class ComputeRoutesListRequest(_messages.Message):
   """A ComputeRoutesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2043,10 +2853,25 @@ class ComputeSnapshotsListRequest(_messages.Message):
   """A ComputeSnapshotsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2097,10 +2922,25 @@ class ComputeTargetHttpProxiesListRequest(_messages.Message):
   """A ComputeTargetHttpProxiesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2130,10 +2970,25 @@ class ComputeTargetInstancesAggregatedListRequest(_messages.Message):
   """A ComputeTargetInstancesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2190,10 +3045,25 @@ class ComputeTargetInstancesListRequest(_messages.Message):
   """A ComputeTargetInstancesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
     zone: Name of the zone scoping this request.
   """
@@ -2245,10 +3115,25 @@ class ComputeTargetPoolsAggregatedListRequest(_messages.Message):
   """A ComputeTargetPoolsAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2322,10 +3207,25 @@ class ComputeTargetPoolsListRequest(_messages.Message):
   """A ComputeTargetPoolsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
     region: Name of the region scoping this request.
   """
@@ -2397,10 +3297,25 @@ class ComputeTargetVpnGatewaysAggregatedListRequest(_messages.Message):
   """A ComputeTargetVpnGatewaysAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -2457,10 +3372,25 @@ class ComputeTargetVpnGatewaysListRequest(_messages.Message):
   """A ComputeTargetVpnGatewaysListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     region: The name of the region for this request.
   """
@@ -2512,10 +3442,25 @@ class ComputeUrlMapsListRequest(_messages.Message):
   """A ComputeUrlMapsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2572,10 +3517,25 @@ class ComputeVpnTunnelsAggregatedListRequest(_messages.Message):
   """A ComputeVpnTunnelsAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -2631,10 +3591,25 @@ class ComputeVpnTunnelsListRequest(_messages.Message):
   """A ComputeVpnTunnelsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     region: The name of the region for this request.
   """
@@ -2650,7 +3625,7 @@ class ComputeZoneOperationsDeleteRequest(_messages.Message):
   """A ComputeZoneOperationsDeleteRequest object.
 
   Fields:
-    operation: Name of the operation resource to delete.
+    operation: Name of the Operations resource to delete.
     project: Project ID for this request.
     zone: Name of the zone scoping this request.
   """
@@ -2668,7 +3643,7 @@ class ComputeZoneOperationsGetRequest(_messages.Message):
   """A ComputeZoneOperationsGetRequest object.
 
   Fields:
-    operation: Name of the operation resource to return.
+    operation: Name of the Operations resource to return.
     project: Project ID for this request.
     zone: Name of the zone scoping this request.
   """
@@ -2682,10 +3657,25 @@ class ComputeZoneOperationsListRequest(_messages.Message):
   """A ComputeZoneOperationsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: Name of the zone scoping this request.
   """
@@ -2713,10 +3703,25 @@ class ComputeZonesListRequest(_messages.Message):
   """A ComputeZonesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -3996,6 +5001,652 @@ class InstanceAggregatedList(_messages.Message):
   selfLink = _messages.StringField(5)
 
 
+class InstanceGroup(_messages.Message):
+  """A InstanceGroup object.
+
+  Fields:
+    creationTimestamp: [Output Only] The creation timestamp for this instance
+      group in RFC3339 text format.
+    description: An optional text description for the instance group.
+    fingerprint: [Output Only] The fingerprint of the named ports information.
+      The system uses this fingerprint to detect conflicts when multiple users
+      change the named ports information concurrently.
+    id: [Output Only] A unique identifier for this instance group. The server
+      defines this identifier.
+    kind: [Output Only] The resource type, which is always
+      compute#instanceGroup for instance groups.
+    name: The name of the instance group. The name must be 1-63 characters
+      long, and comply with RFC1035.
+    namedPorts: Assigns a name to a port number. For example: {name: ?http?,
+      port: 80} This allows the system to reference ports by the assigned name
+      instead of a port number. Named ports can also contain multiple ports.
+      For example: [{name: ?http?, port: 80},{name: "http", port: 8080}] Named
+      ports apply to all instances in this instance group.
+    network: The URL of the network to which all instances in the instance
+      group belong.
+    selfLink: [Output Only] The URL for this instance group. The server
+      defines this URL.
+    size: [Output Only] The total number of instances in the instance group.
+    zone: The URL of the zone where the instance group is located.
+  """
+
+  creationTimestamp = _messages.StringField(1)
+  description = _messages.StringField(2)
+  fingerprint = _messages.BytesField(3)
+  id = _messages.IntegerField(4, variant=_messages.Variant.UINT64)
+  kind = _messages.StringField(5, default=u'compute#instanceGroup')
+  name = _messages.StringField(6)
+  namedPorts = _messages.MessageField('NamedPort', 7, repeated=True)
+  network = _messages.StringField(8)
+  selfLink = _messages.StringField(9)
+  size = _messages.IntegerField(10, variant=_messages.Variant.INT32)
+  zone = _messages.StringField(11)
+
+
+class InstanceGroupAggregatedList(_messages.Message):
+  """A InstanceGroupAggregatedList object.
+
+  Messages:
+    ItemsValue: A map of scoped instance group lists.
+
+  Fields:
+    id: [Output Only] A unique identifier for this aggregated list of instance
+      groups. The server defines this identifier.
+    items: A map of scoped instance group lists.
+    kind: [Output Only] The resource type, which is always
+      compute#instanceGroupAggregatedList for aggregated lists of instance
+      groups.
+    nextPageToken: [Output Only] A token that is used to continue a truncated
+      list request.
+    selfLink: [Output Only] A unique identifier for this aggregated list of
+      instance groups. The server defines this identifier.
+  """
+
+  @encoding.MapUnrecognizedFields('additionalProperties')
+  class ItemsValue(_messages.Message):
+    """A map of scoped instance group lists.
+
+    Messages:
+      AdditionalProperty: An additional property for a ItemsValue object.
+
+    Fields:
+      additionalProperties: The name of the scope that contains this set of
+        instance groups.
+    """
+
+    class AdditionalProperty(_messages.Message):
+      """An additional property for a ItemsValue object.
+
+      Fields:
+        key: Name of the additional property.
+        value: A InstanceGroupsScopedList attribute.
+      """
+
+      key = _messages.StringField(1)
+      value = _messages.MessageField('InstanceGroupsScopedList', 2)
+
+    additionalProperties = _messages.MessageField('AdditionalProperty', 1, repeated=True)
+
+  id = _messages.StringField(1)
+  items = _messages.MessageField('ItemsValue', 2)
+  kind = _messages.StringField(3, default=u'compute#instanceGroupAggregatedList')
+  nextPageToken = _messages.StringField(4)
+  selfLink = _messages.StringField(5)
+
+
+class InstanceGroupList(_messages.Message):
+  """A list of InstanceGroup resources.
+
+  Fields:
+    id: [Output Only] A unique identifier for this list of instance groups.
+      The server defines this identifier.
+    items: A list of InstanceGroup resources.
+    kind: [Output Only] The resource type, which is always
+      compute#instanceGroupList for instance group lists.
+    nextPageToken: [Output Only] A token that is used to continue a truncated
+      list request.
+    selfLink: [Output Only] The URL for this instance group. The server
+      defines this URL.
+  """
+
+  id = _messages.StringField(1)
+  items = _messages.MessageField('InstanceGroup', 2, repeated=True)
+  kind = _messages.StringField(3, default=u'compute#instanceGroupList')
+  nextPageToken = _messages.StringField(4)
+  selfLink = _messages.StringField(5)
+
+
+class InstanceGroupManager(_messages.Message):
+  """InstanceGroupManagers  Next available tag: 17
+
+  Fields:
+    autoHealingPolicies: The autohealing policy for this managed instance
+      group. You can specify only one value.
+    baseInstanceName: The base instance name to use for instances in this
+      group. The value must be 1-58 characters long. Instances are named by
+      appending a hyphen and a random four-character string to the base
+      instance name. The base instance name must comply with RFC1035.
+    creationTimestamp: [Output Only] The creation timestamp for this managed
+      instance group in RFC3339 text format.
+    currentActions: [Output Only] The list of instance actions and the number
+      of instances in this managed instance group that are scheduled for those
+      actions.
+    currentSize: [Output Only] The number of instances that currently exist
+      and are a part of this group. The number includes instances that are in
+      a RUNNING state, instances that are starting, and instances that are
+      scheduled to be deleted or abandoned.
+    description: An optional text description for the managed instance group.
+    fingerprint: [Output Only] The fingerprint of the target pools
+      information, which is a hash of the contents. This field is used for
+      optimistic locking when updating the target pool entries.
+    id: [Output Only] A unique identifier for this managed instance group. The
+      server defines this identifier.
+    instanceGroup: [Output Only] The URL of the InstanceGroup resource.
+    instanceTemplate: The URL of the instance template that is specified for
+      this managed instance group. The group uses this template to create all
+      new instances in the managed instance group.
+    kind: [Output Only] The resource type, which is always
+      compute#instanceGroupManager for managed instance groups.
+    name: The name of the managed instance group. The name must be 1-63
+      characters long, and comply with RFC1035.
+    selfLink: [Output Only] Server defined URL for this managed instance
+      group.
+    targetPools: The URL of all TargetPool resources to which new instances in
+      the instanceGroup field are added. Updating the target pool values does
+      not affect existing instances.
+    targetSize: The target number of running instances for this managed
+      instance group. Deleting or abandoning instances reduces this number.
+      Resizing the group changes this number.
+    zone: The URL of the zone where the managed instance group is located.
+  """
+
+  autoHealingPolicies = _messages.MessageField('InstanceGroupManagerAutoHealingPolicy', 1, repeated=True)
+  baseInstanceName = _messages.StringField(2)
+  creationTimestamp = _messages.StringField(3)
+  currentActions = _messages.MessageField('InstanceGroupManagerActionsSummary', 4)
+  currentSize = _messages.IntegerField(5, variant=_messages.Variant.INT32)
+  description = _messages.StringField(6)
+  fingerprint = _messages.BytesField(7)
+  id = _messages.IntegerField(8, variant=_messages.Variant.UINT64)
+  instanceGroup = _messages.StringField(9)
+  instanceTemplate = _messages.StringField(10)
+  kind = _messages.StringField(11, default=u'compute#instanceGroupManager')
+  name = _messages.StringField(12)
+  selfLink = _messages.StringField(13)
+  targetPools = _messages.StringField(14, repeated=True)
+  targetSize = _messages.IntegerField(15, variant=_messages.Variant.INT32)
+  zone = _messages.StringField(16)
+
+
+class InstanceGroupManagerActionsSummary(_messages.Message):
+  """A InstanceGroupManagerActionsSummary object.
+
+  Fields:
+    abandoning: A integer attribute.
+    creating: A integer attribute.
+    deleting: A integer attribute.
+    none: A integer attribute.
+    rebooting: A integer attribute.
+    recreating: A integer attribute.
+    refreshing: A integer attribute.
+  """
+
+  abandoning = _messages.IntegerField(1, variant=_messages.Variant.INT32)
+  creating = _messages.IntegerField(2, variant=_messages.Variant.INT32)
+  deleting = _messages.IntegerField(3, variant=_messages.Variant.INT32)
+  none = _messages.IntegerField(4, variant=_messages.Variant.INT32)
+  rebooting = _messages.IntegerField(5, variant=_messages.Variant.INT32)
+  recreating = _messages.IntegerField(6, variant=_messages.Variant.INT32)
+  refreshing = _messages.IntegerField(7, variant=_messages.Variant.INT32)
+
+
+class InstanceGroupManagerAggregatedList(_messages.Message):
+  """A InstanceGroupManagerAggregatedList object.
+
+  Messages:
+    ItemsValue: A map of filtered managed instance group lists.
+
+  Fields:
+    id: [Output Only] A unique identifier for this aggregated list of managed
+      instance groups. The server defines this identifier.
+    items: A map of filtered managed instance group lists.
+    kind: [Output Only] Type of the resource. Always
+      compute#instanceGroupManagerAggregatedList for an aggregated list of
+      managed instance groups.
+    nextPageToken: [Output Only] A token that is used to continue a truncated
+      list request.
+    selfLink: [Output Only] The URL for this aggregated list of managed
+      instance groups. The server defines this URL.
+  """
+
+  @encoding.MapUnrecognizedFields('additionalProperties')
+  class ItemsValue(_messages.Message):
+    """A map of filtered managed instance group lists.
+
+    Messages:
+      AdditionalProperty: An additional property for a ItemsValue object.
+
+    Fields:
+      additionalProperties: The name of the scope that contains this set of
+        managed instance groups.
+    """
+
+    class AdditionalProperty(_messages.Message):
+      """An additional property for a ItemsValue object.
+
+      Fields:
+        key: Name of the additional property.
+        value: A InstanceGroupManagersScopedList attribute.
+      """
+
+      key = _messages.StringField(1)
+      value = _messages.MessageField('InstanceGroupManagersScopedList', 2)
+
+    additionalProperties = _messages.MessageField('AdditionalProperty', 1, repeated=True)
+
+  id = _messages.StringField(1)
+  items = _messages.MessageField('ItemsValue', 2)
+  kind = _messages.StringField(3, default=u'compute#instanceGroupManagerAggregatedList')
+  nextPageToken = _messages.StringField(4)
+  selfLink = _messages.StringField(5)
+
+
+class InstanceGroupManagerAutoHealingPolicy(_messages.Message):
+  """A InstanceGroupManagerAutoHealingPolicy object.
+
+  Enums:
+    ActionTypeValueValuesEnum: The action to perform when an instance becomes
+      unhealthy. Possible values are RECREATE or REBOOT. RECREATE replaces an
+      unhealthy instance with a new instance that is based on the instance
+      template for this managed instance group. REBOOT performs a soft reboot
+      on an instance. If the instance cannot reboot, the instance performs a
+      hard restart.
+
+  Fields:
+    actionType: The action to perform when an instance becomes unhealthy.
+      Possible values are RECREATE or REBOOT. RECREATE replaces an unhealthy
+      instance with a new instance that is based on the instance template for
+      this managed instance group. REBOOT performs a soft reboot on an
+      instance. If the instance cannot reboot, the instance performs a hard
+      restart.
+    healthCheck: The URL for the HealthCheck that signals autohealing.
+  """
+
+  class ActionTypeValueValuesEnum(_messages.Enum):
+    """The action to perform when an instance becomes unhealthy. Possible
+    values are RECREATE or REBOOT. RECREATE replaces an unhealthy instance
+    with a new instance that is based on the instance template for this
+    managed instance group. REBOOT performs a soft reboot on an instance. If
+    the instance cannot reboot, the instance performs a hard restart.
+
+    Values:
+      REBOOT: <no description>
+      RECREATE: <no description>
+    """
+    REBOOT = 0
+    RECREATE = 1
+
+  actionType = _messages.EnumField('ActionTypeValueValuesEnum', 1)
+  healthCheck = _messages.StringField(2)
+
+
+class InstanceGroupManagerList(_messages.Message):
+  """[Output Only] A list of InstanceGroupManager resources.
+
+  Fields:
+    id: [Output Only] A unique identifier for this managed instance group. The
+      server defines this identifier.
+    items: [Output Only] A list of managed instance group resources.
+    kind: [Output Only] Type of the resource. Always
+      compute#instanceGroupManagerList for a list of managed instance group
+      resources.
+    nextPageToken: [Output Only] A token that is used to continue a truncated
+      list request.
+    selfLink: [Output Only] The URL for this managed instance group. The
+      server defines this URL.
+  """
+
+  id = _messages.StringField(1)
+  items = _messages.MessageField('InstanceGroupManager', 2, repeated=True)
+  kind = _messages.StringField(3, default=u'compute#instanceGroupManagerList')
+  nextPageToken = _messages.StringField(4)
+  selfLink = _messages.StringField(5)
+
+
+class InstanceGroupManagersAbandonInstancesRequest(_messages.Message):
+  """A InstanceGroupManagersAbandonInstancesRequest object.
+
+  Fields:
+    instances: The names of instances to abandon from the managed instance
+      group.
+  """
+
+  instances = _messages.StringField(1, repeated=True)
+
+
+class InstanceGroupManagersDeleteInstancesRequest(_messages.Message):
+  """A InstanceGroupManagersDeleteInstancesRequest object.
+
+  Fields:
+    instances: The names of one or more instances to delete.
+  """
+
+  instances = _messages.StringField(1, repeated=True)
+
+
+class InstanceGroupManagersListManagedInstancesResponse(_messages.Message):
+  """A InstanceGroupManagersListManagedInstancesResponse object.
+
+  Fields:
+    managedInstances: List of managed instances. If empty - all instances are
+      listed.
+  """
+
+  managedInstances = _messages.MessageField('ManagedInstance', 1, repeated=True)
+
+
+class InstanceGroupManagersRecreateInstancesRequest(_messages.Message):
+  """A InstanceGroupManagersRecreateInstancesRequest object.
+
+  Fields:
+    instances: The names of one or more instances to recreate.
+  """
+
+  instances = _messages.StringField(1, repeated=True)
+
+
+class InstanceGroupManagersScopedList(_messages.Message):
+  """A InstanceGroupManagersScopedList object.
+
+  Messages:
+    WarningValue: [Output Only] The warning that replaces the list of managed
+      instance groups when the list is empty.
+
+  Fields:
+    instanceGroupManagers: [Output Only] The list of managed instance groups
+      that are contained in the specified project and zone.
+    warning: [Output Only] The warning that replaces the list of managed
+      instance groups when the list is empty.
+  """
+
+  class WarningValue(_messages.Message):
+    """[Output Only] The warning that replaces the list of managed instance
+    groups when the list is empty.
+
+    Enums:
+      CodeValueValuesEnum: [Output Only] The warning type identifier for this
+        warning.
+
+    Messages:
+      DataValueListEntry: A DataValueListEntry object.
+
+    Fields:
+      code: [Output Only] The warning type identifier for this warning.
+      data: [Output Only] Metadata for this warning in key: value format.
+      message: [Output Only] Optional human-readable details for this warning.
+    """
+
+    class CodeValueValuesEnum(_messages.Enum):
+      """[Output Only] The warning type identifier for this warning.
+
+      Values:
+        DEPRECATED_RESOURCE_USED: <no description>
+        DISK_SIZE_LARGER_THAN_IMAGE_SIZE: <no description>
+        INJECTED_KERNELS_DEPRECATED: <no description>
+        NEXT_HOP_ADDRESS_NOT_ASSIGNED: <no description>
+        NEXT_HOP_CANNOT_IP_FORWARD: <no description>
+        NEXT_HOP_INSTANCE_NOT_FOUND: <no description>
+        NEXT_HOP_INSTANCE_NOT_ON_NETWORK: <no description>
+        NEXT_HOP_NOT_RUNNING: <no description>
+        NOT_CRITICAL_ERROR: <no description>
+        NO_RESULTS_ON_PAGE: <no description>
+        REQUIRED_TOS_AGREEMENT: <no description>
+        RESOURCE_NOT_DELETED: <no description>
+        SINGLE_INSTANCE_PROPERTY_TEMPLATE: <no description>
+        UNREACHABLE: <no description>
+      """
+      DEPRECATED_RESOURCE_USED = 0
+      DISK_SIZE_LARGER_THAN_IMAGE_SIZE = 1
+      INJECTED_KERNELS_DEPRECATED = 2
+      NEXT_HOP_ADDRESS_NOT_ASSIGNED = 3
+      NEXT_HOP_CANNOT_IP_FORWARD = 4
+      NEXT_HOP_INSTANCE_NOT_FOUND = 5
+      NEXT_HOP_INSTANCE_NOT_ON_NETWORK = 6
+      NEXT_HOP_NOT_RUNNING = 7
+      NOT_CRITICAL_ERROR = 8
+      NO_RESULTS_ON_PAGE = 9
+      REQUIRED_TOS_AGREEMENT = 10
+      RESOURCE_NOT_DELETED = 11
+      SINGLE_INSTANCE_PROPERTY_TEMPLATE = 12
+      UNREACHABLE = 13
+
+    class DataValueListEntry(_messages.Message):
+      """A DataValueListEntry object.
+
+      Fields:
+        key: [Output Only] A key for the warning data.
+        value: [Output Only] A warning data value corresponding to the key.
+      """
+
+      key = _messages.StringField(1)
+      value = _messages.StringField(2)
+
+    code = _messages.EnumField('CodeValueValuesEnum', 1)
+    data = _messages.MessageField('DataValueListEntry', 2, repeated=True)
+    message = _messages.StringField(3)
+
+  instanceGroupManagers = _messages.MessageField('InstanceGroupManager', 1, repeated=True)
+  warning = _messages.MessageField('WarningValue', 2)
+
+
+class InstanceGroupManagersSetInstanceTemplateRequest(_messages.Message):
+  """A InstanceGroupManagersSetInstanceTemplateRequest object.
+
+  Fields:
+    instanceTemplate: The URL of the instance template that is specified for
+      this managed instance group. The group uses this template to create all
+      new instances in the managed instance group.
+  """
+
+  instanceTemplate = _messages.StringField(1)
+
+
+class InstanceGroupManagersSetTargetPoolsRequest(_messages.Message):
+  """A InstanceGroupManagersSetTargetPoolsRequest object.
+
+  Fields:
+    fingerprint: The fingerprint of the target pools information, which is a
+      hash of the contents. This field is used for optimistic locking when
+      updating the target pool entries.
+    targetPools: The list of target pool URLs that instances in this managed
+      instance group belong to. When the managed instance group creates new
+      instances, the group automatically adds those instances to the target
+      pools that are specified in this parameter. Changing the value of this
+      parameter does not change the target pools of existing instances in this
+      managed instance group.
+  """
+
+  fingerprint = _messages.BytesField(1)
+  targetPools = _messages.StringField(2, repeated=True)
+
+
+class InstanceGroupsAddInstancesRequest(_messages.Message):
+  """A InstanceGroupsAddInstancesRequest object.
+
+  Fields:
+    instances: The instances to add to the instance group.
+  """
+
+  instances = _messages.MessageField('InstanceReference', 1, repeated=True)
+
+
+class InstanceGroupsListInstances(_messages.Message):
+  """A InstanceGroupsListInstances object.
+
+  Fields:
+    id: [Output Only] A unique identifier for this list of instance groups.
+      The server defines this identifier.
+    items: A list of InstanceWithNamedPorts resources, which contains all
+      named ports for the given instance.
+    kind: [Output Only] The resource type, which is always
+      compute#instanceGroupsListInstances for lists of instance groups.
+    nextPageToken: [Output Only] A token that is used to continue a truncated
+      list request.
+    selfLink: [Output Only] The URL for this list of instance groups. The
+      server defines this URL.
+  """
+
+  id = _messages.StringField(1)
+  items = _messages.MessageField('InstanceWithNamedPorts', 2, repeated=True)
+  kind = _messages.StringField(3, default=u'compute#instanceGroupsListInstances')
+  nextPageToken = _messages.StringField(4)
+  selfLink = _messages.StringField(5)
+
+
+class InstanceGroupsListInstancesRequest(_messages.Message):
+  """A InstanceGroupsListInstancesRequest object.
+
+  Enums:
+    InstanceStateValueValuesEnum: A filter for the state of the instances in
+      the instance group. Valid options are ALL or RUNNING. If you do not
+      specify this parameter the list includes all instances regardless of
+      their state.
+
+  Fields:
+    instanceState: A filter for the state of the instances in the instance
+      group. Valid options are ALL or RUNNING. If you do not specify this
+      parameter the list includes all instances regardless of their state.
+    portName: A filter for the named ports that are associated with instances
+      in the instance group. If you specify this parameter, the generated list
+      includes only instances that are associated with the specified named
+      ports. If you do not specify this parameter, the generated list includes
+      all instances regardless of their named ports.
+  """
+
+  class InstanceStateValueValuesEnum(_messages.Enum):
+    """A filter for the state of the instances in the instance group. Valid
+    options are ALL or RUNNING. If you do not specify this parameter the list
+    includes all instances regardless of their state.
+
+    Values:
+      ALL: <no description>
+      RUNNING: <no description>
+    """
+    ALL = 0
+    RUNNING = 1
+
+  instanceState = _messages.EnumField('InstanceStateValueValuesEnum', 1)
+  portName = _messages.StringField(2)
+
+
+class InstanceGroupsRemoveInstancesRequest(_messages.Message):
+  """A InstanceGroupsRemoveInstancesRequest object.
+
+  Fields:
+    instances: The instances to remove from the instance group.
+  """
+
+  instances = _messages.MessageField('InstanceReference', 1, repeated=True)
+
+
+class InstanceGroupsScopedList(_messages.Message):
+  """A InstanceGroupsScopedList object.
+
+  Messages:
+    WarningValue: [Output Only] An informational warning that replaces the
+      list of instance groups when the list is empty.
+
+  Fields:
+    instanceGroups: [Output Only] The list of instance groups that are
+      contained in this scope.
+    warning: [Output Only] An informational warning that replaces the list of
+      instance groups when the list is empty.
+  """
+
+  class WarningValue(_messages.Message):
+    """[Output Only] An informational warning that replaces the list of
+    instance groups when the list is empty.
+
+    Enums:
+      CodeValueValuesEnum: [Output Only] The warning type identifier for this
+        warning.
+
+    Messages:
+      DataValueListEntry: A DataValueListEntry object.
+
+    Fields:
+      code: [Output Only] The warning type identifier for this warning.
+      data: [Output Only] Metadata for this warning in key: value format.
+      message: [Output Only] Optional human-readable details for this warning.
+    """
+
+    class CodeValueValuesEnum(_messages.Enum):
+      """[Output Only] The warning type identifier for this warning.
+
+      Values:
+        DEPRECATED_RESOURCE_USED: <no description>
+        DISK_SIZE_LARGER_THAN_IMAGE_SIZE: <no description>
+        INJECTED_KERNELS_DEPRECATED: <no description>
+        NEXT_HOP_ADDRESS_NOT_ASSIGNED: <no description>
+        NEXT_HOP_CANNOT_IP_FORWARD: <no description>
+        NEXT_HOP_INSTANCE_NOT_FOUND: <no description>
+        NEXT_HOP_INSTANCE_NOT_ON_NETWORK: <no description>
+        NEXT_HOP_NOT_RUNNING: <no description>
+        NOT_CRITICAL_ERROR: <no description>
+        NO_RESULTS_ON_PAGE: <no description>
+        REQUIRED_TOS_AGREEMENT: <no description>
+        RESOURCE_NOT_DELETED: <no description>
+        SINGLE_INSTANCE_PROPERTY_TEMPLATE: <no description>
+        UNREACHABLE: <no description>
+      """
+      DEPRECATED_RESOURCE_USED = 0
+      DISK_SIZE_LARGER_THAN_IMAGE_SIZE = 1
+      INJECTED_KERNELS_DEPRECATED = 2
+      NEXT_HOP_ADDRESS_NOT_ASSIGNED = 3
+      NEXT_HOP_CANNOT_IP_FORWARD = 4
+      NEXT_HOP_INSTANCE_NOT_FOUND = 5
+      NEXT_HOP_INSTANCE_NOT_ON_NETWORK = 6
+      NEXT_HOP_NOT_RUNNING = 7
+      NOT_CRITICAL_ERROR = 8
+      NO_RESULTS_ON_PAGE = 9
+      REQUIRED_TOS_AGREEMENT = 10
+      RESOURCE_NOT_DELETED = 11
+      SINGLE_INSTANCE_PROPERTY_TEMPLATE = 12
+      UNREACHABLE = 13
+
+    class DataValueListEntry(_messages.Message):
+      """A DataValueListEntry object.
+
+      Fields:
+        key: [Output Only] A key for the warning data.
+        value: [Output Only] A warning data value corresponding to the key.
+      """
+
+      key = _messages.StringField(1)
+      value = _messages.StringField(2)
+
+    code = _messages.EnumField('CodeValueValuesEnum', 1)
+    data = _messages.MessageField('DataValueListEntry', 2, repeated=True)
+    message = _messages.StringField(3)
+
+  instanceGroups = _messages.MessageField('InstanceGroup', 1, repeated=True)
+  warning = _messages.MessageField('WarningValue', 2)
+
+
+class InstanceGroupsSetNamedPortsRequest(_messages.Message):
+  """A InstanceGroupsSetNamedPortsRequest object.
+
+  Fields:
+    fingerprint: The fingerprint of the named ports information, which is a
+      hash of the contents. Use this field for optimistic locking when you
+      update the named ports entries.
+    namedPorts: The list of named ports to set for this instance group.
+  """
+
+  fingerprint = _messages.BytesField(1)
+  namedPorts = _messages.MessageField('NamedPort', 2, repeated=True)
+
+
 class InstanceList(_messages.Message):
   """Contains a list of instance resources.
 
@@ -4143,6 +5794,45 @@ class InstanceTemplateList(_messages.Message):
   kind = _messages.StringField(3, default=u'compute#instanceTemplateList')
   nextPageToken = _messages.StringField(4)
   selfLink = _messages.StringField(5)
+
+
+class InstanceWithNamedPorts(_messages.Message):
+  """A InstanceWithNamedPorts object.
+
+  Enums:
+    StatusValueValuesEnum: The status of the instance.
+
+  Fields:
+    instance: The URL of the instance.
+    namedPorts: The named ports that belong to this instance group.
+    status: The status of the instance.
+  """
+
+  class StatusValueValuesEnum(_messages.Enum):
+    """The status of the instance.
+
+    Values:
+      PROVISIONING: <no description>
+      RUNNING: <no description>
+      STAGING: <no description>
+      STOPPED: <no description>
+      STOPPING: <no description>
+      SUSPENDED: <no description>
+      SUSPENDING: <no description>
+      TERMINATED: <no description>
+    """
+    PROVISIONING = 0
+    RUNNING = 1
+    STAGING = 2
+    STOPPED = 3
+    STOPPING = 4
+    SUSPENDED = 5
+    SUSPENDING = 6
+    TERMINATED = 7
+
+  instance = _messages.StringField(1)
+  namedPorts = _messages.MessageField('NamedPort', 2, repeated=True)
+  status = _messages.EnumField('StatusValueValuesEnum', 3)
 
 
 class InstancesScopedList(_messages.Message):
@@ -4456,6 +6146,121 @@ class MachineTypesScopedList(_messages.Message):
   warning = _messages.MessageField('WarningValue', 2)
 
 
+class ManagedInstance(_messages.Message):
+  """A ManagedInstance object.
+
+  Enums:
+    CurrentActionValueValuesEnum: The current action that the managed instance
+      group has scheduled for the instance.
+    InstanceStatusValueValuesEnum: The status of the instance (empty when
+      instance does not exist).
+
+  Fields:
+    currentAction: The current action that the managed instance group has
+      scheduled for the instance.
+    incarnationId: The unique identifier for this resource (empty when
+      instance does not exist).
+    instance: The URL of the instance (set even though instance does not exist
+      yet).
+    instanceStatus: The status of the instance (empty when instance does not
+      exist).
+    lastAttempt: Information about the last attempt to create or delete the
+      instance.
+  """
+
+  class CurrentActionValueValuesEnum(_messages.Enum):
+    """The current action that the managed instance group has scheduled for
+    the instance.
+
+    Values:
+      ABANDONING: <no description>
+      CREATING: <no description>
+      DELETING: <no description>
+      NONE: <no description>
+      REBOOTING: <no description>
+      RECREATING: <no description>
+      REFRESHING: <no description>
+    """
+    ABANDONING = 0
+    CREATING = 1
+    DELETING = 2
+    NONE = 3
+    REBOOTING = 4
+    RECREATING = 5
+    REFRESHING = 6
+
+  class InstanceStatusValueValuesEnum(_messages.Enum):
+    """The status of the instance (empty when instance does not exist).
+
+    Values:
+      PROVISIONING: <no description>
+      RUNNING: <no description>
+      STAGING: <no description>
+      STOPPED: <no description>
+      STOPPING: <no description>
+      SUSPENDED: <no description>
+      SUSPENDING: <no description>
+      TERMINATED: <no description>
+    """
+    PROVISIONING = 0
+    RUNNING = 1
+    STAGING = 2
+    STOPPED = 3
+    STOPPING = 4
+    SUSPENDED = 5
+    SUSPENDING = 6
+    TERMINATED = 7
+
+  currentAction = _messages.EnumField('CurrentActionValueValuesEnum', 1)
+  incarnationId = _messages.IntegerField(2)
+  instance = _messages.StringField(3)
+  instanceStatus = _messages.EnumField('InstanceStatusValueValuesEnum', 4)
+  lastAttempt = _messages.MessageField('ManagedInstanceLastAttempt', 5)
+
+
+class ManagedInstanceLastAttempt(_messages.Message):
+  """A ManagedInstanceLastAttempt object.
+
+  Messages:
+    ErrorsValue: Encountered errors during the last attempt to create or
+      delete the instance.
+
+  Fields:
+    errors: Encountered errors during the last attempt to create or delete the
+      instance.
+  """
+
+  class ErrorsValue(_messages.Message):
+    """Encountered errors during the last attempt to create or delete the
+    instance.
+
+    Messages:
+      ErrorsValueListEntry: A ErrorsValueListEntry object.
+
+    Fields:
+      errors: [Output Only] The array of errors encountered while processing
+        this operation.
+    """
+
+    class ErrorsValueListEntry(_messages.Message):
+      """A ErrorsValueListEntry object.
+
+      Fields:
+        code: [Output Only] The error type identifier for this error.
+        location: [Output Only] Indicates the field in the request which
+          caused the error. This property is optional.
+        message: [Output Only] An optional, human-readable error message.
+      """
+
+      code = _messages.StringField(1)
+      location = _messages.StringField(2)
+      message = _messages.StringField(3)
+
+    errors = _messages.MessageField('ErrorsValueListEntry', 1, repeated=True)
+
+  errors = _messages.MessageField('ErrorsValue', 1)
+
+
 class Metadata(_messages.Message):
   """A metadata key/value entry.
 
@@ -4496,6 +6301,18 @@ class Metadata(_messages.Message):
   fingerprint = _messages.BytesField(1)
   items = _messages.MessageField('ItemsValueListEntry', 2, repeated=True)
   kind = _messages.StringField(3, default=u'compute#metadata')
+
+
+class NamedPort(_messages.Message):
+  """The named port information. For example: .
+
+  Fields:
+    name: The name for this NamedPort.
+    port: The port number, which can be a value between 1 and 65535.
+  """
+
+  name = _messages.StringField(1)
+  port = _messages.IntegerField(2, variant=_messages.Variant.INT32)
 
 
 class Network(_messages.Message):
@@ -4586,7 +6403,7 @@ class NetworkList(_messages.Message):
 
 
 class Operation(_messages.Message):
-  """An operation resource, used to manage asynchronous API requests.
+  """An Operation resource, used to manage asynchronous API requests.
 
   Enums:
     StatusValueValuesEnum: [Output Only] Status of the operation. Can be one
@@ -4599,7 +6416,7 @@ class Operation(_messages.Message):
 
   Fields:
     clientOperationId: [Output Only] An optional identifier specified by the
-      client when the mutation was initiated. Must be unique for all operation
+      client when the mutation was initiated. Must be unique for all Operation
       resources in the project.
     creationTimestamp: [Output Only] Creation timestamp in RFC3339 text
       format.
@@ -4824,12 +6641,12 @@ class OperationAggregatedList(_messages.Message):
 
 
 class OperationList(_messages.Message):
-  """Contains a list of operation resources.
+  """Contains a list of Operation resources.
 
   Fields:
     id: [Output Only] Unique identifier for the resource; defined by the
       server.
-    items: [Output Only] The operation resources.
+    items: [Output Only] The Operation resources.
     kind: [Output Only] Type of resource. Always compute#operations for
       Operations resource.
     nextPageToken: [Output Only] A token used to continue a truncate.
@@ -5020,6 +6837,8 @@ class Quota(_messages.Message):
       HEALTH_CHECKS: <no description>
       IMAGES: <no description>
       INSTANCES: <no description>
+      INSTANCE_GROUPS: <no description>
+      INSTANCE_GROUP_MANAGERS: <no description>
       INSTANCE_TEMPLATES: <no description>
       IN_USE_ADDRESSES: <no description>
       LOCAL_SSD_TOTAL_GB: <no description>
@@ -5043,20 +6862,22 @@ class Quota(_messages.Message):
     HEALTH_CHECKS = 5
     IMAGES = 6
     INSTANCES = 7
-    INSTANCE_TEMPLATES = 8
-    IN_USE_ADDRESSES = 9
-    LOCAL_SSD_TOTAL_GB = 10
-    NETWORKS = 11
-    ROUTES = 12
-    SNAPSHOTS = 13
-    SSD_TOTAL_GB = 14
-    STATIC_ADDRESSES = 15
-    TARGET_HTTP_PROXIES = 16
-    TARGET_INSTANCES = 17
-    TARGET_POOLS = 18
-    TARGET_VPN_GATEWAYS = 19
-    URL_MAPS = 20
-    VPN_TUNNELS = 21
+    INSTANCE_GROUPS = 8
+    INSTANCE_GROUP_MANAGERS = 9
+    INSTANCE_TEMPLATES = 10
+    IN_USE_ADDRESSES = 11
+    LOCAL_SSD_TOTAL_GB = 12
+    NETWORKS = 13
+    ROUTES = 14
+    SNAPSHOTS = 15
+    SSD_TOTAL_GB = 16
+    STATIC_ADDRESSES = 17
+    TARGET_HTTP_PROXIES = 18
+    TARGET_INSTANCES = 19
+    TARGET_POOLS = 20
+    TARGET_VPN_GATEWAYS = 21
+    URL_MAPS = 22
+    VPN_TUNNELS = 23
 
   limit = _messages.FloatField(1)
   metric = _messages.EnumField('MetricValueValuesEnum', 2)

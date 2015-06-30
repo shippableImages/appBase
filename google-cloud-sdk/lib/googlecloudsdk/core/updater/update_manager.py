@@ -8,6 +8,8 @@ import subprocess
 import sys
 import textwrap
 
+from googlecloudsdk.core.util import platforms
+
 from googlecloudsdk.core import config
 from googlecloudsdk.core import exceptions
 from googlecloudsdk.core import log
@@ -19,8 +21,20 @@ from googlecloudsdk.core.updater import snapshots
 from googlecloudsdk.core.util import console_io
 from googlecloudsdk.core.util import execution_utils
 from googlecloudsdk.core.util import files as file_utils
-from googlecloudsdk.core.util import platforms
 
+
+# These are components that used to exist, but we removed.  In order to prevent
+# scripts and installers that use them from getting errors, we will just warn
+# and move on.  This can be removed once we think enough time has passed.
+_IGNORED_MISSING_COMPONENTS = set([
+    'compute',
+    'dns',
+    'pkg-core',
+    'pkg-java',
+    'pkg-python',
+    'pkg-go',
+    'sql',
+])
 
 _SHELL_RCFILES = [
     'completion.bash.inc',
@@ -397,25 +411,19 @@ class UpdateManager(object):
     to_print = [diff.AvailableUpdates(), diff.Removed(),
                 diff.AvailableToInstall(), diff.UpToDate()]
 
-    self.__Write(
-        log.status,
-        'The following are the components available through the Google Cloud '
-        'SDK.  You may choose to install one or more of the pre-configured '
-        'packages (which contain everything you need to get started), and/or '
-        'any of the individual components below.\n', word_wrap=True)
-
-    self._PrintTable('Packages', False, to_print, lambda x: x.is_configuration)
-    self.__Write(log.out, '\n')
-    self._PrintTable('Individual Components', show_versions, to_print,
-                     lambda x: not x.is_configuration)
+    self._PrintTable('Packages', show_versions=False, to_print=to_print,
+                     func=lambda x: x.is_configuration, ignore_if_empty=True)
+    self._PrintTable('Components', show_versions=show_versions,
+                     to_print=to_print, func=lambda x: not x.is_configuration,
+                     ignore_if_empty=False)
 
     self.__Write(log.status,
-                 '\nTo install new components or update existing ones, run:',
+                 'To install new components or update existing ones, run:',
                  word_wrap=True)
     self.__Write(log.status, ' $ gcloud components update COMPONENT_ID')
     return diff.AllDiffs()
 
-  def _PrintTable(self, title, show_versions, to_print, func):
+  def _PrintTable(self, title, show_versions, to_print, func, ignore_if_empty):
     """Prints a table of updatable components.
 
     Args:
@@ -425,6 +433,8 @@ class UpdateManager(object):
         divided by state.
       func: func(snapshots.ComponentDiff) -> bool, Decides whether the component
         should be printed.
+      ignore_if_empty: bool, True to not show the table at all if there are no
+        matching components.
     """
     printer = snapshots.ComponentDiff.TablePrinter(show_versions=show_versions)
     printer.SetTitle(title)
@@ -433,7 +443,10 @@ class UpdateManager(object):
       rows.extend([c.AsTableRow(show_versions=show_versions)
                    for c in components
                    if not c.is_hidden and func(c)])
+    if not rows and ignore_if_empty:
+      return
     printer.Print(rows, output_stream=log.out)
+    self.__Write(log.out, '\n')
 
   def _PrintPendingAction(self, components, action):
     """Prints info about components we are going to install or remove.
@@ -514,9 +527,15 @@ class UpdateManager(object):
           # exist.
           update_seed = set(update_seed) - invalid_seeds
         else:
-          raise InvalidComponentError(
-              'The following components are unknown [{invalid_seeds}]'
-              .format(invalid_seeds=', '.join(invalid_seeds)))
+          deprecated = invalid_seeds & _IGNORED_MISSING_COMPONENTS
+          for item in deprecated:
+            log.warning('Component [%s] no longer exists.', item)
+          invalid_seeds -= _IGNORED_MISSING_COMPONENTS
+          if invalid_seeds:
+            raise InvalidComponentError(
+                'The following components are unknown [{invalid_seeds}]'
+                .format(invalid_seeds=', '.join(invalid_seeds)))
+          update_seed = set(update_seed) - deprecated
     else:
       update_seed = diff.current.components.keys()
 

@@ -24,7 +24,7 @@ class ComputeaccountsGlobalAccountsOperationsDeleteRequest(_messages.Message):
   """A ComputeaccountsGlobalAccountsOperationsDeleteRequest object.
 
   Fields:
-    operation: Name of the operation resource to delete.
+    operation: Name of the Operations resource to delete.
     project: Project ID for this request.
   """
 
@@ -40,7 +40,7 @@ class ComputeaccountsGlobalAccountsOperationsGetRequest(_messages.Message):
   """A ComputeaccountsGlobalAccountsOperationsGetRequest object.
 
   Fields:
-    operation: Name of the operation resource to return.
+    operation: Name of the Operations resource to return.
     project: Project ID for this request.
   """
 
@@ -52,11 +52,33 @@ class ComputeaccountsGlobalAccountsOperationsListRequest(_messages.Message):
   """A ComputeaccountsGlobalAccountsOperationsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -122,11 +144,33 @@ class ComputeaccountsGroupsListRequest(_messages.Message):
   """A ComputeaccountsGroupsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -174,13 +218,35 @@ class ComputeaccountsLinuxGetLinuxAccountViewsRequest(_messages.Message):
   """A ComputeaccountsLinuxGetLinuxAccountViewsRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     instance: The fully-qualified URL of the virtual machine requesting the
       views.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     user: If provided, the user requesting the views. If left blank, the
       system is requesting the views, instead of a particular user.
@@ -251,11 +317,33 @@ class ComputeaccountsUsersListRequest(_messages.Message):
   """A ComputeaccountsUsersListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -292,8 +380,8 @@ class Group(_messages.Message):
       the client when the resource is created.
     id: [Output Only] Unique identifier for the resource; defined by the
       server.
-    kind: [Output Only] Type of the resource. Always useraccounts#group for
-      groups.
+    kind: [Output Only] Type of the resource. Always clouduseraccounts#group
+      for groups.
     members: [Output Only] A list of URLs to User resources who belong to the
       group. Users may only be members of groups in the same project.
     name: Name of the resource; provided by the client when the resource is
@@ -317,8 +405,8 @@ class GroupList(_messages.Message):
     id: [Output Only] Unique identifier for the resource; defined by the
       server.
     items: [Output Only] A list of Group resources.
-    kind: [Output Only] Type of resource. Always useraccounts#groupList for
-      lists of groups.
+    kind: [Output Only] Type of resource. Always clouduseraccounts#groupList
+      for lists of groups.
     nextPageToken: [Output Only] A token used to continue a truncated list
       request.
     selfLink: [Output Only] Server defined URL for this resource.
@@ -360,7 +448,7 @@ class LinuxAccountViews(_messages.Message):
   Fields:
     groupViews: [Output Only] A list of all groups within a project.
     kind: [Output Only] Type of the resource. Always
-      useraccounts#linuxAccountViews for Linux resources.
+      clouduseraccounts#linuxAccountViews for Linux resources.
     userViews: [Output Only] A list of all users within a project.
   """
 
@@ -425,7 +513,7 @@ class LinuxUserView(_messages.Message):
 
 
 class Operation(_messages.Message):
-  """An operation resource, used to manage asynchronous API requests.
+  """An Operation resource, used to manage asynchronous API requests.
 
   Enums:
     StatusValueValuesEnum: [Output Only] Status of the operation. Can be one
@@ -438,7 +526,7 @@ class Operation(_messages.Message):
 
   Fields:
     clientOperationId: [Output Only] An optional identifier specified by the
-      client when the mutation was initiated. Must be unique for all operation
+      client when the mutation was initiated. Must be unique for all Operation
       resources in the project.
     creationTimestamp: [Output Only] Creation timestamp in RFC3339 text
       format.
@@ -614,12 +702,12 @@ class Operation(_messages.Message):
 
 
 class OperationList(_messages.Message):
-  """Contains a list of operation resources.
+  """Contains a list of Operation resources.
 
   Fields:
     id: [Output Only] Unique identifier for the resource; defined by the
       server.
-    items: [Output Only] The operation resources.
+    items: [Output Only] The Operation resources.
     kind: [Output Only] Type of resource. Always compute#operations for
       Operations resource.
     nextPageToken: [Output Only] A token used to continue a truncate.
@@ -709,8 +797,8 @@ class User(_messages.Message):
       user. Users are only members of groups in the same project.
     id: [Output Only] Unique identifier for the resource; defined by the
       server.
-    kind: [Output Only] Type of the resource. Always useraccounts#user for
-      users.
+    kind: [Output Only] Type of the resource. Always clouduseraccounts#user
+      for users.
     name: Name of the resource; provided by the client when the resource is
       created.
     owner: Email address of account's owner. This account will be validated to
@@ -738,8 +826,8 @@ class UserList(_messages.Message):
     id: [Output Only] Unique identifier for the resource; defined by the
       server.
     items: [Output Only] A list of User resources.
-    kind: [Output Only] Type of resource. Always useraccounts#userList for
-      lists of users.
+    kind: [Output Only] Type of resource. Always clouduseraccounts#userList
+      for lists of users.
     nextPageToken: [Output Only] A token used to continue a truncated list
       request.
     selfLink: [Output Only] Server defined URL for this resource.

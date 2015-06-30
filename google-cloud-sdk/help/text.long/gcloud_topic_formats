@@ -11,11 +11,15 @@ Formats
       Resource printing formats are specified by the --format=FORMAT flag. The
       supported formats are:
 
-      YAML, YAML ain't markup language.
+      yaml YAML ain't markup language.
+
+      json JavaScript Object Notation.
+
+      text Flattened YAML
 
 EXAMPLES
 
-      List the compute instances resourcesa JSON format:
+      List the compute instances resources in JSON format:
 
         $ gcloud compute instances list --format=json
 

@@ -41,13 +41,6 @@ if hasattr(signal, 'SIGPIPE'):
   signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 
-# If we're in a virtualenv, import site packages.
-if os.environ.get('VIRTUAL_ENV'):
-  # pylint:disable=unused-import
-  # pylint:disable=g-import-not-at-top
-  import site
-
-
 def _SetPriorityCloudSDKPath():
   """Put google-cloud-sdk/lib at the beginning of sys.path.
 
@@ -76,7 +69,6 @@ def _SetPriorityCloudSDKPath():
 
 
 def _DoStartupChecks():
-  # pylint:disable=g-import-not-at-top
   from googlecloudsdk.core.util import platforms
   if not platforms.PythonVersion().IsSupported():
     sys.exit(1)

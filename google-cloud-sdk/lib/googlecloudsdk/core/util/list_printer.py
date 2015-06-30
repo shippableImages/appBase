@@ -137,6 +137,13 @@ def _FormatResourceErrors(errs):
 
 
 COLLECTION_COLUMNS = {
+    # APHELEIA
+    'apheleia.projects.regions.functions': (
+        ('NAME', _Select('name')),
+        ('TRIGGERS NUMBER', _Select('triggers',
+                                    transform=lambda x: len(x) if x else 0)),
+    ),
+
     # APPENGINE
     'app.module_versions': (
         ('MODULE', _Select('module')),

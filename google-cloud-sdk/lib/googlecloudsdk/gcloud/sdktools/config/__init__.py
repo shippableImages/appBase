@@ -8,7 +8,7 @@ from googlecloudsdk.core import config
 from googlecloudsdk.core import properties
 
 
-@base.ReleaseTracks(base.ReleaseTrack.GA)
+@base.ReleaseTracks(base.ReleaseTrack.ALPHA, base.ReleaseTrack.GA)
 class Config(base.Group):
   """View and edit Google Cloud SDK properties."""
 

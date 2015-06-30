@@ -251,8 +251,8 @@ subscription, or its topic unless the same topic is specified.
           config, request, global_params=global_params)
 
     def GetIamPolicy(self, request, global_params=None):
-      """Gets the access control policy for a resource. May be empty if no such.
-policy or resource exists.
+      """Gets the access control policy for a resource. Is empty if the.
+policy or the resource does not exist.
 
       Args:
         request: (PubsubProjectsSubscriptionsGetIamPolicyRequest) input message
@@ -546,8 +546,8 @@ not deleted, but their `topic` field is set to `_deleted-topic_`.
           config, request, global_params=global_params)
 
     def GetIamPolicy(self, request, global_params=None):
-      """Gets the access control policy for a resource. May be empty if no such.
-policy or resource exists.
+      """Gets the access control policy for a resource. Is empty if the.
+policy or the resource does not exist.
 
       Args:
         request: (PubsubProjectsTopicsGetIamPolicyRequest) input message

@@ -29,6 +29,10 @@ class InvalidEnumValue(Error):
         .format(given, enum_type, ', '.join(options)))
 
 
+def GetHomePath():
+  return os.path.expanduser('~')
+
+
 class OperatingSystem(object):
   """An enum representing the operating system you are running on."""
 
@@ -93,8 +97,8 @@ class OperatingSystem(object):
       return OperatingSystem.MACOSX
     elif 'cygwin' in sys.platform:
       return OperatingSystem.CYGWIN
-    # TODO(user): More reliable handling of OS types
-    # TODO(user): What happens when we use jython, does it actually use the
+    # TODO(markpell): More reliable handling of OS types
+    # TODO(markpell): What happens when we use jython, does it actually use the
     # 'java' os name?
     return None
 

@@ -13,6 +13,9 @@ import os.path
 import re
 import subprocess
 import textwrap
+
+
+from googlecloudsdk.core.util import platforms
 import uritemplate
 
 from googlecloudsdk.core import config
@@ -20,7 +23,7 @@ from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
 from googlecloudsdk.core.util import compat26
 from googlecloudsdk.core.util import files
-from googlecloudsdk.core.util import platforms
+
 
 # This regular expression is used to extract the URL of the 'origin' remote by
 # scraping 'git remote show origin'.

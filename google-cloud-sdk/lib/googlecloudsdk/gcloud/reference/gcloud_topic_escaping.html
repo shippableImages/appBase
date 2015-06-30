@@ -1,0 +1,62 @@
+<html devsite="">
+<head>
+<title>gcloud topic escaping</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="project_path" value="/sdk/_project.yaml">
+<meta name="book_path" value="/sdk/_book.yaml">
+<!--
+        THIS DOC IS GENERATED.  DO NOT EDIT.
+        -->
+<style>
+  dd { margin-bottom: 1ex; }
+  .hangingindent { padding-left: 1.5em; text-indent: -1.5em; }
+</style>
+</head>
+<body><dl>
+<section>
+<dt>NAME</dt>
+<dd>gcloud topic escaping - list/dictionary-type argument escaping supplementary help</dd>
+</section><section>
+<dt>DESCRIPTION</dt>
+<dd>List/dictionary-type argument escaping supplementary help.</dd>
+<dd>
+<code>gcloud</code> supports list-type and dictionary-type flags that take one
+argument which is a list of one or more comma-separated items:</dd>
+<dd><pre>--list-flag=value1,value2,value3</pre></dd>
+<dd><pre>--dict-flag=key1=value1,key2=value2</pre></dd>
+<dd>In the case of a dict-type flag, each item is a key-value pair
+separated by <code>=</code>. If more than one <code>=</code> is present, the first is used.</dd>
+<dd>In order to include commas in your arguments, specify an alternate
+delimiter using the following syntax:</dd>
+<dd><pre>^_DELIM_^_flag value, with comma_</pre></dd>
+<dd>where <code>DELIM</code> is a sequence of one or more characters that may not
+appear in any value in the list.</dd>
+</section><section>
+<dt>EXAMPLES</dt>
+<dd>In these examples, a list-type or dictionary-type flag is given, along
+with a shell comment explaining how it is parsed. The parsed flags are
+shown here using Python-style list or dict formats (in other
+languages, what Python calls "dicts" are often called "associative
+arrays," "maps," or "hashes").</dd>
+<dd>Basic example:</dd>
+<dd><pre>--list-flag=^:^a,b:c,d # =&gt; ['a,b', 'c,d']</pre></dd>
+<dd>Multi-character delimiters are allowed:</dd>
+<dd><pre>--list-flag=^--^a-,b--c # =&gt; ['a-,b', 'c']</pre></dd>
+<dd>Just one <code>^</code> has no special meaning:</dd>
+<dd><pre>--list-flag=^a,b,c # =&gt; ['^a', 'b', 'c']</pre></dd>
+<dd>This is an alternative way of starting with <code>^</code>:</dd>
+<dd><pre>--list-flag=^,^^a,b,c # =&gt; ['^a', 'b', 'c']</pre></dd>
+<dd>A <code>^</code> anywhere but the start has no special meaning:</dd>
+<dd><pre>--list-flag=a^:^,b,c # =&gt; ['a^:^', 'b', 'c']</pre></dd>
+<dd>Dictionary-type arguments work exactly the same as list-type
+arguments:</dd>
+<dd><pre>--dict-flag=^:^a=b,c:d=f,g # =&gt; {'a: 'b,c', 'd': 'f,g'}</pre></dd>
+</section><section>
+<dt>NOTES</dt>
+<dd>This command is in the Google Cloud SDK <code>core</code> component. See
+<a href="/sdk/gcloud/#gcloud.components">installing components</a>
+if it is not installed.</dd>
+</section>
+</dl></body>
+</html>
+

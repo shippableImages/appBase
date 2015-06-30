@@ -56,7 +56,7 @@ class Login(base.Command):
     if c_devshell.IsDevshellEnvironment():
       message = """
           You are already authenticated with gcloud when running inside
-          the Developer Shell and so do not need to run this command.
+          the Cloud Shell and so do not need to run this command.
 
           Do you wish to proceed anyway?
         """

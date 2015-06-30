@@ -1295,7 +1295,7 @@ class ComputeBeta(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified operation resource.
+      """Deletes the specified Operations resource.
 
       Args:
         request: (ComputeGlobalOperationsDeleteRequest) input message
@@ -1308,7 +1308,7 @@ class ComputeBeta(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified operation resource.
+      """Retrieves the specified Operations resource.
 
       Args:
         request: (ComputeGlobalOperationsGetRequest) input message
@@ -1321,7 +1321,7 @@ class ComputeBeta(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified project.
+      """Retrieves the list of Operation resources contained within the specified project.
 
       Args:
         request: (ComputeGlobalOperationsListRequest) input message
@@ -2752,7 +2752,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified region-specific operation resource.
+      """Deletes the specified region-specific Operations resource.
 
       Args:
         request: (ComputeRegionOperationsDeleteRequest) input message
@@ -2765,7 +2765,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified region-specific operation resource.
+      """Retrieves the specified region-specific Operations resource.
 
       Args:
         request: (ComputeRegionOperationsGetRequest) input message
@@ -2778,7 +2778,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified region.
+      """Retrieves the list of Operation resources contained within the specified region.
 
       Args:
         request: (ComputeRegionOperationsListRequest) input message
@@ -4408,7 +4408,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified zone-specific operation resource.
+      """Deletes the specified zone-specific Operations resource.
 
       Args:
         request: (ComputeZoneOperationsDeleteRequest) input message
@@ -4421,7 +4421,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified zone-specific operation resource.
+      """Retrieves the specified zone-specific Operations resource.
 
       Args:
         request: (ComputeZoneOperationsGetRequest) input message
@@ -4434,7 +4434,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified zone.
+      """Retrieves the list of Operation resources contained within the specified zone.
 
       Args:
         request: (ComputeZoneOperationsListRequest) input message

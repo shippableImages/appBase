@@ -1,0 +1,127 @@
+.TH "GCLOUD TOPIC ESCAPING" "1" "" "" ""
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.nh
+.ad l
+.SH "NAME"
+.HP
+gcloud_topic_escaping \- list/dictionary\-type argument escaping supplementary help
+.SH "DESCRIPTION"
+.sp
+List/dictionary\-type argument escaping supplementary help\&.
+.sp
+\fBgcloud\fR supports list\-type and dictionary\-type flags that take one argument which is a list of one or more comma\-separated items:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-list\-flag=value1,value2,value3
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-dict\-flag=key1=value1,key2=value2
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+In the case of a dict\-type flag, each item is a key\-value pair separated by \fI=\fR\&. If more than one \fI=\fR is present, the first is used\&.
+.sp
+In order to include commas in your arguments, specify an alternate delimiter using the following syntax:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+^\fIDELIM\fR^_flag value, with comma_
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+where \fIDELIM\fR is a sequence of one or more characters that may not appear in any value in the list\&.
+.SH "EXAMPLES"
+.sp
+In these examples, a list\-type or dictionary\-type flag is given, along with a shell comment explaining how it is parsed\&. The parsed flags are shown here using Python\-style list or dict formats (in other languages, what Python calls "dicts" are often called "associative arrays," "maps," or "hashes")\&.
+.sp
+Basic example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-list\-flag=^:^a,b:c,d # => [\*(Aqa,b\*(Aq, \*(Aqc,d\*(Aq]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Multi\-character delimiters are allowed:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-list\-flag=^\-\-^a\-,b\-\-c # => [\*(Aqa\-,b\*(Aq, \*(Aqc\*(Aq]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Just one \fI^\fR has no special meaning:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-list\-flag=^a,b,c # => [\*(Aq^a\*(Aq, \*(Aqb\*(Aq, \*(Aqc\*(Aq]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+This is an alternative way of starting with \fI^\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-list\-flag=^,^^a,b,c # => [\*(Aq^a\*(Aq, \*(Aqb\*(Aq, \*(Aqc\*(Aq]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+A \fI^\fR anywhere but the start has no special meaning:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-list\-flag=a^:^,b,c # => [\*(Aqa^:^\*(Aq, \*(Aqb\*(Aq, \*(Aqc\*(Aq]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Dictionary\-type arguments work exactly the same as list\-type arguments:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\-dict\-flag=^:^a=b,c:d=f,g # => {\*(Aqa: \*(Aqb,c\*(Aq, \*(Aqd\*(Aq: \*(Aqf,g\*(Aq}
+.fi
+.if n \{\
+.RE
+.\}
+.SH "NOTES"
+.sp
+This command is in the Google Cloud SDK \fBcore\fR component\&. See installing components if it is not installed\&.

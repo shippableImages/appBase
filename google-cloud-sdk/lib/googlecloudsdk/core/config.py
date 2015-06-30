@@ -5,11 +5,11 @@
 import json
 import os
 
+from googlecloudsdk.core.util import platforms
 
 from googlecloudsdk.core import exceptions
 from googlecloudsdk.core.util import files as file_utils
 from googlecloudsdk.core.util import pkg_resources
-from googlecloudsdk.core.util import platforms
 
 
 class Error(Exception):
@@ -361,6 +361,17 @@ class Paths(object):
     """
     return file_utils.FindDirectoryContaining(os.path.dirname(__file__),
                                               Paths.CLOUDSDK_STATE_DIR)
+
+  @property
+  def sdk_bin_path(self):
+    """Forms a path to bin directory by using sdk_root.
+
+    Returns:
+      str, The path to the bin directory of the Cloud SDK or None if it could
+      not be found.
+    """
+    sdk_root = self.sdk_root
+    return os.path.join(sdk_root, 'bin') if sdk_root else None
 
   @property
   def gcloud_path(self):

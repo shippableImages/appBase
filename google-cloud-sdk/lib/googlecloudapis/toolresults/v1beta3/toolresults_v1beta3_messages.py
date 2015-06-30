@@ -312,6 +312,9 @@ class Outcome(_messages.Message):
     inconclusiveDetail: More information about an INCONCLUSIVE outcome.
       Returns INVALID_ARGUMENT if this field is set but the summary is not
       INCONCLUSIVE.  Optional
+    skippedDetail: More information about a SKIPPED outcome.  Returns
+      INVALID_ARGUMENT if this field is set but the summary is not SKIPPED.
+      Optional
     summary: The simplest way to interpret a result.  Required
   """
 
@@ -333,7 +336,8 @@ class Outcome(_messages.Message):
 
   failureDetail = _messages.MessageField('FailureDetail', 1)
   inconclusiveDetail = _messages.MessageField('InconclusiveDetail', 2)
-  summary = _messages.EnumField('SummaryValueValuesEnum', 3)
+  skippedDetail = _messages.MessageField('SkippedDetail', 3)
+  summary = _messages.EnumField('SummaryValueValuesEnum', 4)
 
 
 class ProjectSettings(_messages.Message):
@@ -361,6 +365,22 @@ class PublishXunitXmlFilesRequest(_messages.Message):
   """
 
   xunitXmlFiles = _messages.MessageField('FileReference', 1, repeated=True)
+
+
+class SkippedDetail(_messages.Message):
+  """A SkippedDetail object.
+
+  Fields:
+    incompatibleAppVersion: If the App doesn't support the specific API level.
+    incompatibleArchitecture: If the App doesn't run on the specific
+      architecuture, for example, x86.
+    incompatibleDevice: If the requested OS version doesn't run on the
+      specific device model.
+  """
+
+  incompatibleAppVersion = _messages.BooleanField(1)
+  incompatibleArchitecture = _messages.BooleanField(2)
+  incompatibleDevice = _messages.BooleanField(3)
 
 
 class StandardQueryParameters(_messages.Message):
