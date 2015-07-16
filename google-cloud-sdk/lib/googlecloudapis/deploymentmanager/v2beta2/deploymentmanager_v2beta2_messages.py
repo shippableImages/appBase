@@ -126,10 +126,25 @@ class DeploymentmanagerDeploymentsListRequest(_messages.Message):
   """A DeploymentmanagerDeploymentsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: The project ID for this request.
   """
 
@@ -276,10 +291,25 @@ class DeploymentmanagerManifestsListRequest(_messages.Message):
 
   Fields:
     deployment: The name of the deployment for this request.
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: The project ID for this request.
   """
 
@@ -306,10 +336,25 @@ class DeploymentmanagerOperationsListRequest(_messages.Message):
   """A DeploymentmanagerOperationsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: The project ID for this request.
   """
 
@@ -338,10 +383,25 @@ class DeploymentmanagerResourcesListRequest(_messages.Message):
 
   Fields:
     deployment: The name of the deployment for this request.
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: The project ID for this request.
   """
 
@@ -356,10 +416,25 @@ class DeploymentmanagerTypesListRequest(_messages.Message):
   """A DeploymentmanagerTypesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: The project ID for this request.
   """
 
@@ -400,7 +475,7 @@ class Manifest(_messages.Message):
 
   Fields:
     config: [Output Only] The YAML configuration for this manifest.
-    evaluatedConfig: [Output Only] The fully-expanded configuration file,
+    evaluated_config: [Output Only] The fully-expanded configuration file,
       including any templates and references.
     id: [Output Only] Unique identifier for the resource; defined by the
       server.
@@ -413,7 +488,7 @@ class Manifest(_messages.Message):
   """
 
   config = _messages.StringField(1)
-  evaluatedConfig = _messages.StringField(2)
+  evaluated_config = _messages.StringField(2)
   id = _messages.IntegerField(3, variant=_messages.Variant.UINT64)
   imports = _messages.MessageField('ImportFile', 4, repeated=True)
   insertTime = _messages.StringField(5)
@@ -437,7 +512,7 @@ class ManifestsListResponse(_messages.Message):
 
 
 class Operation(_messages.Message):
-  """An operation resource, used to manage asynchronous API requests.
+  """An Operation resource, used to manage asynchronous API requests.
 
   Messages:
     ErrorValue: [Output Only] If errors are generated during processing of the
@@ -446,7 +521,7 @@ class Operation(_messages.Message):
 
   Fields:
     clientOperationId: [Output Only] An optional identifier specified by the
-      client when the mutation was initiated. Must be unique for all operation
+      client when the mutation was initiated. Must be unique for all Operation
       resources in the project.
     creationTimestamp: [Output Only] Creation timestamp in RFC3339 text
       format.

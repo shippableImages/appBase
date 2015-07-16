@@ -4,8 +4,9 @@
 
 import datetime
 
-from googlecloudsdk.core.util import console_io
 from googlecloudsdk.core.util import platforms
+
+from googlecloudsdk.core.util import console_io
 
 
 class Error(Exception):

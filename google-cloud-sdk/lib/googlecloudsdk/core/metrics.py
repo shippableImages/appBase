@@ -13,23 +13,27 @@ import time
 import urllib
 import uuid
 
+
+from googlecloudsdk.core.util import platforms
+
 from googlecloudsdk.core import config
 from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
 from googlecloudsdk.core.util import console_io
 from googlecloudsdk.core.util import execution_utils
 from googlecloudsdk.core.util import files
-from googlecloudsdk.core.util import platforms
 
 
 
 _GA_ENDPOINT = 'https://ssl.google-analytics.com/collect'
 _GA_TID = 'UA-36037335-2'
+_GA_TID_TESTING = 'UA-36037335-13'
 _GA_INSTALLS_CATEGORY = 'Installs'
 _GA_COMMANDS_CATEGORY = 'Commands'
 _GA_HELP_CATEGORY = 'Help'
 _GA_ERROR_CATEGORY = 'Error'
 _GA_EXECUTIONS_CATEGORY = 'Executions'
+_GA_TEST_EXECUTIONS_CATEGORY = 'TestExecutions'
 
 _CSI_ENDPOINT = 'https://csi.gstatic.com/csi'
 _CSI_ID = 'cloud_sdk'
@@ -88,6 +92,7 @@ class _MetricsCollector(object):
 
   _disabled_cache = None
   _instance = None
+  test_group = None
 
   @staticmethod
   def GetCollectorIfExists():
@@ -102,6 +107,28 @@ class _MetricsCollector(object):
     if not _MetricsCollector._instance:
       _MetricsCollector._instance = _MetricsCollector()
     return _MetricsCollector._instance
+
+  @staticmethod
+  def ResetCollectorInstance(disable_cache=None, ga_tid=_GA_TID):
+    """Reset the singleton _MetricsCollector and reinitialize it.
+
+    This should only be used for tests, where we want to collect some metrics
+    but not others, and we have to reinitialize the collector with a different
+    Google Analytics tracking id.
+
+    Args:
+      disable_cache: Metrics collector keeps an internal cache of the disabled
+          state of metrics. This controls the value to reinitialize the cache.
+          None means we will refresh the cache with the default values.
+          True/False forces a specific value.
+      ga_tid: The Google Analytics tracking ID to use for metrics collection.
+          Defaults to _GA_TID.
+    """
+    _MetricsCollector._disabled_cache = disable_cache
+    if _MetricsCollector._IsDisabled():
+      _MetricsCollector._instance = None
+    else:
+      _MetricsCollector._instance = _MetricsCollector(ga_tid)
 
   @staticmethod
   def _IsDisabled():
@@ -119,10 +146,15 @@ class _MetricsCollector(object):
         _MetricsCollector._disabled_cache = disabled
     return _MetricsCollector._disabled_cache
 
-  def __init__(self):
+  def __init__(self, ga_tid=_GA_TID):
     """Initialize a new MetricsCollector.
 
-    This should only be invoked through the static GetCollector() function.
+    This should only be invoked through the static GetCollector() function or
+    the static ResetCollectorInstance() function.
+
+    Args:
+      ga_tid: The Google Analytics tracking ID to use for metrics collection.
+              Defaults to _GA_TID.
     """
     current_platform = platforms.Platform.Current()
     self._user_agent = 'CloudSDK/{version} {fragment}'.format(
@@ -135,7 +167,7 @@ class _MetricsCollector(object):
     install_type = 'Google' if hostname.endswith('.google.com') else 'External'
     self._ga_params = [
         ('v', '1'),
-        ('tid', _GA_TID),
+        ('tid', ga_tid),
         ('cid', _MetricsCollector._GetCID()),
         ('t', 'event'),
         ('cd1', config.INSTALLATION_CONFIG.release_channel),
@@ -230,7 +262,7 @@ class _MetricsCollector(object):
 
     self._metrics.append((_GA_ENDPOINT, 'POST', data, self._user_agent))
 
-  def ReportMetrics(self):
+  def ReportMetrics(self, wait_for_report=False):
     """Reports the collected metrics using a separate async process."""
     if not self._metrics:
       return
@@ -254,7 +286,11 @@ class _MetricsCollector(object):
       python_path = config.LibraryRoot()
     exec_env[python_path_var] = python_path
 
-    subprocess.Popen(execution_args, env=exec_env, **self._async_popen_args)
+    p = subprocess.Popen(execution_args, env=exec_env, **self._async_popen_args)
+    if wait_for_report:
+      # NOTE: p.wait() can cause a deadlock. p.communicate() is recommended.
+      # See python docs for more information.
+      p.communicate()
     log.debug('Metrics reporting process started...')
 
 
@@ -262,13 +298,17 @@ def _CollectGAMetricAndSetTimerAction(category, action, label, value=0):
   """Common code for processing a GA event."""
   collector = _MetricsCollector.GetCollector()
   if collector:
+    # Override label for tests. This way we can filter by test group.
+    if _MetricsCollector.test_group and category is not _GA_ERROR_CATEGORY:
+      label = _MetricsCollector.test_group
     collector.CollectGAMetric(
         _GAEvent(category=category, action=action, label=label, value=value))
 
     # Dont include version. We already send it as the rls CSI parameter.
-    if category is _GA_COMMANDS_CATEGORY or category is _GA_EXECUTIONS_CATEGORY:
+    if category in [_GA_COMMANDS_CATEGORY, _GA_EXECUTIONS_CATEGORY]:
       collector.SetTimerAction('{0}.{1}'.format(category, action))
-    elif category is _GA_ERROR_CATEGORY or category is _GA_HELP_CATEGORY:
+    elif category in [_GA_ERROR_CATEGORY, _GA_HELP_CATEGORY,
+                      _GA_TEST_EXECUTIONS_CATEGORY]:
       collector.SetTimerAction('{0}.{1}.{2}'.format(category, action, label))
     # Ignoring installs for now since there could be multiple per cmd execution.
 
@@ -282,6 +322,24 @@ def CaptureAndLogException(func):
     except:
       log.debug('Exception captured in %s', func.func_name, exc_info=True)
   return Wrapper
+
+
+def StartTestMetrics(test_group_id, test_method):
+  _MetricsCollector.ResetCollectorInstance(False, _GA_TID_TESTING)
+  _MetricsCollector.test_group = test_group_id
+  _CollectGAMetricAndSetTimerAction(
+      _GA_TEST_EXECUTIONS_CATEGORY,
+      test_method,
+      test_group_id,
+      value=0)
+
+
+def StopTestMetrics():
+  collector = _MetricsCollector.GetCollectorIfExists()
+  if collector:
+    collector.ReportMetrics(wait_for_report=True)
+  _MetricsCollector.test_group = None
+  _MetricsCollector.ResetCollectorInstance(True)
 
 
 @CaptureAndLogException
@@ -385,3 +443,16 @@ def Ran():
   collector = _MetricsCollector.GetCollector()
   if collector:
     collector.RecordTimedEvent(_CSI_RUN_EVENT)
+
+
+@CaptureAndLogException
+def CustomTimedEvent(event_name):
+  """Record the time when a custom event was completed.
+
+  Args:
+    event_name: The name of the event. This must match the pattern
+      "[a-zA-Z0-9_]+".
+  """
+  collector = _MetricsCollector.GetCollector()
+  if collector:
+    collector.RecordTimedEvent(event_name)

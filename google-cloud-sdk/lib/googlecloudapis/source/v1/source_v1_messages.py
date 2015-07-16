@@ -1430,10 +1430,9 @@ class SourceProjectsReposRevisionsListRequest(_messages.Message):
     WalkDirectionValueValuesEnum: The direction to walk the graph.
 
   Fields:
-    ends: Revision IDs that stop the listing. If an end is encountered in the
-      traversal, it will be included in the result but its successors will
-      not. Note that this doesn't imply that any of the ends will be seen,
-      only that they will stop the traversal if they are.
+    ends: Revision IDs (hexadecimal strings) that specify where the listing
+      ends. If this field is present, the listing will contain only revisions
+      that are topologically between starts and ends, inclusive.
     pageSize: The maximum number of values to return.
     pageToken: The value of next_page_token from the previous call. Omit for
       the first page.

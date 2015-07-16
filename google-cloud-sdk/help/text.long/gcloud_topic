@@ -12,6 +12,10 @@ TOPICS
 
       The supplementary help topics are:
 
+      escaping
+
+         List/dictionary-type argument escaping supplementary help.
+
       formats
 
          Resource formats supplementary help.

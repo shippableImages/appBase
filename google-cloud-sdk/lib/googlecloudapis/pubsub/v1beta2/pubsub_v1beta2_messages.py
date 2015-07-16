@@ -24,8 +24,7 @@ class AcknowledgeRequest(_messages.Message):
 
 
 class Binding(_messages.Message):
-  """Associates members of various types with roles. See below for details of
-  the various objects that can be included as members.
+  """Associates members with roles. See below for allowed formats of members.
 
   Fields:
     members: Format of member entries: 1. allUsers    Matches any requesting
@@ -251,18 +250,18 @@ class ModifyPushConfigRequest(_messages.Message):
 
 
 class Policy(_messages.Message):
-  """# Overview  The `Policy` defines an access control policy language. It
-  can be used to define policies that can be attached to resources like files,
-  folders, VMs, etc.   # Policy structure  A `Policy` consists of a list of
-  bindings. A `Binding` binds a set of members to a role, where the members
-  can include user accounts, user groups, user domains, and service accounts.
-  A role is a named set of permissions, defined by the IAM system. The
-  definition of a role is outside the policy.  A permission check involves
-  determining the roles that include the specified permission, and then
-  determining if the principal specified by the check is a member of a binding
-  to at least one of these roles. The membership check is recursive when a
-  group is bound to a role.  Policy examples:  ``` {   "bindings": [     {
-  "role": "roles/owner",       "members": [         "user:mike@example.com",
+  """# Overview  The `Policy` defines an access control policy language. It is
+  used to define policies that are attached to resources like files, folders,
+  VMs, etc.   # Policy structure  A `Policy` consists of a list of bindings. A
+  `Binding` binds a set of members to a role, where the members include user
+  accounts, user groups, user domains, and service accounts. A 'role' is a
+  named set of permissions, defined by IAM. The definition of a role is
+  outside the policy.  A permission check first determines the roles that
+  include the specified permission, and then determines if the principal
+  specified is a member of a binding to at least one of these roles. The
+  membership check is recursive when a group is bound to a role.  Policy
+  examples:  ``` {   "bindings": [     {       "role": "roles/owner",
+  "members": [         "user:mike@example.com",
   "group:admins@example.com",         "domain:google.com",
   "serviceAccount:frontend@example.iam.gserviceaccounts.com"]     },     {
   "role": "roles/viewer",       "members": ["user:sean@example.com"]     }   ]
@@ -273,8 +272,8 @@ class Policy(_messages.Message):
       It is an error to specify a binding with no members.
     etag: Can be used to perform a read-modify-write.
     rules: A Rule attribute.
-    version: The policy language version. The version of the policy itself is
-      represented by the etag. The current version is 0.
+    version: The policy language version. The version of the policy is
+      represented by the etag. The default version is 0.
   """
 
   bindings = _messages.MessageField('Binding', 1, repeated=True)
@@ -378,7 +377,7 @@ class PubsubProjectsSubscriptionsGetIamPolicyRequest(_messages.Message):
 
   Fields:
     resource: REQUIRED: The resource for which policy is being requested.
-      Usually some path like projects/{project}.
+      Resource is usually specified as a path, such as, projects/{project}.
   """
 
   resource = _messages.StringField(1, required=True)
@@ -453,7 +452,8 @@ class PubsubProjectsSubscriptionsSetIamPolicyRequest(_messages.Message):
 
   Fields:
     resource: REQUIRED: The resource for which policy is being specified.
-      Usually some path like projects/{project}/zones/{zone}/disks/{disk}.
+      Resource is usually specified as a path, such as,
+      projects/{project}/zones/{zone}/disks/{disk}.
     setIamPolicyRequest: A SetIamPolicyRequest resource to be passed as the
       request body.
   """
@@ -467,7 +467,8 @@ class PubsubProjectsSubscriptionsTestIamPermissionsRequest(_messages.Message):
 
   Fields:
     resource: REQUIRED: The resource for which policy detail is being
-      requested. Usually some path like projects/{project}.
+      requested. Resource is usually specified as a path, such as,
+      projects/{project}.
     testIamPermissionsRequest: A TestIamPermissionsRequest resource to be
       passed as the request body.
   """
@@ -491,7 +492,7 @@ class PubsubProjectsTopicsGetIamPolicyRequest(_messages.Message):
 
   Fields:
     resource: REQUIRED: The resource for which policy is being requested.
-      Usually some path like projects/{project}.
+      Resource is usually specified as a path, such as, projects/{project}.
   """
 
   resource = _messages.StringField(1, required=True)
@@ -541,7 +542,8 @@ class PubsubProjectsTopicsSetIamPolicyRequest(_messages.Message):
 
   Fields:
     resource: REQUIRED: The resource for which policy is being specified.
-      Usually some path like projects/{project}/zones/{zone}/disks/{disk}.
+      Resource is usually specified as a path, such as,
+      projects/{project}/zones/{zone}/disks/{disk}.
     setIamPolicyRequest: A SetIamPolicyRequest resource to be passed as the
       request body.
   """
@@ -571,7 +573,8 @@ class PubsubProjectsTopicsTestIamPermissionsRequest(_messages.Message):
 
   Fields:
     resource: REQUIRED: The resource for which policy detail is being
-      requested. Usually some path like projects/{project}.
+      requested. Resource is usually specified as a path, such as,
+      projects/{project}.
     testIamPermissionsRequest: A TestIamPermissionsRequest resource to be
       passed as the request body.
   """

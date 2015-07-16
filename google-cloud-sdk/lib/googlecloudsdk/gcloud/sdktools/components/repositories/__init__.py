@@ -5,13 +5,14 @@
 import argparse
 import os
 
+from googlecloudsdk.core.util import platforms
+
 from googlecloudsdk.calliope import base
 from googlecloudsdk.calliope import exceptions
 from googlecloudsdk.core import config
 from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
 from googlecloudsdk.core.updater import update_manager
-from googlecloudsdk.core.util import platforms
 
 
 class Repositories(base.Group):

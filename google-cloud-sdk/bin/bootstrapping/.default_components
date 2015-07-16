@@ -1,1 +1,1 @@
-["pkg-core"]
+["core", "bq", "gcloud", "gcutil-msg", "gsutil"]

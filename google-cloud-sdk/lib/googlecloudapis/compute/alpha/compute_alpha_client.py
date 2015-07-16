@@ -34,6 +34,7 @@ class ComputeAlpha(base_api.BaseApiClient):
         default_global_params=default_global_params,
         additional_http_headers=additional_http_headers)
     self.addresses = self.AddressesService(self)
+    self.autoscalers = self.AutoscalersService(self)
     self.backendServices = self.BackendServicesService(self)
     self.diskTypes = self.DiskTypesService(self)
     self.disks = self.DisksService(self)
@@ -42,6 +43,7 @@ class ComputeAlpha(base_api.BaseApiClient):
     self.globalAddresses = self.GlobalAddressesService(self)
     self.globalForwardingRules = self.GlobalForwardingRulesService(self)
     self.globalOperations = self.GlobalOperationsService(self)
+    self.healthChecks = self.HealthChecksService(self)
     self.httpHealthChecks = self.HttpHealthChecksService(self)
     self.httpsHealthChecks = self.HttpsHealthChecksService(self)
     self.images = self.ImagesService(self)
@@ -201,6 +203,194 @@ class ComputeAlpha(base_api.BaseApiClient):
         (AddressList) The response message.
       """
       config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+  class AutoscalersService(base_api.BaseApiService):
+    """Service class for the autoscalers resource."""
+
+    _NAME = u'autoscalers'
+
+    def __init__(self, client):
+      super(ComputeAlpha.AutoscalersService, self).__init__(client)
+      self._method_configs = {
+          'AggregatedList': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.autoscalers.aggregatedList',
+              ordered_params=[u'project'],
+              path_params=[u'project'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
+              relative_path=u'projects/{project}/aggregated/autoscalers',
+              request_field='',
+              request_type_name=u'ComputeAutoscalersAggregatedListRequest',
+              response_type_name=u'AutoscalerAggregatedList',
+              supports_download=False,
+          ),
+          'Delete': base_api.ApiMethodInfo(
+              http_method=u'DELETE',
+              method_id=u'compute.autoscalers.delete',
+              ordered_params=[u'project', u'zone', u'autoscaler'],
+              path_params=[u'autoscaler', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/autoscalers/{autoscaler}',
+              request_field='',
+              request_type_name=u'ComputeAutoscalersDeleteRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Get': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.autoscalers.get',
+              ordered_params=[u'project', u'zone', u'autoscaler'],
+              path_params=[u'autoscaler', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/autoscalers/{autoscaler}',
+              request_field='',
+              request_type_name=u'ComputeAutoscalersGetRequest',
+              response_type_name=u'Autoscaler',
+              supports_download=False,
+          ),
+          'Insert': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.autoscalers.insert',
+              ordered_params=[u'project', u'zone'],
+              path_params=[u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/autoscalers',
+              request_field=u'autoscaler',
+              request_type_name=u'ComputeAutoscalersInsertRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'List': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.autoscalers.list',
+              ordered_params=[u'project', u'zone'],
+              path_params=[u'project', u'zone'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
+              relative_path=u'projects/{project}/zones/{zone}/autoscalers',
+              request_field='',
+              request_type_name=u'ComputeAutoscalersListRequest',
+              response_type_name=u'AutoscalerList',
+              supports_download=False,
+          ),
+          'Patch': base_api.ApiMethodInfo(
+              http_method=u'PATCH',
+              method_id=u'compute.autoscalers.patch',
+              ordered_params=[u'project', u'zone', u'autoscaler'],
+              path_params=[u'project', u'zone'],
+              query_params=[u'autoscaler'],
+              relative_path=u'projects/{project}/zones/{zone}/autoscalers',
+              request_field=u'autoscalerResource',
+              request_type_name=u'ComputeAutoscalersPatchRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Update': base_api.ApiMethodInfo(
+              http_method=u'PUT',
+              method_id=u'compute.autoscalers.update',
+              ordered_params=[u'project', u'zone'],
+              path_params=[u'project', u'zone'],
+              query_params=[u'autoscaler'],
+              relative_path=u'projects/{project}/zones/{zone}/autoscalers',
+              request_field=u'autoscalerResource',
+              request_type_name=u'ComputeAutoscalersUpdateRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          }
+
+      self._upload_configs = {
+          }
+
+    def AggregatedList(self, request, global_params=None):
+      """Retrieves the list of autoscalers grouped by scope.
+
+      Args:
+        request: (ComputeAutoscalersAggregatedListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (AutoscalerAggregatedList) The response message.
+      """
+      config = self.GetMethodConfig('AggregatedList')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Delete(self, request, global_params=None):
+      """Deletes the specified autoscaler resource.
+
+      Args:
+        request: (ComputeAutoscalersDeleteRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Delete')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Get(self, request, global_params=None):
+      """Returns the specified autoscaler resource.
+
+      Args:
+        request: (ComputeAutoscalersGetRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Autoscaler) The response message.
+      """
+      config = self.GetMethodConfig('Get')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Insert(self, request, global_params=None):
+      """Creates an autoscaler resource in the specified project using the data included in the request.
+
+      Args:
+        request: (ComputeAutoscalersInsertRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Insert')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def List(self, request, global_params=None):
+      """Retrieves the list of autoscaler resources contained within the specified zone.
+
+      Args:
+        request: (ComputeAutoscalersListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (AutoscalerList) The response message.
+      """
+      config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Patch(self, request, global_params=None):
+      """Updates an autoscaler resource in the specified project using the data included in the request. This method supports patch semantics.
+
+      Args:
+        request: (ComputeAutoscalersPatchRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Patch')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Update(self, request, global_params=None):
+      """Updates an autoscaler resource in the specified project using the data included in the request.
+
+      Args:
+        request: (ComputeAutoscalersUpdateRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Update')
       return self._RunMethod(
           config, request, global_params=global_params)
 
@@ -1295,7 +1485,7 @@ class ComputeAlpha(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified operation resource.
+      """Deletes the specified Operations resource.
 
       Args:
         request: (ComputeGlobalOperationsDeleteRequest) input message
@@ -1308,7 +1498,7 @@ class ComputeAlpha(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified operation resource.
+      """Retrieves the specified Operations resource.
 
       Args:
         request: (ComputeGlobalOperationsGetRequest) input message
@@ -1321,7 +1511,7 @@ class ComputeAlpha(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified project.
+      """Retrieves the list of Operation resources contained within the specified project.
 
       Args:
         request: (ComputeGlobalOperationsListRequest) input message
@@ -1330,6 +1520,169 @@ class ComputeAlpha(base_api.BaseApiClient):
         (OperationList) The response message.
       """
       config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+  class HealthChecksService(base_api.BaseApiService):
+    """Service class for the healthChecks resource."""
+
+    _NAME = u'healthChecks'
+
+    def __init__(self, client):
+      super(ComputeAlpha.HealthChecksService, self).__init__(client)
+      self._method_configs = {
+          'Delete': base_api.ApiMethodInfo(
+              http_method=u'DELETE',
+              method_id=u'compute.healthChecks.delete',
+              ordered_params=[u'project', u'healthCheck'],
+              path_params=[u'healthCheck', u'project'],
+              query_params=[],
+              relative_path=u'projects/{project}/global/healthChecks/{healthCheck}',
+              request_field='',
+              request_type_name=u'ComputeHealthChecksDeleteRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Get': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.healthChecks.get',
+              ordered_params=[u'project', u'healthCheck'],
+              path_params=[u'healthCheck', u'project'],
+              query_params=[],
+              relative_path=u'projects/{project}/global/healthChecks/{healthCheck}',
+              request_field='',
+              request_type_name=u'ComputeHealthChecksGetRequest',
+              response_type_name=u'HealthCheck',
+              supports_download=False,
+          ),
+          'Insert': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.healthChecks.insert',
+              ordered_params=[u'project'],
+              path_params=[u'project'],
+              query_params=[],
+              relative_path=u'projects/{project}/global/healthChecks',
+              request_field=u'healthCheck',
+              request_type_name=u'ComputeHealthChecksInsertRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'List': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.healthChecks.list',
+              ordered_params=[u'project'],
+              path_params=[u'project'],
+              query_params=[u'filter', u'maxResults', u'orderBy', u'pageToken'],
+              relative_path=u'projects/{project}/global/healthChecks',
+              request_field='',
+              request_type_name=u'ComputeHealthChecksListRequest',
+              response_type_name=u'HealthCheckList',
+              supports_download=False,
+          ),
+          'Patch': base_api.ApiMethodInfo(
+              http_method=u'PATCH',
+              method_id=u'compute.healthChecks.patch',
+              ordered_params=[u'project', u'healthCheck'],
+              path_params=[u'healthCheck', u'project'],
+              query_params=[],
+              relative_path=u'projects/{project}/global/healthChecks/{healthCheck}',
+              request_field=u'healthCheckResource',
+              request_type_name=u'ComputeHealthChecksPatchRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Update': base_api.ApiMethodInfo(
+              http_method=u'PUT',
+              method_id=u'compute.healthChecks.update',
+              ordered_params=[u'project', u'healthCheck'],
+              path_params=[u'healthCheck', u'project'],
+              query_params=[],
+              relative_path=u'projects/{project}/global/healthChecks/{healthCheck}',
+              request_field=u'healthCheckResource',
+              request_type_name=u'ComputeHealthChecksUpdateRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          }
+
+      self._upload_configs = {
+          }
+
+    def Delete(self, request, global_params=None):
+      """Deletes the specified HealthCheck resource.
+
+      Args:
+        request: (ComputeHealthChecksDeleteRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Delete')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Get(self, request, global_params=None):
+      """Returns the specified HealthCheck resource.
+
+      Args:
+        request: (ComputeHealthChecksGetRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (HealthCheck) The response message.
+      """
+      config = self.GetMethodConfig('Get')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Insert(self, request, global_params=None):
+      """Creates a HealthCheck resource in the specified project using the data included in the request.
+
+      Args:
+        request: (ComputeHealthChecksInsertRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Insert')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def List(self, request, global_params=None):
+      """Retrieves the list of HealthCheck resources available to the specified project.
+
+      Args:
+        request: (ComputeHealthChecksListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (HealthCheckList) The response message.
+      """
+      config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Patch(self, request, global_params=None):
+      """Updates a HealthCheck resource in the specified project using the data included in the request. This method supports patch semantics.
+
+      Args:
+        request: (ComputeHealthChecksPatchRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Patch')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Update(self, request, global_params=None):
+      """Updates a HealthCheck resource in the specified project using the data included in the request.
+
+      Args:
+        request: (ComputeHealthChecksUpdateRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Update')
       return self._RunMethod(
           config, request, global_params=global_params)
 
@@ -2802,7 +3155,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified region-specific operation resource.
+      """Deletes the specified region-specific Operations resource.
 
       Args:
         request: (ComputeRegionOperationsDeleteRequest) input message
@@ -2815,7 +3168,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified region-specific operation resource.
+      """Retrieves the specified region-specific Operations resource.
 
       Args:
         request: (ComputeRegionOperationsGetRequest) input message
@@ -2828,7 +3181,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified region.
+      """Retrieves the list of Operation resources contained within the specified region.
 
       Args:
         request: (ComputeRegionOperationsListRequest) input message
@@ -4458,7 +4811,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified zone-specific operation resource.
+      """Deletes the specified zone-specific Operations resource.
 
       Args:
         request: (ComputeZoneOperationsDeleteRequest) input message
@@ -4471,7 +4824,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified zone-specific operation resource.
+      """Retrieves the specified zone-specific Operations resource.
 
       Args:
         request: (ComputeZoneOperationsGetRequest) input message
@@ -4484,7 +4837,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified zone.
+      """Retrieves the list of Operation resources contained within the specified zone.
 
       Args:
         request: (ComputeZoneOperationsListRequest) input message

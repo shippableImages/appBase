@@ -542,6 +542,7 @@ class _SectionApiEndpointOverrides(_Section):
   def __init__(self):
     super(_SectionApiEndpointOverrides, self).__init__(
         'api_endpoint_overrides', hidden=True)
+    self.apheleia = self._Add('apheleia')
     self.appengine = self._Add('appengine')
     self.bigquery = self._Add('bigquery')
     self.bigtableclusteradmin = self._Add('bigtableclusteradmin')

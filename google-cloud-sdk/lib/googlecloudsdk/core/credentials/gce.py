@@ -1,42 +1,12 @@
 # Copyright 2013 Google Inc. All Rights Reserved.
 
-"""One-line documentation for auth module.
-
-A detailed description of auth.
-"""
+"""Fetching GCE metadata."""
 
 import mutex
-import os
-import time
 import urllib2
 
-from googlecloudsdk.core import config
-from googlecloudsdk.core.util import files
-
-
-GOOGLE_GCE_METADATA_URI = 'http://metadata.google.internal/computeMetadata/v1'
-
-GOOGLE_GCE_METADATA_DEFAULT_ACCOUNT_URI = (
-    GOOGLE_GCE_METADATA_URI + '/instance/service-accounts/default/email')
-
-GOOGLE_GCE_METADATA_PROJECT_URI = (
-    GOOGLE_GCE_METADATA_URI + '/project/project-id')
-
-GOOGLE_GCE_METADATA_NUMERIC_PROJECT_URI = (
-    GOOGLE_GCE_METADATA_URI + '/project/numeric-project-id')
-
-GOOGLE_GCE_METADATA_ACCOUNTS_URI = (
-    GOOGLE_GCE_METADATA_URI + '/instance/service-accounts')
-
-GOOGLE_GCE_METADATA_ACCOUNT_URI = (
-    GOOGLE_GCE_METADATA_ACCOUNTS_URI + '/{account}/email')
-
-GOOGLE_GCE_METADATA_ZONE_URI = (
-    GOOGLE_GCE_METADATA_URI + '/instance/zone')
-
-GOOGLE_GCE_METADATA_HEADERS = {'Metadata-Flavor': 'Google'}
-
-_GCE_CACHE_MAX_AGE = 10*60  # 10 minutes
+from googlecloudsdk.core.credentials import gce_cache
+from googlecloudsdk.core.credentials import gce_read
 
 
 class Error(Exception):
@@ -51,17 +21,10 @@ class CannotConnectToMetadataServerException(MetadataServerException):
   """Exception for when the metadata server cannot be reached."""
 
 
-def _ReadNoProxy(uri):
-  """Opens a URI without using a proxy and reads all data from it."""
-  request = urllib2.Request(uri, headers=GOOGLE_GCE_METADATA_HEADERS)
-  return urllib2.build_opener(urllib2.ProxyHandler({})).open(
-      request, timeout=1).read()
-
-
 def _ReadNoProxyWithCleanFailures(uri, http_errors_to_ignore=()):
   """Reads data from a URI with no proxy, yielding cloud-sdk exceptions."""
   try:
-    return _ReadNoProxy(uri)
+    return gce_read.ReadNoProxy(uri)
   except urllib2.HTTPError as e:
     if e.code in http_errors_to_ignore:
       return None
@@ -74,25 +37,12 @@ class _GCEMetadata(object):
   """Class for fetching GCE metadata.
 
   Attributes:
-    connected: bool, True if the metadata server is available.
+      connected: bool, True if the metadata server is available.
 
   """
 
   def __init__(self):
-    if _IsGCECached():
-      self.connected = _IsOnGCEViaCache()
-      return
-
-    try:
-      numeric_project_id = _ReadNoProxy(
-          GOOGLE_GCE_METADATA_NUMERIC_PROJECT_URI)
-      self.connected = numeric_project_id.isdigit()
-    except urllib2.HTTPError:
-      self.connected = False
-    except urllib2.URLError:
-      self.connected = False
-
-    _CacheIsOnGCE(self.connected)
+    self.connected = gce_cache.GetOnGCE()
 
   def DefaultAccount(self):
     """Get the default service account for the host GCE instance.
@@ -114,7 +64,7 @@ class _GCEMetadata(object):
       return None
 
     return _ReadNoProxyWithCleanFailures(
-        GOOGLE_GCE_METADATA_DEFAULT_ACCOUNT_URI,
+        gce_read.GOOGLE_GCE_METADATA_DEFAULT_ACCOUNT_URI,
         http_errors_to_ignore=(404,))
 
   def Project(self):
@@ -136,7 +86,8 @@ class _GCEMetadata(object):
     if not self.connected:
       return None
 
-    return _ReadNoProxyWithCleanFailures(GOOGLE_GCE_METADATA_PROJECT_URI)
+    return _ReadNoProxyWithCleanFailures(
+        gce_read.GOOGLE_GCE_METADATA_PROJECT_URI)
 
   def Accounts(self):
     """Get the list of service accounts available from the metadata server.
@@ -154,7 +105,7 @@ class _GCEMetadata(object):
       return []
 
     accounts_listing = _ReadNoProxyWithCleanFailures(
-        GOOGLE_GCE_METADATA_ACCOUNTS_URI + '/')
+        gce_read.GOOGLE_GCE_METADATA_ACCOUNTS_URI + '/')
     accounts_lines = accounts_listing.split()
     accounts = []
     for account_line in accounts_lines:
@@ -187,7 +138,8 @@ class _GCEMetadata(object):
     # zone_path will be formatted as, for example,
     # projects/123456789123/zones/us-central1-f
     # and we want to return only the last component.
-    zone_path = _ReadNoProxyWithCleanFailures(GOOGLE_GCE_METADATA_ZONE_URI)
+    zone_path = _ReadNoProxyWithCleanFailures(
+        gce_read.GOOGLE_GCE_METADATA_ZONE_URI)
     return zone_path.split('/')[-1]
 
   def Region(self):
@@ -224,7 +176,7 @@ _metadata_lock = mutex.mutex()
 
 
 def Metadata():
-  """Get a singleton that fetches GCE metadata.
+  """Get a singleton for the GCE metadata class.
 
   Returns:
     _GCEMetadata, An object used to collect information from the GCE metadata
@@ -237,28 +189,3 @@ def Metadata():
   _metadata_lock.lock(function=_CreateMetadata, argument=None)
   _metadata_lock.unlock()
   return _metadata
-
-
-def _CacheIsOnGCE(on_gce):
-  with files.OpenForWritingPrivate(
-      config.Paths().GCECachePath()) as gcecache_file:
-    gcecache_file.write(str(on_gce))
-
-
-def _IsGCECached():
-  gce_cache_path = config.Paths().GCECachePath()
-  if not os.path.exists(gce_cache_path):
-    return False
-  cache_mod = os.stat(gce_cache_path).st_mtime
-  cache_age = time.time() - cache_mod
-  if cache_age > _GCE_CACHE_MAX_AGE:
-    return False
-  return True
-
-
-def _IsOnGCEViaCache():
-  gce_cache_path = config.Paths().GCECachePath()
-  if os.path.exists(gce_cache_path):
-    with open(gce_cache_path) as gcecache_file:
-      return gcecache_file.read() == str(True)
-  return False

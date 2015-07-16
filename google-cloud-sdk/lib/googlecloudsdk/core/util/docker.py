@@ -15,10 +15,11 @@ import sys
 import tempfile
 import urlparse
 
+from googlecloudsdk.core.util import platforms
+
 from googlecloudsdk.core import exceptions
 from googlecloudsdk.core.credentials import store
 from googlecloudsdk.core.util import files
-from googlecloudsdk.core.util import platforms
 
 _USERNAME = '_token'
 
@@ -34,7 +35,7 @@ def GetDockerConfig():
     client.
   """
   # We very intentionally match the paired logic from docker/docker-py.
-  return os.path.join(os.path.expanduser('~'), '.dockercfg')
+  return os.path.join(platforms.GetHomePath(), '.dockercfg')
 
 
 def ReadDockerConfig():

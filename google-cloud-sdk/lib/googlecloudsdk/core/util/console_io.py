@@ -346,12 +346,15 @@ def PromptContinue(message=None, prompt_string=None, default=True,
     prompts are disabled.
   """
   if properties.VALUES.core.disable_prompts.GetBool():
+    if not default and cancel_on_no:
+      raise OperationCancelledError()
     return default
-  if not prompt_string:
-    prompt_string = 'Do you want to continue'
+
   if message:
     sys.stderr.write(_DoWrap(message) + '\n\n')
 
+  if not prompt_string:
+    prompt_string = 'Do you want to continue'
   if default:
     prompt_string += ' (Y/n)?  '
   else:
@@ -585,6 +588,52 @@ class ProgressTracker(object):
       self._done = True
       self._Print()
     sys.stderr.write('done.\n')
+
+
+class DelayedProgressTracker(ProgressTracker):
+  """A progress tracker that only appears during a long running operation.
+
+  Waits for the given timeout, then displays a progress tacker.
+  """
+
+  class TrackerState(object):
+    """Enum representing the current state of the progress tracker."""
+
+    class _TrackerStateTuple(object):
+
+      def __init__(self, name):
+        self.name = name
+
+    WAITING = _TrackerStateTuple('Waiting')
+    STARTED = _TrackerStateTuple('Started')
+    FINISHED = _TrackerStateTuple('Finished')
+
+  def __init__(self, message, timeout, autotick=True):
+    super(DelayedProgressTracker, self).__init__(message, autotick=autotick)
+    self._timeout = timeout
+    self._state = self.TrackerState.WAITING
+    self._state_lock = threading.Lock()
+
+  def __enter__(self):
+    def StartTracker():
+      time.sleep(self._timeout)
+      with self._state_lock:
+        if self._state is not self.TrackerState.FINISHED:
+          self._state = self.TrackerState.STARTED
+          super(DelayedProgressTracker, self).__enter__()
+    threading.Thread(target=StartTracker).start()
+    return self
+
+  def __exit__(self, exc_type, exc_value, traceback):
+    with self._state_lock:
+      if self._state is self.TrackerState.STARTED:
+        super(DelayedProgressTracker, self).__exit__(exc_type, exc_value,
+                                                     traceback)
+      self._state = self.TrackerState.FINISHED
+
+  def Tick(self):
+    if self._state is self.TrackerState.STARTED:
+      super(DelayedProgressTracker, self).Tick()
 
 
 class ProgressBar(object):

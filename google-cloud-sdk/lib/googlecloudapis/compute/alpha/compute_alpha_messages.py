@@ -419,6 +419,287 @@ class AttachedDiskInitializeParams(_messages.Message):
   sourceImageEncryptionKey = _messages.MessageField('CustomerEncryptionKey', 6)
 
 
+class Autoscaler(_messages.Message):
+  """A Autoscaler object.
+
+  Fields:
+    autoscalingPolicy: Autoscaling configuration.
+    creationTimestamp: Creation timestamp in RFC3339 text format (output
+      only).
+    description: An optional textual description of the resource; provided by
+      the client when the resource is created.
+    id: Unique identifier for the resource; defined by the server (output
+      only).
+    kind: Type of the resource.
+    name: Name of the resource; provided by the client when the resource is
+      created. The name must be 1-63 characters long, and comply with RFC1035.
+    selfLink: Server defined URL for the resource (output only).
+    target: URL of Instance Group Manager or Replica Pool which will be
+      controlled by Autoscaler.
+    zone: URL of the zone where the instance group resides (output only).
+  """
+
+  autoscalingPolicy = _messages.MessageField('AutoscalingPolicy', 1)
+  creationTimestamp = _messages.StringField(2)
+  description = _messages.StringField(3)
+  id = _messages.IntegerField(4, variant=_messages.Variant.UINT64)
+  kind = _messages.StringField(5, default=u'compute#autoscaler')
+  name = _messages.StringField(6)
+  selfLink = _messages.StringField(7)
+  target = _messages.StringField(8)
+  zone = _messages.StringField(9)
+
+
+class AutoscalerAggregatedList(_messages.Message):
+  """A AutoscalerAggregatedList object.
+
+  Messages:
+    ItemsValue: A map of scoped autoscaler lists.
+
+  Fields:
+    id: Unique identifier for the resource; defined by the server (output
+      only).
+    items: A map of scoped autoscaler lists.
+    kind: Type of resource.
+    nextPageToken: A token used to continue a truncated list request (output
+      only).
+    selfLink: Server defined URL for this resource (output only).
+  """
+
+  @encoding.MapUnrecognizedFields('additionalProperties')
+  class ItemsValue(_messages.Message):
+    """A map of scoped autoscaler lists.
+
+    Messages:
+      AdditionalProperty: An additional property for a ItemsValue object.
+
+    Fields:
+      additionalProperties: Name of the scope containing this set of
+        autoscalers.
+    """
+
+    class AdditionalProperty(_messages.Message):
+      """An additional property for a ItemsValue object.
+
+      Fields:
+        key: Name of the additional property.
+        value: A AutoscalersScopedList attribute.
+      """
+
+      key = _messages.StringField(1)
+      value = _messages.MessageField('AutoscalersScopedList', 2)
+
+    additionalProperties = _messages.MessageField('AdditionalProperty', 1, repeated=True)
+
+  id = _messages.StringField(1)
+  items = _messages.MessageField('ItemsValue', 2)
+  kind = _messages.StringField(3, default=u'compute#autoscalerAggregatedList')
+  nextPageToken = _messages.StringField(4)
+  selfLink = _messages.StringField(5)
+
+
+class AutoscalerList(_messages.Message):
+  """Contains a list of persistent autoscaler resources.
+
+  Fields:
+    id: Unique identifier for the resource; defined by the server (output
+      only).
+    items: A list of Autoscaler resources.
+    kind: Type of resource.
+    nextPageToken: A token used to continue a truncated list request (output
+      only).
+    selfLink: Server defined URL for this resource (output only).
+  """
+
+  id = _messages.StringField(1)
+  items = _messages.MessageField('Autoscaler', 2, repeated=True)
+  kind = _messages.StringField(3, default=u'compute#autoscalerList')
+  nextPageToken = _messages.StringField(4)
+  selfLink = _messages.StringField(5)
+
+
+class AutoscalersScopedList(_messages.Message):
+  """A AutoscalersScopedList object.
+
+  Messages:
+    WarningValue: Informational warning which replaces the list of autoscalers
+      when the list is empty.
+
+  Fields:
+    autoscalers: List of autoscalers contained in this scope.
+    warning: Informational warning which replaces the list of autoscalers when
+      the list is empty.
+  """
+
+  class WarningValue(_messages.Message):
+    """Informational warning which replaces the list of autoscalers when the
+    list is empty.
+
+    Enums:
+      CodeValueValuesEnum: [Output Only] The warning type identifier for this
+        warning.
+
+    Messages:
+      DataValueListEntry: A DataValueListEntry object.
+
+    Fields:
+      code: [Output Only] The warning type identifier for this warning.
+      data: [Output Only] Metadata for this warning in key: value format.
+      message: [Output Only] Optional human-readable details for this warning.
+    """
+
+    class CodeValueValuesEnum(_messages.Enum):
+      """[Output Only] The warning type identifier for this warning.
+
+      Values:
+        DEPRECATED_RESOURCE_USED: <no description>
+        DISK_SIZE_LARGER_THAN_IMAGE_SIZE: <no description>
+        INJECTED_KERNELS_DEPRECATED: <no description>
+        NEXT_HOP_ADDRESS_NOT_ASSIGNED: <no description>
+        NEXT_HOP_CANNOT_IP_FORWARD: <no description>
+        NEXT_HOP_INSTANCE_NOT_FOUND: <no description>
+        NEXT_HOP_INSTANCE_NOT_ON_NETWORK: <no description>
+        NEXT_HOP_NOT_RUNNING: <no description>
+        NOT_CRITICAL_ERROR: <no description>
+        NO_RESULTS_ON_PAGE: <no description>
+        REQUIRED_TOS_AGREEMENT: <no description>
+        RESOURCE_NOT_DELETED: <no description>
+        SINGLE_INSTANCE_PROPERTY_TEMPLATE: <no description>
+        UNREACHABLE: <no description>
+      """
+      DEPRECATED_RESOURCE_USED = 0
+      DISK_SIZE_LARGER_THAN_IMAGE_SIZE = 1
+      INJECTED_KERNELS_DEPRECATED = 2
+      NEXT_HOP_ADDRESS_NOT_ASSIGNED = 3
+      NEXT_HOP_CANNOT_IP_FORWARD = 4
+      NEXT_HOP_INSTANCE_NOT_FOUND = 5
+      NEXT_HOP_INSTANCE_NOT_ON_NETWORK = 6
+      NEXT_HOP_NOT_RUNNING = 7
+      NOT_CRITICAL_ERROR = 8
+      NO_RESULTS_ON_PAGE = 9
+      REQUIRED_TOS_AGREEMENT = 10
+      RESOURCE_NOT_DELETED = 11
+      SINGLE_INSTANCE_PROPERTY_TEMPLATE = 12
+      UNREACHABLE = 13
+
+    class DataValueListEntry(_messages.Message):
+      """A DataValueListEntry object.
+
+      Fields:
+        key: [Output Only] A key for the warning data.
+        value: [Output Only] A warning data value corresponding to the key.
+      """
+
+      key = _messages.StringField(1)
+      value = _messages.StringField(2)
+
+    code = _messages.EnumField('CodeValueValuesEnum', 1)
+    data = _messages.MessageField('DataValueListEntry', 2, repeated=True)
+    message = _messages.StringField(3)
+
+  autoscalers = _messages.MessageField('Autoscaler', 1, repeated=True)
+  warning = _messages.MessageField('WarningValue', 2)
+
+
+class AutoscalingPolicy(_messages.Message):
+  """Cloud Autoscaler policy.
+
+  Fields:
+    coolDownPeriodSec: The number of seconds that the Autoscaler should wait
+      between two succeeding changes to the number of virtual machines. You
+      should define an interval that is at least as long as the initialization
+      time of a virtual machine and the time it may take for replica pool to
+      create the virtual machine. The default is 60 seconds.
+    cpuUtilization: TODO(user): Add support for scaling based on muliple
+      utilization metrics (take max recommendation). Exactly one utilization
+      policy should be provided. Configuration parameters of CPU based
+      autoscaling policy.
+    customMetricUtilizations: Configuration parameters of autoscaling based on
+      custom metric.
+    loadBalancingUtilization: Configuration parameters of autoscaling based on
+      load balancer.
+    maxNumReplicas: The maximum number of replicas that the Autoscaler can
+      scale up to. This field is required for config to be effective. Maximum
+      number of replicas should be not lower than minimal number of replicas.
+      Absolute limit for this value is defined in Autoscaler backend.
+    minNumReplicas: The minimum number of replicas that the Autoscaler can
+      scale down to. Can't be less than 0. If not provided Autoscaler will
+      choose default value depending on maximal number of replicas.
+  """
+
+  coolDownPeriodSec = _messages.IntegerField(1, variant=_messages.Variant.INT32)
+  cpuUtilization = _messages.MessageField('AutoscalingPolicyCpuUtilization', 2)
+  customMetricUtilizations = _messages.MessageField('AutoscalingPolicyCustomMetricUtilization', 3, repeated=True)
+  loadBalancingUtilization = _messages.MessageField('AutoscalingPolicyLoadBalancingUtilization', 4)
+  maxNumReplicas = _messages.IntegerField(5, variant=_messages.Variant.INT32)
+  minNumReplicas = _messages.IntegerField(6, variant=_messages.Variant.INT32)
+
+
+class AutoscalingPolicyCpuUtilization(_messages.Message):
+  """CPU utilization policy.
+
+  Fields:
+    utilizationTarget: The target utilization that the Autoscaler should
+      maintain. It is represented as a fraction of used cores. For example: 6
+      cores used in 8-core VM are represented here as 0.75. Must be a float
+      value between (0, 1]. If not defined, the default is 0.8.
+  """
+
+  utilizationTarget = _messages.FloatField(1)
+
+
+class AutoscalingPolicyCustomMetricUtilization(_messages.Message):
+  """Custom utilization metric policy.
+
+  Enums:
+    UtilizationTargetTypeValueValuesEnum: Defines type in which
+      utilization_target is expressed.
+
+  Fields:
+    metric: Identifier of the metric. It should be a Cloud Monitoring metric.
+      The metric can not have negative values. The metric should be an
+      utilization metric (increasing number of VMs handling requests x times
+      should reduce average value of the metric roughly x times). For example
+      you could use:
+      compute.googleapis.com/instance/network/received_bytes_count.
+    utilizationTarget: Target value of the metric which Autoscaler should
+      maintain. Must be a positive value.
+    utilizationTargetType: Defines type in which utilization_target is
+      expressed.
+  """
+
+  class UtilizationTargetTypeValueValuesEnum(_messages.Enum):
+    """Defines type in which utilization_target is expressed.
+
+    Values:
+      DELTA_PER_MINUTE: <no description>
+      DELTA_PER_SECOND: <no description>
+      GAUGE: <no description>
+    """
+    DELTA_PER_MINUTE = 0
+    DELTA_PER_SECOND = 1
+    GAUGE = 2
+
+  metric = _messages.StringField(1)
+  utilizationTarget = _messages.FloatField(2)
+  utilizationTargetType = _messages.EnumField('UtilizationTargetTypeValueValuesEnum', 3)
+
+
+class AutoscalingPolicyLoadBalancingUtilization(_messages.Message):
+  """Load balancing utilization policy.
+
+  Fields:
+    utilizationTarget: Fraction of backend capacity utilization (set in HTTP
+      load balancing configuration) that Autoscaler should maintain. Must be a
+      positive float value. If not defined, the default is 0.8. For example if
+      your maxRatePerInstance capacity (in HTTP Load Balancing configuration)
+      is set at 10 and you would like to keep number of instances such that
+      each instance receives 7 QPS on average, set this to 0.7.
+  """
+
+  utilizationTarget = _messages.FloatField(1)
+
+
 class Backend(_messages.Message):
   """Message containing information of one individual backend.
 
@@ -577,11 +858,33 @@ class ComputeAddressesAggregatedListRequest(_messages.Message):
   """A ComputeAddressesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -638,11 +941,33 @@ class ComputeAddressesListRequest(_messages.Message):
   """A ComputeAddressesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     region: The name of the region for this request.
   """
@@ -653,6 +978,166 @@ class ComputeAddressesListRequest(_messages.Message):
   pageToken = _messages.StringField(4)
   project = _messages.StringField(5, required=True)
   region = _messages.StringField(6, required=True)
+
+
+class ComputeAutoscalersAggregatedListRequest(_messages.Message):
+  """A ComputeAutoscalersAggregatedListRequest object.
+
+  Fields:
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
+    maxResults: Maximum count of results to be returned.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
+    project: Name of the project scoping this request.
+  """
+
+  filter = _messages.StringField(1)
+  maxResults = _messages.IntegerField(2, variant=_messages.Variant.UINT32, default=500)
+  orderBy = _messages.StringField(3)
+  pageToken = _messages.StringField(4)
+  project = _messages.StringField(5, required=True)
+
+
+class ComputeAutoscalersDeleteRequest(_messages.Message):
+  """A ComputeAutoscalersDeleteRequest object.
+
+  Fields:
+    autoscaler: Name of the persistent autoscaler resource to delete.
+    project: Name of the project scoping this request.
+    zone: Name of the zone scoping this request.
+  """
+
+  autoscaler = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeAutoscalersGetRequest(_messages.Message):
+  """A ComputeAutoscalersGetRequest object.
+
+  Fields:
+    autoscaler: Name of the persistent autoscaler resource to return.
+    project: Name of the project scoping this request.
+    zone: Name of the zone scoping this request.
+  """
+
+  autoscaler = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeAutoscalersInsertRequest(_messages.Message):
+  """A ComputeAutoscalersInsertRequest object.
+
+  Fields:
+    autoscaler: A Autoscaler resource to be passed as the request body.
+    project: Name of the project scoping this request.
+    zone: Name of the zone scoping this request.
+  """
+
+  autoscaler = _messages.MessageField('Autoscaler', 1)
+  project = _messages.StringField(2, required=True)
+  zone = _messages.StringField(3, required=True)
+
+
+class ComputeAutoscalersListRequest(_messages.Message):
+  """A ComputeAutoscalersListRequest object.
+
+  Fields:
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
+    maxResults: Maximum count of results to be returned.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
+    project: Name of the project scoping this request.
+    zone: Name of the zone scoping this request.
+  """
+
+  filter = _messages.StringField(1)
+  maxResults = _messages.IntegerField(2, variant=_messages.Variant.UINT32, default=500)
+  orderBy = _messages.StringField(3)
+  pageToken = _messages.StringField(4)
+  project = _messages.StringField(5, required=True)
+  zone = _messages.StringField(6, required=True)
+
+
+class ComputeAutoscalersPatchRequest(_messages.Message):
+  """A ComputeAutoscalersPatchRequest object.
+
+  Fields:
+    autoscaler: Name of the autoscaler resource to update.
+    autoscalerResource: A Autoscaler resource to be passed as the request
+      body.
+    project: Name of the project scoping this request.
+    zone: Name of the zone scoping this request.
+  """
+
+  autoscaler = _messages.StringField(1, required=True)
+  autoscalerResource = _messages.MessageField('Autoscaler', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
+
+
+class ComputeAutoscalersUpdateRequest(_messages.Message):
+  """A ComputeAutoscalersUpdateRequest object.
+
+  Fields:
+    autoscaler: Name of the autoscaler resource to update.
+    autoscalerResource: A Autoscaler resource to be passed as the request
+      body.
+    project: Name of the project scoping this request.
+    zone: Name of the zone scoping this request.
+  """
+
+  autoscaler = _messages.StringField(1)
+  autoscalerResource = _messages.MessageField('Autoscaler', 2)
+  project = _messages.StringField(3, required=True)
+  zone = _messages.StringField(4, required=True)
 
 
 class ComputeBackendServicesDeleteRequest(_messages.Message):
@@ -712,11 +1197,33 @@ class ComputeBackendServicesListRequest(_messages.Message):
   """A ComputeBackendServicesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -761,11 +1268,33 @@ class ComputeDiskTypesAggregatedListRequest(_messages.Message):
   """A ComputeDiskTypesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -794,11 +1323,33 @@ class ComputeDiskTypesListRequest(_messages.Message):
   """A ComputeDiskTypesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -815,11 +1366,33 @@ class ComputeDisksAggregatedListRequest(_messages.Message):
   """A ComputeDisksAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -894,11 +1467,33 @@ class ComputeDisksListRequest(_messages.Message):
   """A ComputeDisksListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -951,11 +1546,33 @@ class ComputeFirewallsListRequest(_messages.Message):
   """A ComputeFirewallsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -998,11 +1615,33 @@ class ComputeForwardingRulesAggregatedListRequest(_messages.Message):
   """A ComputeForwardingRulesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -1060,11 +1699,33 @@ class ComputeForwardingRulesListRequest(_messages.Message):
   """A ComputeForwardingRulesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
     region: Name of the region scoping this request.
   """
@@ -1135,11 +1796,33 @@ class ComputeGlobalAddressesListRequest(_messages.Message):
   """A ComputeGlobalAddressesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1191,11 +1874,33 @@ class ComputeGlobalForwardingRulesListRequest(_messages.Message):
   """A ComputeGlobalForwardingRulesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -1226,11 +1931,33 @@ class ComputeGlobalOperationsAggregatedListRequest(_messages.Message):
   """A ComputeGlobalOperationsAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1245,7 +1972,7 @@ class ComputeGlobalOperationsDeleteRequest(_messages.Message):
   """A ComputeGlobalOperationsDeleteRequest object.
 
   Fields:
-    operation: Name of the operation resource to delete.
+    operation: Name of the Operations resource to delete.
     project: Project ID for this request.
   """
 
@@ -1261,7 +1988,7 @@ class ComputeGlobalOperationsGetRequest(_messages.Message):
   """A ComputeGlobalOperationsGetRequest object.
 
   Fields:
-    operation: Name of the operation resource to return.
+    operation: Name of the Operations resource to return.
     project: Project ID for this request.
   """
 
@@ -1273,11 +2000,33 @@ class ComputeGlobalOperationsListRequest(_messages.Message):
   """A ComputeGlobalOperationsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1286,6 +2035,113 @@ class ComputeGlobalOperationsListRequest(_messages.Message):
   orderBy = _messages.StringField(3)
   pageToken = _messages.StringField(4)
   project = _messages.StringField(5, required=True)
+
+
+class ComputeHealthChecksDeleteRequest(_messages.Message):
+  """A ComputeHealthChecksDeleteRequest object.
+
+  Fields:
+    healthCheck: Name of the HealthCheck resource to delete.
+    project: Name of the project scoping this request.
+  """
+
+  healthCheck = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+
+
+class ComputeHealthChecksGetRequest(_messages.Message):
+  """A ComputeHealthChecksGetRequest object.
+
+  Fields:
+    healthCheck: Name of the HealthCheck resource to return.
+    project: Name of the project scoping this request.
+  """
+
+  healthCheck = _messages.StringField(1, required=True)
+  project = _messages.StringField(2, required=True)
+
+
+class ComputeHealthChecksInsertRequest(_messages.Message):
+  """A ComputeHealthChecksInsertRequest object.
+
+  Fields:
+    healthCheck: A HealthCheck resource to be passed as the request body.
+    project: Name of the project scoping this request.
+  """
+
+  healthCheck = _messages.MessageField('HealthCheck', 1)
+  project = _messages.StringField(2, required=True)
+
+
+class ComputeHealthChecksListRequest(_messages.Message):
+  """A ComputeHealthChecksListRequest object.
+
+  Fields:
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
+    maxResults: Maximum count of results to be returned.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
+    project: Name of the project scoping this request.
+  """
+
+  filter = _messages.StringField(1)
+  maxResults = _messages.IntegerField(2, variant=_messages.Variant.UINT32, default=500)
+  orderBy = _messages.StringField(3)
+  pageToken = _messages.StringField(4)
+  project = _messages.StringField(5, required=True)
+
+
+class ComputeHealthChecksPatchRequest(_messages.Message):
+  """A ComputeHealthChecksPatchRequest object.
+
+  Fields:
+    healthCheck: Name of the HealthCheck resource to update.
+    healthCheckResource: A HealthCheck resource to be passed as the request
+      body.
+    project: Name of the project scoping this request.
+  """
+
+  healthCheck = _messages.StringField(1, required=True)
+  healthCheckResource = _messages.MessageField('HealthCheck', 2)
+  project = _messages.StringField(3, required=True)
+
+
+class ComputeHealthChecksUpdateRequest(_messages.Message):
+  """A ComputeHealthChecksUpdateRequest object.
+
+  Fields:
+    healthCheck: Name of the HealthCheck resource to update.
+    healthCheckResource: A HealthCheck resource to be passed as the request
+      body.
+    project: Name of the project scoping this request.
+  """
+
+  healthCheck = _messages.StringField(1, required=True)
+  healthCheckResource = _messages.MessageField('HealthCheck', 2)
+  project = _messages.StringField(3, required=True)
 
 
 class ComputeHttpHealthChecksDeleteRequest(_messages.Message):
@@ -1329,11 +2185,33 @@ class ComputeHttpHealthChecksListRequest(_messages.Message):
   """A ComputeHttpHealthChecksListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -1415,11 +2293,33 @@ class ComputeHttpsHealthChecksListRequest(_messages.Message):
   """A ComputeHttpsHealthChecksListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -1515,11 +2415,33 @@ class ComputeImagesListRequest(_messages.Message):
   """A ComputeImagesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1571,11 +2493,33 @@ class ComputeInstanceTemplatesListRequest(_messages.Message):
   """A ComputeInstanceTemplatesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: The project ID for this request.
   """
 
@@ -1609,11 +2553,33 @@ class ComputeInstancesAggregatedListRequest(_messages.Message):
   """A ComputeInstancesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1707,7 +2673,7 @@ class ComputeInstancesGetSerialPortOutputRequest(_messages.Message):
 
   Fields:
     instance: Name of the instance scoping this request.
-    port: Which COM port to retrieve data from.
+    port: Specifies which COM or serial port to retrieve data from.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -1736,11 +2702,33 @@ class ComputeInstancesListRequest(_messages.Message):
   """A ComputeInstancesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -1911,11 +2899,33 @@ class ComputeMachineTypesAggregatedListRequest(_messages.Message):
   """A ComputeMachineTypesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -1944,11 +2954,33 @@ class ComputeMachineTypesListRequest(_messages.Message):
   """A ComputeMachineTypesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: The name of the zone for this request.
   """
@@ -2001,11 +3033,33 @@ class ComputeNetworksListRequest(_messages.Message):
   """A ComputeNetworksListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -2068,7 +3122,7 @@ class ComputeRegionOperationsDeleteRequest(_messages.Message):
   """A ComputeRegionOperationsDeleteRequest object.
 
   Fields:
-    operation: Name of the operation resource to delete.
+    operation: Name of the Operations resource to delete.
     project: Project ID for this request.
     region: Name of the region scoping this request.
   """
@@ -2086,7 +3140,7 @@ class ComputeRegionOperationsGetRequest(_messages.Message):
   """A ComputeRegionOperationsGetRequest object.
 
   Fields:
-    operation: Name of the operation resource to return.
+    operation: Name of the Operations resource to return.
     project: Project ID for this request.
     region: Name of the zone scoping this request.
   """
@@ -2100,11 +3154,33 @@ class ComputeRegionOperationsListRequest(_messages.Message):
   """A ComputeRegionOperationsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     region: Name of the region scoping this request.
   """
@@ -2133,11 +3209,33 @@ class ComputeRegionsListRequest(_messages.Message):
   """A ComputeRegionsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -2188,11 +3286,33 @@ class ComputeRoutesListRequest(_messages.Message):
   """A ComputeRoutesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2231,11 +3351,33 @@ class ComputeSnapshotsListRequest(_messages.Message):
   """A ComputeSnapshotsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2287,11 +3429,33 @@ class ComputeSslCertificatesListRequest(_messages.Message):
   """A ComputeSslCertificatesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2343,11 +3507,33 @@ class ComputeTargetHttpProxiesListRequest(_messages.Message):
   """A ComputeTargetHttpProxiesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2415,11 +3601,33 @@ class ComputeTargetHttpsProxiesListRequest(_messages.Message):
   """A ComputeTargetHttpsProxiesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2467,11 +3675,33 @@ class ComputeTargetInstancesAggregatedListRequest(_messages.Message):
   """A ComputeTargetInstancesAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2529,11 +3759,33 @@ class ComputeTargetInstancesListRequest(_messages.Message):
   """A ComputeTargetInstancesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
     zone: Name of the zone scoping this request.
   """
@@ -2586,11 +3838,33 @@ class ComputeTargetPoolsAggregatedListRequest(_messages.Message):
   """A ComputeTargetPoolsAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2665,11 +3939,33 @@ class ComputeTargetPoolsListRequest(_messages.Message):
   """A ComputeTargetPoolsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
     region: Name of the region scoping this request.
   """
@@ -2742,11 +4038,33 @@ class ComputeTargetVpnGatewaysAggregatedListRequest(_messages.Message):
   """A ComputeTargetVpnGatewaysAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -2804,11 +4122,33 @@ class ComputeTargetVpnGatewaysListRequest(_messages.Message):
   """A ComputeTargetVpnGatewaysListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     region: The name of the region for this request.
   """
@@ -2861,11 +4201,33 @@ class ComputeUrlMapsListRequest(_messages.Message):
   """A ComputeUrlMapsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Name of the project scoping this request.
   """
 
@@ -2923,11 +4285,33 @@ class ComputeVpnTunnelsAggregatedListRequest(_messages.Message):
   """A ComputeVpnTunnelsAggregatedListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -2984,11 +4368,33 @@ class ComputeVpnTunnelsListRequest(_messages.Message):
   """A ComputeVpnTunnelsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     region: The name of the region for this request.
   """
@@ -3005,7 +4411,7 @@ class ComputeZoneOperationsDeleteRequest(_messages.Message):
   """A ComputeZoneOperationsDeleteRequest object.
 
   Fields:
-    operation: Name of the operation resource to delete.
+    operation: Name of the Operations resource to delete.
     project: Project ID for this request.
     zone: Name of the zone scoping this request.
   """
@@ -3023,7 +4429,7 @@ class ComputeZoneOperationsGetRequest(_messages.Message):
   """A ComputeZoneOperationsGetRequest object.
 
   Fields:
-    operation: Name of the operation resource to return.
+    operation: Name of the Operations resource to return.
     project: Project ID for this request.
     zone: Name of the zone scoping this request.
   """
@@ -3037,11 +4443,33 @@ class ComputeZoneOperationsListRequest(_messages.Message):
   """A ComputeZoneOperationsListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
     zone: Name of the zone scoping this request.
   """
@@ -3070,11 +4498,33 @@ class ComputeZonesListRequest(_messages.Message):
   """A ComputeZonesListRequest object.
 
   Fields:
-    filter: Filter expression for filtering listed resources.
+    filter: Sets a filter expression for filtering listed resources, in the
+      form filter={expression}. Your {expression} must contain the following:
+      FIELD_NAME COMPARISON_STRING LITERAL_STRING   - FIELD_NAME: The name of
+      the field you want to compare. The field name must be valid for the type
+      of resource being filtered. Only atomic field types are supported
+      (string, number, boolean). Array and object fields are not currently
+      supported.  - COMPARISON_STRING: The comparison string, either eq
+      (equals) or ne (not equals).  - LITERAL_STRING: The literal string value
+      to filter to. The literal value must be valid for the type of field
+      (string, number, boolean). For string fields, the literal value is
+      interpreted as a regular expression using RE2 syntax. The literal value
+      must match the entire field.  For example, you can filter by the name of
+      a resource: filter=name ne example-instance The above filter returns
+      only results whose name field does not equal example-instance. You can
+      also enclose your literal string in single, double, or no quotes.
     maxResults: Maximum count of results to be returned.
-    orderBy: A string attribute.
-    pageToken: Tag returned by a previous list request when that list was
-      truncated to maxResults. Used to continue a previous list request.
+    orderBy: Sorts list results by a certain order. By default, results are
+      returned in alphanumerical order based on the resource name.  You can
+      also sort results in descending order based on the creation timestamp
+      using orderBy="creationTimestamp desc". This sorts results based on the
+      creationTimestamp field in reverse chronological order (newest result
+      first). Use this to sort resources like operations so that the newest
+      operation is returned first.  Currently, only sorting by name or
+      creationTimestamp desc is supported.
+    pageToken: Specifies a page token to use. Use this parameter if you want
+      to list the next page of results. Set pageToken to the nextPageToken
+      returned by a previous list request.
     project: Project ID for this request.
   """
 
@@ -3972,6 +5422,170 @@ class ForwardingRulesScopedList(_messages.Message):
 
   forwardingRules = _messages.MessageField('ForwardingRule', 1, repeated=True)
   warning = _messages.MessageField('WarningValue', 2)
+
+
+class HTTP2HealthCheck(_messages.Message):
+  """A HTTP2HealthCheck object.
+
+  Fields:
+    host: The value of the host header in the HTTP/2 health check request. If
+      left empty (default value), the IP on behalf of which this health check
+      is performed will be used.
+    port: The TCP port number for the health check request. The default value
+      is 443.
+    portName: Port name as defined in InstanceGroup#NamedPort#name. If both
+      port and port_name are defined, port takes precedence.
+    requestPath: The request path of the HTTP/2 health check request. The
+      default value is "/".
+  """
+
+  host = _messages.StringField(1)
+  port = _messages.IntegerField(2, variant=_messages.Variant.INT32)
+  portName = _messages.StringField(3)
+  requestPath = _messages.StringField(4)
+
+
+class HTTPHealthCheck(_messages.Message):
+  """A HTTPHealthCheck object.
+
+  Fields:
+    host: The value of the host header in the HTTP health check request. If
+      left empty (default value), the IP on behalf of which this health check
+      is performed will be used.
+    port: The TCP port number for the health check request. The default value
+      is 80.
+    portName: Port name as defined in InstanceGroup#NamedPort#name. If both
+      port and port_name are defined, port takes precedence.
+    requestPath: The request path of the HTTP health check request. The
+      default value is "/".
+  """
+
+  host = _messages.StringField(1)
+  port = _messages.IntegerField(2, variant=_messages.Variant.INT32)
+  portName = _messages.StringField(3)
+  requestPath = _messages.StringField(4)
+
+
+class HTTPSHealthCheck(_messages.Message):
+  """A HTTPSHealthCheck object.
+
+  Fields:
+    host: The value of the host header in the HTTPS health check request. If
+      left empty (default value), the IP on behalf of which this health check
+      is performed will be used.
+    port: The TCP port number for the health check request. The default value
+      is 443.
+    portName: Port name as defined in InstanceGroup#NamedPort#name. If both
+      port and port_name are defined, port takes precedence.
+    requestPath: The request path of the HTTPS health check request. The
+      default value is "/".
+  """
+
+  host = _messages.StringField(1)
+  port = _messages.IntegerField(2, variant=_messages.Variant.INT32)
+  portName = _messages.StringField(3)
+  requestPath = _messages.StringField(4)
+
+
+class HealthCheck(_messages.Message):
+  """An HealthCheck resource. This resource defines a template for how
+  individual VMs should be checked for health, via one of the supported
+  protocols.
+
+  Enums:
+    TypeValueValuesEnum: Specifies the type of the healthCheck, either TCP,
+      SSL, HTTP, HTTPS or HTTP2. If not specified, the default is TCP. Exactly
+      one of the protocol-specific health check field must be specified, which
+      must match 'type' field.
+
+  Fields:
+    checkIntervalSec: How often (in seconds) to send a health check. The
+      default value is 5 seconds.
+    creationTimestamp: Creation timestamp in RFC3339 text format (output
+      only).
+    description: An optional textual description of the resource; provided by
+      the client when the resource is created.
+    healthyThreshold: A so-far unhealthy VM will be marked healthy after this
+      many consecutive successes. The default value is 2.
+    http2HealthCheck: A HTTP2HealthCheck attribute.
+    httpHealthCheck: A HTTPHealthCheck attribute.
+    httpsHealthCheck: A HTTPSHealthCheck attribute.
+    id: Unique identifier for the resource; defined by the server (output
+      only).
+    kind: Type of the resource.
+    name: Name of the resource; provided by the client when the resource is
+      created. The name must be 1-63 characters long, and comply with RFC1035.
+    selfLink: Server defined URL for the resource (output only).
+    sslHealthCheck: A SSLHealthCheck attribute.
+    tcpHealthCheck: A TCPHealthCheck attribute.
+    timeoutSec: How long (in seconds) to wait before claiming failure. The
+      default value is 5 seconds. It is invalid for timeoutSec to have greater
+      value than checkIntervalSec.
+    type: Specifies the type of the healthCheck, either TCP, SSL, HTTP, HTTPS
+      or HTTP2. If not specified, the default is TCP. Exactly one of the
+      protocol-specific health check field must be specified, which must match
+      'type' field.
+    unhealthyThreshold: A so-far healthy VM will be marked unhealthy after
+      this many consecutive failures. The default value is 2.
+  """
+
+  class TypeValueValuesEnum(_messages.Enum):
+    """Specifies the type of the healthCheck, either TCP, SSL, HTTP, HTTPS or
+    HTTP2. If not specified, the default is TCP. Exactly one of the protocol-
+    specific health check field must be specified, which must match 'type'
+    field.
+
+    Values:
+      HTTP: <no description>
+      HTTP2: <no description>
+      HTTPS: <no description>
+      INVALID: <no description>
+      SSL: <no description>
+      TCP: <no description>
+    """
+    HTTP = 0
+    HTTP2 = 1
+    HTTPS = 2
+    INVALID = 3
+    SSL = 4
+    TCP = 5
+
+  checkIntervalSec = _messages.IntegerField(1, variant=_messages.Variant.INT32)
+  creationTimestamp = _messages.StringField(2)
+  description = _messages.StringField(3)
+  healthyThreshold = _messages.IntegerField(4, variant=_messages.Variant.INT32)
+  http2HealthCheck = _messages.MessageField('HTTP2HealthCheck', 5)
+  httpHealthCheck = _messages.MessageField('HTTPHealthCheck', 6)
+  httpsHealthCheck = _messages.MessageField('HTTPSHealthCheck', 7)
+  id = _messages.IntegerField(8, variant=_messages.Variant.UINT64)
+  kind = _messages.StringField(9, default=u'compute#healthCheck')
+  name = _messages.StringField(10)
+  selfLink = _messages.StringField(11)
+  sslHealthCheck = _messages.MessageField('SSLHealthCheck', 12)
+  tcpHealthCheck = _messages.MessageField('TCPHealthCheck', 13)
+  timeoutSec = _messages.IntegerField(14, variant=_messages.Variant.INT32)
+  type = _messages.EnumField('TypeValueValuesEnum', 15)
+  unhealthyThreshold = _messages.IntegerField(16, variant=_messages.Variant.INT32)
+
+
+class HealthCheckList(_messages.Message):
+  """Contains a list of HealthCheck resources.
+
+  Fields:
+    id: Unique identifier for the resource; defined by the server (output
+      only).
+    items: A list of HealthCheck resources.
+    kind: Type of resource.
+    nextPageToken: A token used to continue a truncated list request (output
+      only).
+    selfLink: Server defined URL for this resource (output only).
+  """
+
+  id = _messages.StringField(1)
+  items = _messages.MessageField('HealthCheck', 2, repeated=True)
+  kind = _messages.StringField(3, default=u'compute#healthCheckList')
+  nextPageToken = _messages.StringField(4)
+  selfLink = _messages.StringField(5)
 
 
 class HealthCheckReference(_messages.Message):
@@ -5125,7 +6739,7 @@ class NetworkList(_messages.Message):
 
 
 class Operation(_messages.Message):
-  """An operation resource, used to manage asynchronous API requests.
+  """An Operation resource, used to manage asynchronous API requests.
 
   Enums:
     StatusValueValuesEnum: [Output Only] Status of the operation. Can be one
@@ -5138,7 +6752,7 @@ class Operation(_messages.Message):
 
   Fields:
     clientOperationId: [Output Only] An optional identifier specified by the
-      client when the mutation was initiated. Must be unique for all operation
+      client when the mutation was initiated. Must be unique for all Operation
       resources in the project.
     creationTimestamp: [Output Only] Creation timestamp in RFC3339 text
       format.
@@ -5363,12 +6977,12 @@ class OperationAggregatedList(_messages.Message):
 
 
 class OperationList(_messages.Message):
-  """Contains a list of operation resources.
+  """Contains a list of Operation resources.
 
   Fields:
     id: [Output Only] Unique identifier for the resource; defined by the
       server.
-    items: [Output Only] The operation resources.
+    items: [Output Only] The Operation resources.
     kind: [Output Only] Type of resource. Always compute#operations for
       Operations resource.
     nextPageToken: [Output Only] A token used to continue a truncate.
@@ -5561,6 +7175,8 @@ class Quota(_messages.Message):
       HEALTH_CHECKS: <no description>
       IMAGES: <no description>
       INSTANCES: <no description>
+      INSTANCE_GROUPS: <no description>
+      INSTANCE_GROUP_MANAGERS: <no description>
       INSTANCE_TEMPLATES: <no description>
       IN_USE_ADDRESSES: <no description>
       LOCAL_SSD_TOTAL_GB: <no description>
@@ -5584,20 +7200,22 @@ class Quota(_messages.Message):
     HEALTH_CHECKS = 5
     IMAGES = 6
     INSTANCES = 7
-    INSTANCE_TEMPLATES = 8
-    IN_USE_ADDRESSES = 9
-    LOCAL_SSD_TOTAL_GB = 10
-    NETWORKS = 11
-    ROUTES = 12
-    SNAPSHOTS = 13
-    SSD_TOTAL_GB = 14
-    STATIC_ADDRESSES = 15
-    TARGET_HTTP_PROXIES = 16
-    TARGET_INSTANCES = 17
-    TARGET_POOLS = 18
-    TARGET_VPN_GATEWAYS = 19
-    URL_MAPS = 20
-    VPN_TUNNELS = 21
+    INSTANCE_GROUPS = 8
+    INSTANCE_GROUP_MANAGERS = 9
+    INSTANCE_TEMPLATES = 10
+    IN_USE_ADDRESSES = 11
+    LOCAL_SSD_TOTAL_GB = 12
+    NETWORKS = 13
+    ROUTES = 14
+    SNAPSHOTS = 15
+    SSD_TOTAL_GB = 16
+    STATIC_ADDRESSES = 17
+    TARGET_HTTP_PROXIES = 18
+    TARGET_INSTANCES = 19
+    TARGET_POOLS = 20
+    TARGET_VPN_GATEWAYS = 21
+    URL_MAPS = 22
+    VPN_TUNNELS = 23
 
   limit = _messages.FloatField(1)
   metric = _messages.EnumField('MetricValueValuesEnum', 2)
@@ -5833,6 +7451,29 @@ class RouteList(_messages.Message):
   kind = _messages.StringField(3, default=u'compute#routeList')
   nextPageToken = _messages.StringField(4)
   selfLink = _messages.StringField(5)
+
+
+class SSLHealthCheck(_messages.Message):
+  """A SSLHealthCheck object.
+
+  Fields:
+    port: The TCP port number for the health check request. The default value
+      is 443.
+    portName: Port name as defined in InstanceGroup#NamedPort#name. If both
+      port and port_name are defined, port takes precedence.
+    request: The application data to send once the SSL connection has been
+      established (default value is empty). If both request and response are
+      empty, the connection establishment alone will indicate health. The
+      request data can be ASCII or binary.
+    response: The bytes to match against the beginning of the response data.
+      If left empty (the default value), any response will indicate health.
+      The response data can be ASCII or binary.
+  """
+
+  port = _messages.IntegerField(1, variant=_messages.Variant.INT32)
+  portName = _messages.StringField(2)
+  request = _messages.StringField(3)
+  response = _messages.StringField(4)
 
 
 class Scheduling(_messages.Message):
@@ -6100,6 +7741,29 @@ class StandardQueryParameters(_messages.Message):
   quotaUser = _messages.StringField(6)
   trace = _messages.StringField(7)
   userIp = _messages.StringField(8)
+
+
+class TCPHealthCheck(_messages.Message):
+  """A TCPHealthCheck object.
+
+  Fields:
+    port: The TCP port number for the health check request. The default value
+      is 80.
+    portName: Port name as defined in InstanceGroup#NamedPort#name. If both
+      port and port_name are defined, port takes precedence.
+    request: The application data to send once the TCP connection has been
+      established (default value is empty). If both request and response are
+      empty, the connection establishment alone will indicate health. The
+      request data can be ASCII or binary.
+    response: The bytes to match against the beginning of the response data.
+      If left empty (the default value), any response will indicate health.
+      The response data can be ASCII or binary.
+  """
+
+  port = _messages.IntegerField(1, variant=_messages.Variant.INT32)
+  portName = _messages.StringField(2)
+  request = _messages.StringField(3)
+  response = _messages.StringField(4)
 
 
 class Tags(_messages.Message):

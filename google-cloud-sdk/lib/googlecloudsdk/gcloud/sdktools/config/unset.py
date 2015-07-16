@@ -7,6 +7,7 @@ from googlecloudsdk.calliope import exceptions as c_exc
 from googlecloudsdk.core import properties
 
 
+@base.ReleaseTracks(base.ReleaseTrack.GA)
 class Unset(base.Command):
   """Erase Google Cloud SDK properties.
 

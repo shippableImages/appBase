@@ -9,8 +9,9 @@ import os
 import sys
 import time
 
-from googlecloudsdk.core import properties
+
 from googlecloudsdk.core.util import platforms
+from googlecloudsdk.core import properties
 
 
 DEFAULT_VERBOSITY = logging.WARNING

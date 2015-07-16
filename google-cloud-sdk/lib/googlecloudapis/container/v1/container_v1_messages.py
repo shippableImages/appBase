@@ -18,7 +18,6 @@ class Cluster(_messages.Message):
 
   Enums:
     StatusValueValuesEnum: [Output only] The current status of this cluster.
-      @OutputOnly.
 
   Fields:
     clusterIpv4Cidr: The IP address range of the container pods in this
@@ -28,29 +27,26 @@ class Cluster(_messages.Message):
       `172.16.0.0/12`.
     createTime: [Output only] The time the cluster was created, in
       [RFC3339](href='https://www.ietf.org/rfc/rfc3339.txt) text format.
-      @OutputOnly.
     currentMasterVersion: [Output only] The current software version of the
-      master endpoint. @OutputOnly.
+      master endpoint.
     currentNodeVersion: [Output only] The current version of the node software
       components. If they are currently at different versions because they're
       in the process of being upgraded, this reflects the minimum version of
-      any of them. @OutputOnly.
+      any of them.
     description: An optional description of this cluster.
     endpoint: [Output only] The IP address of this cluster's Kubernetes master
       endpoint. The endpoint can be accessed from the internet at
-      `https://username:password@endpoint/`. @OutputOnly.  See the
-      `masterAuth` property of this resource for username and password
-      information.
+      `https://username:password@endpoint/`.  See the `masterAuth` property of
+      this resource for username and password information.
     initialClusterVersion: [Output only] The software version of Kubernetes
       master and kubelets used in the cluster when it was first created. The
-      version can be upgraded over time. @OutputOnly.
+      version can be upgraded over time.
     initialNodeCount: The number of nodes to create in this cluster. You must
       ensure that your Compute Engine [resource quota](/compute/docs/resource-
       quotas) is sufficient for this number of instances. You must also have
       available firewall and routes quota.
     instanceGroupUrls: [Output only] The resource URLs of [instance
       groups](/compute/docs/instance-groups/) associated with this cluster.
-      @OutputOnly.
     loggingService: The logging service that the cluster should write logs to.
       Currently available options:  * "logging.googleapis.com" - the Google
       Cloud Logging service * "none" - no logs will be exported from the
@@ -72,23 +68,21 @@ class Cluster(_messages.Message):
       descriptions of the child properties of `nodeConfig`.
     nodeIpv4CidrSize: [Output only] The size of the address space on each node
       for hosting containers. This is provisioned from within the
-      container_ipv4_cidr range. @OutputOnly.
-    selfLink: [Output only] Server-defined URL for the resource. @OutputOnly.
+      container_ipv4_cidr range.
+    selfLink: [Output only] Server-defined URL for the resource.
     servicesIpv4Cidr: [Output only] The IP address range of the Kubernetes
       services in this cluster, in [CIDR](http://en.wikipedia.org/wiki
       /Classless_Inter-Domain_Routing) notation (e.g. `1.2.3.4/29`). Service
       addresses are typically put in the last /16 from the container CIDR.
-      @OutputOnly.
-    status: [Output only] The current status of this cluster. @OutputOnly.
+    status: [Output only] The current status of this cluster.
     statusMessage: [Output only] Additional information about the current
-      status of this cluster, if available. @OutputOnly.
+      status of this cluster, if available.
     zone: [Output only] The name of the Google Compute Engine
       [zone](/compute/docs/zones#available) in which the cluster resides.
-      @OutputOnly.
   """
 
   class StatusValueValuesEnum(_messages.Enum):
-    """[Output only] The current status of this cluster. @OutputOnly.
+    """[Output only] The current status of this cluster.
 
     Values:
       STATUS_UNSPECIFIED: Not set.
@@ -275,7 +269,7 @@ class CreateClusterRequest(_messages.Message):
 
   Fields:
     cluster: A [cluster resource](/container-
-      engine/docs/v1/projects/zones/clusters)
+      engine/reference/rest/v1/projects.zones.clusters)
   """
 
   cluster = _messages.MessageField('Cluster', 1)
@@ -309,11 +303,11 @@ class MasterAuth(_messages.Message):
 
   Fields:
     clientCertificate: [Output only] Base64 encoded public certificate used by
-      clients to authenticate to the cluster endpoint. @OutputOnly.
+      clients to authenticate to the cluster endpoint.
     clientKey: [Output only] Base64 encoded private key used by clients to
-      authenticate to the cluster endpoint. @OutputOnly.
+      authenticate to the cluster endpoint.
     clusterCaCertificate: [Output only] Base64 encoded public certificate that
-      is the root of trust for the cluster. @OutputOnly.
+      is the root of trust for the cluster.
     password: The password to use for HTTP basic authentication when accessing
       the Kubernetes master endpoint. Because the master endpoint is open to
       the internet, you should create a strong password.
@@ -353,25 +347,24 @@ class Operation(_messages.Message):
   """Defines the operation resource. All fields are output only.
 
   Enums:
-    OperationTypeValueValuesEnum: The operation type. @OutputOnly.
-    StatusValueValuesEnum: The current status of the operation. @OutputOnly.
+    OperationTypeValueValuesEnum: The operation type.
+    StatusValueValuesEnum: The current status of the operation.
 
   Fields:
-    name: The server-assigned ID for the operation. @OutputOnly.
-    operationType: The operation type. @OutputOnly.
-    selfLink: Server-defined URL for the resource. @OutputOnly.
-    status: The current status of the operation. @OutputOnly.
+    name: The server-assigned ID for the operation.
+    operationType: The operation type.
+    selfLink: Server-defined URL for the resource.
+    status: The current status of the operation.
     statusMessage: If an error has occurred, a textual description of the
-      error. @OutputOnly.
+      error.
     targetLink: Server-defined URL for the target of the operation.
-      @OutputOnly.
     zone: The name of the Google Compute Engine
       [zone](/compute/docs/zones#available) in which the operation is taking
-      place. @OutputOnly.
+      place.
   """
 
   class OperationTypeValueValuesEnum(_messages.Enum):
-    """The operation type. @OutputOnly.
+    """The operation type.
 
     Values:
       TYPE_UNSPECIFIED: Not set.
@@ -389,7 +382,7 @@ class Operation(_messages.Message):
     REPAIR_CLUSTER = 5
 
   class StatusValueValuesEnum(_messages.Enum):
-    """The current status of the operation. @OutputOnly.
+    """The current status of the operation.
 
     Values:
       STATUS_UNSPECIFIED: Not set.

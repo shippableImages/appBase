@@ -44,6 +44,8 @@ class ComputeV1(base_api.BaseApiClient):
     self.globalOperations = self.GlobalOperationsService(self)
     self.httpHealthChecks = self.HttpHealthChecksService(self)
     self.images = self.ImagesService(self)
+    self.instanceGroupManagers = self.InstanceGroupManagersService(self)
+    self.instanceGroups = self.InstanceGroupsService(self)
     self.instanceTemplates = self.InstanceTemplatesService(self)
     self.instances = self.InstancesService(self)
     self.licenses = self.LicensesService(self)
@@ -1292,7 +1294,7 @@ class ComputeV1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified operation resource.
+      """Deletes the specified Operations resource.
 
       Args:
         request: (ComputeGlobalOperationsDeleteRequest) input message
@@ -1305,7 +1307,7 @@ class ComputeV1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified operation resource.
+      """Retrieves the specified Operations resource.
 
       Args:
         request: (ComputeGlobalOperationsGetRequest) input message
@@ -1318,7 +1320,7 @@ class ComputeV1(base_api.BaseApiClient):
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified project.
+      """Retrieves the list of Operation resources contained within the specified project.
 
       Args:
         request: (ComputeGlobalOperationsListRequest) input message
@@ -1630,6 +1632,557 @@ If an empty request body is given, clears the deprecation status instead.
         (ImageList) The response message.
       """
       config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+  class InstanceGroupManagersService(base_api.BaseApiService):
+    """Service class for the instanceGroupManagers resource."""
+
+    _NAME = u'instanceGroupManagers'
+
+    def __init__(self, client):
+      super(ComputeV1.InstanceGroupManagersService, self).__init__(client)
+      self._method_configs = {
+          'AbandonInstances': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroupManagers.abandonInstances',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/abandonInstances',
+              request_field=u'instanceGroupManagersAbandonInstancesRequest',
+              request_type_name=u'ComputeInstanceGroupManagersAbandonInstancesRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'AggregatedList': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.instanceGroupManagers.aggregatedList',
+              ordered_params=[u'project'],
+              path_params=[u'project'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/aggregated/instanceGroupManagers',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupManagersAggregatedListRequest',
+              response_type_name=u'InstanceGroupManagerAggregatedList',
+              supports_download=False,
+          ),
+          'Delete': base_api.ApiMethodInfo(
+              http_method=u'DELETE',
+              method_id=u'compute.instanceGroupManagers.delete',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupManagersDeleteRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'DeleteInstances': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroupManagers.deleteInstances',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/deleteInstances',
+              request_field=u'instanceGroupManagersDeleteInstancesRequest',
+              request_type_name=u'ComputeInstanceGroupManagersDeleteInstancesRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Get': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.instanceGroupManagers.get',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupManagersGetRequest',
+              response_type_name=u'InstanceGroupManager',
+              supports_download=False,
+          ),
+          'Insert': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroupManagers.insert',
+              ordered_params=[u'project', u'zone'],
+              path_params=[u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers',
+              request_field=u'instanceGroupManager',
+              request_type_name=u'ComputeInstanceGroupManagersInsertRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'List': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.instanceGroupManagers.list',
+              ordered_params=[u'project', u'zone'],
+              path_params=[u'project', u'zone'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupManagersListRequest',
+              response_type_name=u'InstanceGroupManagerList',
+              supports_download=False,
+          ),
+          'ListManagedInstances': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroupManagers.listManagedInstances',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/listManagedInstances',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupManagersListManagedInstancesRequest',
+              response_type_name=u'InstanceGroupManagersListManagedInstancesResponse',
+              supports_download=False,
+          ),
+          'RecreateInstances': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroupManagers.recreateInstances',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/recreateInstances',
+              request_field=u'instanceGroupManagersRecreateInstancesRequest',
+              request_type_name=u'ComputeInstanceGroupManagersRecreateInstancesRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Resize': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroupManagers.resize',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager', u'size'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[u'size'],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/resize',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupManagersResizeRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'SetInstanceTemplate': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroupManagers.setInstanceTemplate',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/setInstanceTemplate',
+              request_field=u'instanceGroupManagersSetInstanceTemplateRequest',
+              request_type_name=u'ComputeInstanceGroupManagersSetInstanceTemplateRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'SetTargetPools': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroupManagers.setTargetPools',
+              ordered_params=[u'project', u'zone', u'instanceGroupManager'],
+              path_params=[u'instanceGroupManager', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/setTargetPools',
+              request_field=u'instanceGroupManagersSetTargetPoolsRequest',
+              request_type_name=u'ComputeInstanceGroupManagersSetTargetPoolsRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          }
+
+      self._upload_configs = {
+          }
+
+    def AbandonInstances(self, request, global_params=None):
+      """Removes the specified instances from the managed instance group, and from any target pools where they are a member. The instances are not deleted. The managed instance group automatically reduces its targetSize value by the number of instances that you abandon from the group.
+
+      Args:
+        request: (ComputeInstanceGroupManagersAbandonInstancesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('AbandonInstances')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def AggregatedList(self, request, global_params=None):
+      """Retrieves the list of managed instance groups, and groups them by project and zone.
+
+      Args:
+        request: (ComputeInstanceGroupManagersAggregatedListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (InstanceGroupManagerAggregatedList) The response message.
+      """
+      config = self.GetMethodConfig('AggregatedList')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Delete(self, request, global_params=None):
+      """Deletes the specified managed instance group resource.
+
+      Args:
+        request: (ComputeInstanceGroupManagersDeleteRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Delete')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def DeleteInstances(self, request, global_params=None):
+      """Deletes the specified instances. The instances are deleted and removed from the instance group and any target pools where they are a member. The managed instance group automatically reduces its targetSize value by the number of instances that you delete.
+
+      Args:
+        request: (ComputeInstanceGroupManagersDeleteInstancesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('DeleteInstances')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Get(self, request, global_params=None):
+      """Returns the specified managed instance group resource.
+
+      Args:
+        request: (ComputeInstanceGroupManagersGetRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (InstanceGroupManager) The response message.
+      """
+      config = self.GetMethodConfig('Get')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Insert(self, request, global_params=None):
+      """Creates a managed instance group resource in the specified project using the data that is included in the request.
+
+      Args:
+        request: (ComputeInstanceGroupManagersInsertRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Insert')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def List(self, request, global_params=None):
+      """Retrieves a list of managed instance groups that are contained within the specified project and zone.
+
+      Args:
+        request: (ComputeInstanceGroupManagersListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (InstanceGroupManagerList) The response message.
+      """
+      config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def ListManagedInstances(self, request, global_params=None):
+      """Lists managed instances.
+
+      Args:
+        request: (ComputeInstanceGroupManagersListManagedInstancesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (InstanceGroupManagersListManagedInstancesResponse) The response message.
+      """
+      config = self.GetMethodConfig('ListManagedInstances')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def RecreateInstances(self, request, global_params=None):
+      """Recreates the specified instances. The instances are deleted, then recreated using the managed instance group's current instance template.
+
+      Args:
+        request: (ComputeInstanceGroupManagersRecreateInstancesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('RecreateInstances')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Resize(self, request, global_params=None):
+      """Resizes the managed instance group. If you increase the size, the group creates new instances using the current instance template. If you decrease the size, the group removes instances in the order that is outlined in Resizing a managed instance group.
+
+      Args:
+        request: (ComputeInstanceGroupManagersResizeRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Resize')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def SetInstanceTemplate(self, request, global_params=None):
+      """Specifies the instance template to use when creating new instances in this group. The templates for existing instances in the group do not change unless you recreate them.
+
+      Args:
+        request: (ComputeInstanceGroupManagersSetInstanceTemplateRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetInstanceTemplate')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def SetTargetPools(self, request, global_params=None):
+      """Modifies the target pools to which all new instances in this group are assigned. The target pools for existing instances in the group do not change unless you recreate them.
+
+      Args:
+        request: (ComputeInstanceGroupManagersSetTargetPoolsRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetTargetPools')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+  class InstanceGroupsService(base_api.BaseApiService):
+    """Service class for the instanceGroups resource."""
+
+    _NAME = u'instanceGroups'
+
+    def __init__(self, client):
+      super(ComputeV1.InstanceGroupsService, self).__init__(client)
+      self._method_configs = {
+          'AddInstances': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroups.addInstances',
+              ordered_params=[u'project', u'zone', u'instanceGroup'],
+              path_params=[u'instanceGroup', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroups/{instanceGroup}/addInstances',
+              request_field=u'instanceGroupsAddInstancesRequest',
+              request_type_name=u'ComputeInstanceGroupsAddInstancesRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'AggregatedList': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.instanceGroups.aggregatedList',
+              ordered_params=[u'project'],
+              path_params=[u'project'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/aggregated/instanceGroups',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupsAggregatedListRequest',
+              response_type_name=u'InstanceGroupAggregatedList',
+              supports_download=False,
+          ),
+          'Delete': base_api.ApiMethodInfo(
+              http_method=u'DELETE',
+              method_id=u'compute.instanceGroups.delete',
+              ordered_params=[u'project', u'zone', u'instanceGroup'],
+              path_params=[u'instanceGroup', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroups/{instanceGroup}',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupsDeleteRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'Get': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.instanceGroups.get',
+              ordered_params=[u'project', u'zone', u'instanceGroup'],
+              path_params=[u'instanceGroup', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroups/{instanceGroup}',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupsGetRequest',
+              response_type_name=u'InstanceGroup',
+              supports_download=False,
+          ),
+          'Insert': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroups.insert',
+              ordered_params=[u'project', u'zone'],
+              path_params=[u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroups',
+              request_field=u'instanceGroup',
+              request_type_name=u'ComputeInstanceGroupsInsertRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'List': base_api.ApiMethodInfo(
+              http_method=u'GET',
+              method_id=u'compute.instanceGroups.list',
+              ordered_params=[u'project', u'zone'],
+              path_params=[u'project', u'zone'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroups',
+              request_field='',
+              request_type_name=u'ComputeInstanceGroupsListRequest',
+              response_type_name=u'InstanceGroupList',
+              supports_download=False,
+          ),
+          'ListInstances': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroups.listInstances',
+              ordered_params=[u'project', u'zone', u'instanceGroup'],
+              path_params=[u'instanceGroup', u'project', u'zone'],
+              query_params=[u'filter', u'maxResults', u'pageToken'],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroups/{instanceGroup}/listInstances',
+              request_field=u'instanceGroupsListInstancesRequest',
+              request_type_name=u'ComputeInstanceGroupsListInstancesRequest',
+              response_type_name=u'InstanceGroupsListInstances',
+              supports_download=False,
+          ),
+          'RemoveInstances': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroups.removeInstances',
+              ordered_params=[u'project', u'zone', u'instanceGroup'],
+              path_params=[u'instanceGroup', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroups/{instanceGroup}/removeInstances',
+              request_field=u'instanceGroupsRemoveInstancesRequest',
+              request_type_name=u'ComputeInstanceGroupsRemoveInstancesRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          'SetNamedPorts': base_api.ApiMethodInfo(
+              http_method=u'POST',
+              method_id=u'compute.instanceGroups.setNamedPorts',
+              ordered_params=[u'project', u'zone', u'instanceGroup'],
+              path_params=[u'instanceGroup', u'project', u'zone'],
+              query_params=[],
+              relative_path=u'projects/{project}/zones/{zone}/instanceGroups/{instanceGroup}/setNamedPorts',
+              request_field=u'instanceGroupsSetNamedPortsRequest',
+              request_type_name=u'ComputeInstanceGroupsSetNamedPortsRequest',
+              response_type_name=u'Operation',
+              supports_download=False,
+          ),
+          }
+
+      self._upload_configs = {
+          }
+
+    def AddInstances(self, request, global_params=None):
+      """Adds a list of instances to an instance group. All of the instances in the instance group must be in the same network.
+
+      Args:
+        request: (ComputeInstanceGroupsAddInstancesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('AddInstances')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def AggregatedList(self, request, global_params=None):
+      """Retrieves the list of instance groups, and sorts them by zone.
+
+      Args:
+        request: (ComputeInstanceGroupsAggregatedListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (InstanceGroupAggregatedList) The response message.
+      """
+      config = self.GetMethodConfig('AggregatedList')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Delete(self, request, global_params=None):
+      """Deletes the specified instance group.
+
+      Args:
+        request: (ComputeInstanceGroupsDeleteRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Delete')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Get(self, request, global_params=None):
+      """Returns the specified instance group resource.
+
+      Args:
+        request: (ComputeInstanceGroupsGetRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (InstanceGroup) The response message.
+      """
+      config = self.GetMethodConfig('Get')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def Insert(self, request, global_params=None):
+      """Creates an instance group in the specified project using the parameters that are included in the request.
+
+      Args:
+        request: (ComputeInstanceGroupsInsertRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('Insert')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def List(self, request, global_params=None):
+      """Retrieves the list of instance groups that are located in the specified project and zone.
+
+      Args:
+        request: (ComputeInstanceGroupsListRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (InstanceGroupList) The response message.
+      """
+      config = self.GetMethodConfig('List')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def ListInstances(self, request, global_params=None):
+      """Lists instances in an instance group. The parameters for this method specify whether the list filters instances by state and named ports information.
+
+      Args:
+        request: (ComputeInstanceGroupsListInstancesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (InstanceGroupsListInstances) The response message.
+      """
+      config = self.GetMethodConfig('ListInstances')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def RemoveInstances(self, request, global_params=None):
+      """Removes a list of instances from an instance group.
+
+      Args:
+        request: (ComputeInstanceGroupsRemoveInstancesRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('RemoveInstances')
+      return self._RunMethod(
+          config, request, global_params=global_params)
+
+    def SetNamedPorts(self, request, global_params=None):
+      """Sets the named ports in an instance group.
+
+      Args:
+        request: (ComputeInstanceGroupsSetNamedPortsRequest) input message
+        global_params: (StandardQueryParameters, default: None) global arguments
+      Returns:
+        (Operation) The response message.
+      """
+      config = self.GetMethodConfig('SetNamedPorts')
       return self._RunMethod(
           config, request, global_params=global_params)
 
@@ -2611,7 +3164,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified region-specific operation resource.
+      """Deletes the specified region-specific Operations resource.
 
       Args:
         request: (ComputeRegionOperationsDeleteRequest) input message
@@ -2624,7 +3177,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified region-specific operation resource.
+      """Retrieves the specified region-specific Operations resource.
 
       Args:
         request: (ComputeRegionOperationsGetRequest) input message
@@ -2637,7 +3190,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified region.
+      """Retrieves the list of Operation resources contained within the specified region.
 
       Args:
         request: (ComputeRegionOperationsListRequest) input message
@@ -3991,7 +4544,7 @@ If an empty request body is given, clears the deprecation status instead.
           }
 
     def Delete(self, request, global_params=None):
-      """Deletes the specified zone-specific operation resource.
+      """Deletes the specified zone-specific Operations resource.
 
       Args:
         request: (ComputeZoneOperationsDeleteRequest) input message
@@ -4004,7 +4557,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def Get(self, request, global_params=None):
-      """Retrieves the specified zone-specific operation resource.
+      """Retrieves the specified zone-specific Operations resource.
 
       Args:
         request: (ComputeZoneOperationsGetRequest) input message
@@ -4017,7 +4570,7 @@ If an empty request body is given, clears the deprecation status instead.
           config, request, global_params=global_params)
 
     def List(self, request, global_params=None):
-      """Retrieves the list of operation resources contained within the specified zone.
+      """Retrieves the list of Operation resources contained within the specified zone.
 
       Args:
         request: (ComputeZoneOperationsListRequest) input message

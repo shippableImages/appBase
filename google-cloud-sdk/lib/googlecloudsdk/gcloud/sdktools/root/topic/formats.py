@@ -22,11 +22,18 @@ class Formats(base.Command):
           Resource printing formats are specified by the --format=_FORMAT_ flag.
           The supported formats are:
 
-          link:www.yaml.org[YAML], YAML ain't markup language.
+          link:www.yaml.org[yaml]::
+          YAML ain't markup language.
+
+          link:www.json.org[json]::
+          JavaScript Object Notation.
+
+          text::
+          Flattened YAML
           """,
 
       'EXAMPLES': """\
-          List the compute instances resourcesa JSON format:
+          List the compute instances resources in JSON format:
 
             $ gcloud compute instances list --format=json
           """,

@@ -443,13 +443,17 @@ class EntityResult(_messages.Message):
     cursor: A cursor that points to the position after the result entity. Set
       only when the `EntityResult` is part of a `QueryResultBatch` message.
     entity: The resulting entity.
-    version: The version of the entity, a positive number that monotically
-      increases with changes to the entity. For missing entities in
-      LookupResponse, this is a version strictly greater than any previous
-      entity, and strictly less than any possible future entity with the same
-      key.  This field is not set for metadata queries or queries returning
-      [`KEY_ONLY`] [google.datastore.v1beta3.EntityResult.ResultType.KEY_ONLY]
-      or [`PROJECTION`]
+    version: The version of the entity, a strictly positive number that
+      monotically increases with changes to the entity. For missing entities
+      in [`LookupResponse`] [google.datastore.v1beta3.LookupResponse], this is
+      a version strictly greater than any previous entity, and strictly less
+      than any possible future entity with the same key.  This field is not
+      set for missing entities in an [eventually consistent]
+      [google.datastore.v1beta3.ReadOptions.ReadConsistency.EVENTUAL] lookup.
+      It is also not set for the results of metadata queries, or for queries
+      that return [`KEY_ONLY`]
+      [google.datastore.v1beta3.EntityResult.ResultType.KEY_ONLY] or
+      [`PROJECTION`]
       [google.datastore.v1beta3.EntityResult.ResultType.PROJECTION] results.
   """
 

@@ -124,9 +124,8 @@ class BigqueryJobsGetQueryResultsRequest(_messages.Message):
     projectId: Project ID of the query job
     startIndex: Zero-based index of the starting row
     timeoutMs: How long to wait for the query to complete, in milliseconds,
-      before returning. Default is to return immediately. If the timeout
-      passes before the job completes, the request will fail with a TIMEOUT
-      error
+      before returning. Default is 10 seconds. If the timeout passes before
+      the job completes, the 'jobComplete' field in the response will be false
   """
 
   jobId = _messages.StringField(1, required=True)

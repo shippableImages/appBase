@@ -8,6 +8,7 @@ from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
 
 
+@base.ReleaseTracks(base.ReleaseTrack.GA)
 class List(base.Command):
   """View Google Cloud SDK properties.
 

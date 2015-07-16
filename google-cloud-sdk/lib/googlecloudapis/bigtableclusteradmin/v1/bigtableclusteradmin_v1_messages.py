@@ -136,13 +136,13 @@ class Cluster(_messages.Message):
     """DefaultStorageTypeValueValuesEnum enum type.
 
     Values:
-      HDD: <no description>
-      SSD: <no description>
-      UNKNOWN: <no description>
+      STORAGE_HDD: <no description>
+      STORAGE_SSD: <no description>
+      STORAGE_UNSPECIFIED: <no description>
     """
-    HDD = 0
-    SSD = 1
-    UNKNOWN = 2
+    STORAGE_HDD = 0
+    STORAGE_SSD = 1
+    STORAGE_UNSPECIFIED = 2
 
   currentOperation = _messages.MessageField('Operation', 1)
   defaultStorageType = _messages.EnumField('DefaultStorageTypeValueValuesEnum', 2)

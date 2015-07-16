@@ -6,11 +6,12 @@ from os import listdir
 import threading
 import time
 
+from googlecloudsdk.core.util import platforms
+
 from googlecloudsdk.core import config
 from googlecloudsdk.core import properties
 from googlecloudsdk.core import resources
 from googlecloudsdk.core.util import files
-from googlecloudsdk.core.util import platforms
 
 _GETINSTANCEFUN = None
 

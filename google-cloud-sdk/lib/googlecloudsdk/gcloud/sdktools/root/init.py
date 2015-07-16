@@ -17,6 +17,7 @@ from googlecloudsdk.core import log
 from googlecloudsdk.core import properties
 from googlecloudsdk.core import workspaces
 from googlecloudsdk.core.credentials import store as c_store
+from googlecloudsdk.core.util import console_io
 from googlecloudsdk.core.util import files
 
 
@@ -163,3 +164,39 @@ class Init(base.Command):
         prj=args.project))
 
     return workspace
+
+
+@base.Hidden
+@base.ReleaseTracks(base.ReleaseTrack.ALPHA)
+class InitAlpha(base.Command):
+  """Workflow to set up gcloud environment."""
+
+  detailed_help = {
+      'DESCRIPTION': """\
+          This command configures gcloud for a Google Cloud Platform project.
+
+          It runs interactive session for the user guiding through the setup
+          process.
+      """,
+  }
+
+  @staticmethod
+  def Args(parser):
+    pass
+
+  def Run(self, args):
+    log.status.write('Welcome! This command will take you through '
+                     'the configuration of gcloud.\n\n')
+
+    creds = c_store.LoadIfValid()
+    if not creds:
+      log.status.write('To start, you must login.  When the web browser opens, '
+                       'login with your google account and hit accept.\n\n')
+      answer = console_io.PromptContinue()
+      if not answer:
+        return
+      creds = self.cli.Execute(['auth', 'login'])
+
+    log.status.write('\nYou are now logged in as: [{0}]\n'
+                     .format(creds.id_token['email']))
+
