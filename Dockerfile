@@ -16,7 +16,8 @@ RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe restricted multiverse" > /etc/apt/sources.list
 
 RUN apt-get update
-RUN apt-get install -yy g++-4.9 \
+RUN apt-get install -yy build-essential \
+                    g++-4.9 \
                     wget \
                     curl \
                     texinfo \
@@ -30,8 +31,7 @@ RUN apt-get install -yy g++-4.9 \
                     htop ;
 
 RUN apt-get install python-pip \
-                    python-software-properties \
-                    supervisor ;
+                    python-software-properties ;
 
 RUN echo "================== Installing python requirements ====="
 RUN mkdir -p /home/shippable/
@@ -39,7 +39,7 @@ ADD . /home/shippable/appBase
 RUN pip install -r /home/shippable/appBase/requirements.txt
 
 RUN echo "================= Installing Node ==================="
-RUN add-apt-repository ppa:chris-lea/node.js
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 RUN apt-get update
 
 RUN apt-get install -y nodejs
@@ -51,12 +51,5 @@ RUN touch /root/.ssh/known_hosts
 
 RUN echo "================== Disabling scrict host checking for ssh ====="
 ADD config /root/.ssh/config
-
-RUN echo "================= Adding gclould binaries ============"
-RUN mkdir -p /opt/gcloud
-ADD google-cloud-sdk /opt/gcloud/google-cloud-sdk
-RUN cd /opt/gcloud/google-cloud-sdk && ./install.sh --usage-reporting=false --bash-completion=true --path-update=true
-ENV PATH $PATH:/opt/gcloud/google-cloud-sdk/bin
-RUN gcloud components update preview
 
 RUN echo 'ALL ALL=(ALL) NOPASSWD:ALL' | tee -a /etc/sudoers
