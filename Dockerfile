@@ -11,7 +11,7 @@ ADD 90forceyes /etc/apt/apt.conf.d/
 
 RUN echo "================= Installing core binaries ==================="
 RUN apt-get update
-RUN apt-get install -yy python-dev software-properties-common;
+RUN apt-get install -yy python-dev software-properties-common python-software-properties;
 RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe restricted multiverse" > /etc/apt/sources.list
 
@@ -22,16 +22,13 @@ RUN apt-get install -yy build-essential \
                     curl \
                     texinfo \
                     make \
-                    openssh-server \
                     openssh-client \
-                    gdb \
                     sudo \
                     git-core \
                     vim \
                     htop ;
 
-RUN apt-get install python-pip \
-                    python-software-properties ;
+RUN apt-get install python-pip;
 
 RUN echo "================== Installing python requirements ====="
 RUN mkdir -p /home/shippable/
@@ -39,7 +36,7 @@ ADD . /home/shippable/appBase
 RUN pip install -r /home/shippable/appBase/requirements.txt
 
 RUN echo "================= Installing Node ==================="
-curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 RUN apt-get update
 
 RUN apt-get install -y nodejs
