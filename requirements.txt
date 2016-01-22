@@ -1,7 +1,2 @@
-docker-py==0.6.0
 pika==0.9.14
-paramiko==1.12.0
-supervisor==3.0
-awscli==1.7.20
-glob2==0.4.1
 requests==2.7.0
