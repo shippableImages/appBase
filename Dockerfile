@@ -1,8 +1,6 @@
 FROM ubuntu:14.04
 MAINTAINER Avi "avi@shippable.com"
 
-RUN apt-get install -y htop
-
 ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN locale-gen en_US en_US.UTF-8
@@ -10,6 +8,8 @@ RUN dpkg-reconfigure locales
 
 # force all apt-get commands with a yes
 ADD 90forceyes /etc/apt/apt.conf.d/
+
+RUN apt-get install -y htop
 
 RUN echo "================= Installing core binaries ==================="
 RUN apt-get update
