@@ -1,6 +1,8 @@
 FROM ubuntu:14.04
 MAINTAINER Avi "avi@shippable.com"
 
+RUN apt-get install -y htop
+
 ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN locale-gen en_US en_US.UTF-8

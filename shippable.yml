@@ -1,6 +1,22 @@
-language: python
+language: node_js
 
-python:
-  - 2.7
+node_js:
+  - 0.10.24
 
-script: true
+env:
+  - IMAGE_NAME=shipimg/appbase
+
+build:
+  ci:
+    - sudo docker build --rm -t=$IMAGE_NAME:$BRANCH.$SHIPPABLE_BUILD_NUMBER .
+
+  post_ci:
+    - if [ "$IS_PULL_REQUEST" != true ]; then sudo docker push $IMAGE_NAME:$BRANCH.$SHIPPABLE_BUILD_NUMBER; fi
+
+integrations:
+  hub:
+    - integrationName: "shipDH"
+      type: docker
+      branches:
+          only:
+            - master
