@@ -15,7 +15,7 @@ build:
 
 integrations:
   hub:
-    - integrationName: "shipDH"
+    - integrationName: "hub"
       type: docker
       branches:
           only:
