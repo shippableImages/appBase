@@ -9,8 +9,6 @@ RUN dpkg-reconfigure locales
 # force all apt-get commands with a yes
 ADD 90forceyes /etc/apt/apt.conf.d/
 
-RUN apt-get install -y htop
-
 RUN echo "================= Installing core binaries ==================="
 RUN apt-get update
 RUN apt-get install -yy python-dev software-properties-common python-software-properties;
@@ -18,6 +16,8 @@ RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe restricted multiverse" > /etc/apt/sources.list
 
 RUN apt-get update
+RUN apt-get install -y htop
+
 RUN apt-get install -yy build-essential \
                     g++-4.9 \
                     wget \
@@ -27,8 +27,7 @@ RUN apt-get install -yy build-essential \
                     openssh-client \
                     sudo \
                     git-core \
-                    vim \
-                    htop ;
+                    vim ;
 
 RUN apt-get install python-pip;
 
